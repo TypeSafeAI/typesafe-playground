@@ -10,6 +10,7 @@ __pycache__/
 .env
 .env.*
 !.env.example
+!.env.1password
 .DS_Store
 .venv/
 node_modules/

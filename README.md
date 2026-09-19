@@ -27,6 +27,31 @@ pnpm dev
 
 Open the dedicated development address, `http://localhost:3042`. `pnpm dev` keeps this port by default; use `pnpm dev --port 3001` to explicitly select another port. You can browse/edit examples without a key; explicitly mocked demos and local solver/simulation paths do not require live Jev calls. Controls labeled **Live Jev** need a configured key.
 
+### 1Password-backed key (recommended)
+
+Keep the key in 1Password and run the app through `op run`, so no secret ever
+lands in a file:
+
+```bash
+pnpm dev:op
+```
+
+`.env.1password` is committed and holds a **reference**, not a secret:
+`TYPESAFE_API_KEY="op://Development/Jev API Key/password"`. `op run` expands it
+into the process environment at launch. Requires 1Password CLI 2.x, unlocked
+(desktop-app integration or `op signin`).
+
+Verify it took effect — `configured` reports whether the SERVER has a key:
+
+```bash
+curl -s http://localhost:3042/api/health
+# {"ok":true,"configured":true}
+```
+
+A shell-provided variable is not overridden by `.env.local` (`@next/env`'s
+`processEnv` only fills keys absent from the initial environment), so this path
+wins over any stale key left in `.env.local`.
+
 The server environment key is not sent to the browser. Never prefix it with `NEXT_PUBLIC_`, put it in a component, or commit `.env.local`. A browser-supplied personal key follows a different path, documented below.
 
 ## Choose a workspace
@@ -70,6 +95,8 @@ Jev's `noul`, `choice`, and `score` outputs are typed decisions. A single run is
 ### Conversation lab and question triage
 
 The conversation parser accepts Discord-style messages, labeled turns, or plain text. Inspect parsed speakers, timestamps, and multiline messages before evaluating. Recipient ranking uses only preceding context for each candidate; ties, incomplete runs, and no-reply outcomes remain explicit. Context A/B compares the conversation against the final message alone. No Discord messages are sent.
+
+Discord's timestamped “is now a speaker.” stage notices, including copies split across a name and notification line, are excluded from message candidates. The preview reports the ignored count and leaves the raw transcript unchanged. Real speaker headers without a message still fail validation. Plain text mode preserves notification text as content.
 
 The Ask gate chooses `already_answered`, `answerable_by_docs`, `needs_human`, or `needs_more_context`, with a prior-message or documentation-line citation. Suggested replies use fixed templates rather than generated answers. Unsupported outcomes, absent confidence, low-confidence matches, or unsupported citations fall back to human review. Batch triage uses only earlier messages, not future answers; moving the threshold recomputes decisions locally.
 

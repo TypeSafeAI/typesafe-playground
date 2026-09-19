@@ -37,7 +37,7 @@ export const frames: Record<string, string>;
 export function parseTranscript(
   text: string,
   format?: string,
-): { format: string; messages: Message[] };
+): { format: string; messages: Message[]; ignoredStageNotices: number };
 export function buildRequest(input: Input, context: boolean): unknown;
 export function buildCandidates(input: Input): Candidate[];
 export function pickWinners(

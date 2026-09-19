@@ -12,6 +12,7 @@ export function ContextInput({
   history,
   snippets,
   parseError,
+  ignoredStageNotices = 0,
   disabled,
   transcriptLabel,
   transcriptHint,
@@ -25,6 +26,7 @@ export function ContextInput({
   history: ChatMessage[];
   snippets: DocSnippet[];
   parseError: string;
+  ignoredStageNotices?: number;
   disabled?: boolean;
   transcriptLabel: string;
   transcriptHint: string;
@@ -44,6 +46,13 @@ export function ContextInput({
         onChange={(event) => onTranscript(event.target.value)}
       />
       <span className="field-hint">{transcriptHint}</span>
+      {ignoredStageNotices > 0 && (
+        <p className="muted" role="status">
+          Ignored {ignoredStageNotices} Discord stage notice
+          {ignoredStageNotices === 1 ? "" : "s"}. The original transcript is
+          unchanged.
+        </p>
+      )}
       <label className="gate-label" htmlFor="gate-docs">
         <BookOpen size={14} /> Additional docs or FAQ (optional)
       </label>

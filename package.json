@@ -19,7 +19,11 @@
     "pretest:e2e": "node scripts/require-pnpm.cjs",
     "preexample:langchain": "node scripts/require-pnpm.cjs",
     "clean-room": "tsx scripts/clean-room.ts",
-    "preclean-room": "node scripts/require-pnpm.cjs"
+    "preclean-room": "node scripts/require-pnpm.cjs",
+    "dev:op": "op run --env-file=.env.1password -- next dev --hostname 127.0.0.1 --port 3042",
+    "predev:op": "node scripts/require-pnpm.cjs",
+    "start:op": "op run --env-file=.env.1password -- next start",
+    "prestart:op": "node scripts/require-pnpm.cjs"
   },
   "devDependencies": {
     "@playwright/test": "1.63.0",

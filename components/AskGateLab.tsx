@@ -42,12 +42,16 @@ export function AskGateLab() {
   useEffect(() => () => controller.current?.abort(), []);
   let history: ChatMessage[] = [];
   let parseError = "";
+  let ignoredStageNotices = 0;
   try {
-    if (transcript.trim())
+    if (transcript.trim()) {
+      const parsed = parseTranscript(transcript, format);
+      ignoredStageNotices = parsed.ignoredStageNotices;
       history = toHistory(
-        parseTranscript(transcript, format).messages,
+        parsed.messages,
         mode === "batch" ? 200 : historyLimit,
       );
+    }
   } catch (e) {
     parseError = errorMessage(e);
   }
@@ -277,6 +281,7 @@ export function AskGateLab() {
               history={history}
               snippets={snippets}
               parseError={parseError}
+              ignoredStageNotices={ignoredStageNotices}
               disabled={busy}
               transcriptLabel={
                 mode === "single" ? "Recent conversation" : "Chat dump"

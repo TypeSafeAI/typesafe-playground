@@ -28,8 +28,11 @@ export function Conversation() {
   useEffect(() => () => controller.current?.abort(), []);
   let messages: lab.Message[] = [];
   let parseError = "";
+  let ignoredStageNotices = 0;
   try {
-    messages = lab.parseTranscript(text, format).messages;
+    const parsed = lab.parseTranscript(text, format);
+    messages = parsed.messages;
+    ignoredStageNotices = parsed.ignoredStageNotices;
   } catch (e) {
     parseError = errorMessage(e);
   }
@@ -155,6 +158,13 @@ export function Conversation() {
                 spellCheck={false}
               />
               <p className="muted">Paste from Discord, or use Name: message.</p>
+              {ignoredStageNotices > 0 && (
+                <p className="muted" role="status">
+                  Ignored {ignoredStageNotices} Discord stage notice
+                  {ignoredStageNotices === 1 ? "" : "s"}. The original
+                  transcript is unchanged.
+                </p>
+              )}
               <details className="disclosure">
                 <summary>
                   Parsed messages <span>{messages.length}</span>

@@ -17,29 +17,52 @@
     const discord = /^(.+?)\s+[—–-]\s+((?:.{1,60}?\s+)?(?:[01]?\d|2[0-3]):[0-5]\d(?:\s*[AP]M)?)\s*$/i;
     const labeled = /^([^:\n]{1,100}):(?:[ \t]+(.*)|\s*)$/;
     if (format === "auto") format = lines.some(line => discord.test(line.trim())) ? "discord" : labeled.test(lines[0].trim()) ? "labeled" : "plain";
-    if (format === "plain") return {format,messages:[{speaker:null,timestamp:null,content:lines.join("\n")}]};
+    if (format === "plain") return {format,messages:[{speaker:null,timestamp:null,content:lines.join("\n")}],ignoredStageNotices:0};
     const messages = [];
-    let current = null, foundHeader = false;
+    let current = null, foundHeader = false, ignoredStageNotices = 0;
     function flush() {
       if (!current) return;
       current.content = current.content.trim();
       if (!current.content) throw new Error("Speaker header has no message: " + current.speaker);
       messages.push(current);
     }
-    for (const line of lines) {
+    // Discord may copy a Stage notice as a name on one line followed by
+    // "is now a speaker. — HH:MM". It has no message body or reply recipient.
+    const splitStageNotice = index => !!lines[index]?.trim() &&
+      !discord.test(lines[index].trim()) &&
+      /^is now a speaker\.$/i.test(discord.exec(lines[index+1]?.trim() || "")?.[1] || "");
+    const atMessageBoundary = index => {
+      while (index < lines.length && !lines[index].trim()) index++;
+      return index === lines.length || discord.test(lines[index].trim()) || splitStageNotice(index);
+    };
+    for (let index = 0; index < lines.length; index++) {
+      const line = lines[index];
       const match = (format === "discord" ? discord : labeled).exec(line.trim());
+      if (format === "discord") {
+        const noticeLines = splitStageNotice(index) ? 2 :
+          match && /^.+\s+is now a speaker\.$/i.test(match[1]) ? 1 : 0;
+        // A header followed by a body may be an actual display name. Keep it.
+        if (noticeLines && atMessageBoundary(index + noticeLines)) {
+          flush(); current = null;
+          ignoredStageNotices++;
+          index += noticeLines - 1;
+          continue;
+        }
+      }
       if (match) {
         flush(); foundHeader = true;
         const speaker = match[1].trim().replace(/,\s*$/,"");
         current = {speaker,timestamp:format === "discord" ? match[2].trim() : null,content:format === "labeled" ? match[2] || "" : ""};
       } else {
+        if (!current && !line.trim()) continue;
         if (!current) current = {speaker:null,timestamp:null,content:""};
         current.content += (current.content ? "\n" : "") + line;
       }
     }
     flush();
+    if (!messages.length && ignoredStageNotices) throw new Error("No messages found. Discord stage notices are not messages.");
     if (!foundHeader) throw new Error("No speaker header found. Try Auto or Plain text.");
-    return {format,messages};
+    return {format,messages,ignoredStageNotices};
   }
   function buildRequest(input, context) {
     if (!input.transcript?.trim()) throw new Error("Add a transcript.");

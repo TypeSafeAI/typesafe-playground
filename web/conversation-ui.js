@@ -50,6 +50,7 @@
       const speakers = new Set(parsed.messages.map(message => message.speaker).filter(Boolean));
       const names = {discord:"Discord",labeled:"Name: message",plain:"Plain text"};
       $("lab-parse-summary").textContent = names[parsed.format] + " · " + parsed.messages.length + " message block(s) · " + speakers.size + " speaker(s)";
+      if (parsed.ignoredStageNotices) $("lab-parse-summary").textContent += " · " + parsed.ignoredStageNotices + " Discord stage notice(s) ignored";
       const lastBySpeaker = new Map();
       parsed.messages.forEach((message,index) => { if (message.speaker !== null || speakers.size === 0) lastBySpeaker.set(message.speaker,index); });
       for (const [index,message] of parsed.messages.entries()) {

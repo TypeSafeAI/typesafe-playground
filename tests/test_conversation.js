@@ -1,6 +1,45 @@
 const {test} = require('node:test');
 const assert = require('node:assert/strict');
 const C = require('../web/conversation.js');
+const stagePaste = require('node:fs').readFileSync(require('node:path').join(__dirname, 'fixtures/discord-stage-transcript.txt'), 'utf8');
+
+test('Discord stage notices do not become speakers or leak into neighboring messages', () => {
+  for (const format of ['auto','discord']) {
+    const parsed = C.parseTranscript(stagePaste, format);
+    assert.equal(parsed.ignoredStageNotices, 2);
+    assert.deepEqual(parsed.messages, [
+      {speaker:'Aster [LAB]',timestamp:'13:41',content:'How do I select a helper?'},
+      {speaker:'Mira',timestamp:'13:42',content:'Choose an allowed action.'},
+      {speaker:'Aster [LAB]',timestamp:'13:44',content:'PCA: finds patterns in sample data.\n\nWill that preserve line breaks?'},
+      {speaker:'Mira',timestamp:'13:46',content:'Yes. Keep source wording intact.'},
+    ]);
+    const input = {transcript:stagePaste,format,policy:'Help with questions.',model:'jev-latest'};
+    const candidates = C.buildCandidates(input);
+    assert.deepEqual(candidates.map(c=>c.speaker), ['Aster [LAB]','Mira']);
+    assert.equal(candidates[0].payload.state.messages.length,3);
+    assert.deepEqual(C.buildRequest(input,false).state.messages,[parsed.messages.at(-1)]);
+  }
+});
+
+test('leading and trailing stage notices leave the actual final message as the target', () => {
+  const transcript = 'Rowan\r\n is now a speaker. — Today at 1:40 PM\r\n\r\nMira — 13:41\r\nCan you help?\r\n\r\nKai is now a speaker. — 13:42';
+  const parsed = C.parseTranscript(transcript);
+  assert.equal(parsed.ignoredStageNotices,2);
+  assert.deepEqual(parsed.messages,[{speaker:'Mira',timestamp:'13:41',content:'Can you help?'}]);
+  assert.equal(C.buildRequest({transcript,policy:'Help.',model:'jev-latest'},false).state.messages[0].content,'Can you help?');
+  assert.throws(()=>C.parseTranscript('Rowan\nis now a speaker. — 13:43'), /no.*message/i);
+});
+
+test('stage notice handling retains real empty-message errors and ordinary message text', () => {
+  assert.throws(()=>C.parseTranscript('Mira — 13:41\nRowan\nis now a speaker. — 13:43\nAster — 13:44\nHello'), /no message: Mira/i);
+  assert.throws(()=>C.parseTranscript('Mira — 13:41\nHello\nRowan — 13:42'), /no message: Rowan/i);
+  const ordinary = 'Mira — 13:41\nRowan is now a speaker.\n[LAB],\nAster — 13:42\nHello';
+  assert.equal(C.parseTranscript(ordinary).messages[0].content,'Rowan is now a speaker.\n[LAB],');
+  const nickname = 'Rowan is now a speaker. — 13:43\nThat is my display name.';
+  assert.equal(C.parseTranscript(nickname).messages[0].speaker,'Rowan is now a speaker.');
+  assert.equal(C.parseTranscript(stagePaste,'plain').messages[0].content,stagePaste.trim());
+  assert.equal(C.parseTranscript('Mira: Rowan\nis now a speaker. — 13:43','labeled').messages[0].content,'Rowan\nis now a speaker. — 13:43');
+});
 
 test('context comparison changes only messages and retains the latest message', () => {
   const input = {transcript:'Ada: Can you help?\nKit: With what?\nAda: My login.', policy:'Help with support.', model:'jev-latest'};
