@@ -21,16 +21,29 @@ import {
   playgroundGroups,
   playgroundPages as pages,
 } from "../lib/playground";
+const NARROW_RAIL_ROUTES = new Set(["/jev-chat"]);
 export function Shell({ children }: { children: React.ReactNode }) {
   const path = usePathname();
   const sidebarRef = useRef<HTMLElement>(null);
   const [collapsed, setCollapsed] = useState(false);
   const [mobileOpen, setMobileOpen] = useState(false);
+  /**
+   * The chat studio is a reading surface, so it starts with the rail collapsed
+   * to its icon width rather than taking a second 224px column beside the
+   * conversation list. This is a per-route starting point, not a stored
+   * preference: the toggle still works here, and leaving the route restores
+   * whatever the reader chose elsewhere.
+   */
   useEffect(() => {
     try {
-      setCollapsed(localStorage.getItem("typesafe-nav-collapsed") === "true");
-    } catch {}
-  }, []);
+      setCollapsed(
+        NARROW_RAIL_ROUTES.has(path) ||
+          localStorage.getItem("typesafe-nav-collapsed") === "true",
+      );
+    } catch {
+      setCollapsed(NARROW_RAIL_ROUTES.has(path));
+    }
+  }, [path]);
   useEffect(() => {
     setMobileOpen(false);
   }, [path]);
