@@ -1,10 +1,9 @@
 /* A focused conversation canvas. The small orbital mark represents closed choices. */
-.dashboard-shell.app-shell:has(.jev-chat-studio) {
-  grid-template-columns: minmax(0, 1fr);
-}
-.dashboard-shell:has(.jev-chat-studio) > .sidebar,
-.dashboard-shell:has(.jev-chat-studio) .app-footer,
-.dashboard-shell:has(.jev-chat-studio) .mobile-menu {
+/* The studio keeps the shell's own siderail, including its collapsed width and
+   its mobile overlay, so navigation works here as it does on every other
+   workspace. Only the footer is dropped: the canvas owns the full column
+   height. */
+.dashboard-shell:has(.jev-chat-studio) .app-footer {
   display: none;
 }
 .dashboard-shell:has(.jev-chat-studio) main {
