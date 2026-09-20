@@ -1,5 +1,16 @@
 import { test, expect } from "@playwright/test";
 test.beforeEach(async ({ page }) => {
+  await page.route("**/api/gate-docs", (route) =>
+    route.fulfill({
+      json: {
+        sourceUrl: "https://docs.typesafe.ai/llms-full.txt",
+        fetchedAt: "2026-09-16T12:00:00Z",
+        mode: "full",
+        pages: 1,
+        snippets: [],
+      },
+    }),
+  );
   await page.route("**/api/health", (r) =>
     r.fulfill({ json: { ok: true, configured: true } }),
   );

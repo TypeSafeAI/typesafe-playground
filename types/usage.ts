@@ -37,6 +37,7 @@ export type UsageSnapshot = {
   cost: number;
   account: AccountUsage;
   block: UsageBlock | null;
+  rateLimit?: import("../lib/serverRateLimit").RateLimitReport;
 };
 export type ProviderUsage = {
   inputTokens: number | null;
@@ -44,4 +45,5 @@ export type ProviderUsage = {
   attempted: boolean;
   status: number;
   retryAt: string | null;
+  rateLimit?: import("../lib/serverRateLimit").RateLimitReport;
 };

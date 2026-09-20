@@ -152,3 +152,23 @@ test("a complete seeded sector can be cleared using only ordinary controls", asy
   assert.ok(run.actions.includes("open_door"));
   assert.equal(stepGame(game, "shoot"), game);
 });
+
+test("Jev turn pulses aim at visible targets without changing human turn controls", async () => {
+  const { executeJevAction } = await import("../lib/executeJevAction");
+  const game = createGame(7);
+  game.player.angle = 0;
+  game.enemies = [{ id: "target", x: 5.5, y: 2.9, health: 40 }];
+  const angle = Math.atan2(0.4, 3);
+  const aimed = executeJevAction(game, "turn_right");
+  assert.ok(Math.abs(aimed.player.angle - angle) < 0.00001);
+  assert.equal(stepGame(game, "turn_right").player.angle, Math.PI / 8);
+  assert.ok(executeJevAction(aimed, "shoot").hits > 0);
+  const hidden = {
+    ...game,
+    enemies: [{ id: "hidden", x: 10.5, y: 2.9, health: 40 }],
+  };
+  assert.equal(
+    executeJevAction(hidden, "turn_right").player.angle,
+    Math.PI / 8,
+  );
+});

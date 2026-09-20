@@ -6,9 +6,11 @@ export function UsageSummaryBadge({
   usage,
   onClick,
   personal,
+  queueCount = 0,
 }: {
   usage: UsageSnapshot;
   personal: boolean;
+  queueCount?: number;
   onClick: () => void;
 }) {
   const state = quotaState(usage);
@@ -26,6 +28,7 @@ export function UsageSummaryBadge({
       <span>
         {state === "exhausted" ? "Calls paused" : `${usage.requests} calls`}
       </span>
+      {queueCount > 0 && <span>{queueCount} queued</span>}
       <small>
         {usage.tokens.toLocaleString()} tokens
         {usage.estimatedTokens > 0 ? " ≈" : ""}

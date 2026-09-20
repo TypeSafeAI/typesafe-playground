@@ -963,7 +963,7 @@ h1,
   background: #101624;
   padding: 0;
 }
-.workspace .doom-fullscreen > .panel-heading {
+.panel.doom-arena-panel.doom-fullscreen > .panel-heading {
   position: absolute;
   inset: 0 0 auto;
   border: 0;
@@ -1132,7 +1132,7 @@ h1,
   }
 }
 @media (max-width: 650px) {
-  .workspace .doom-fullscreen > .panel-heading {
+  .panel.doom-arena-panel.doom-fullscreen > .panel-heading {
     padding: max(12px, env(safe-area-inset-top)) 12px 24px;
     gap: 8px;
   }
@@ -1248,17 +1248,17 @@ h1,
   align-items: center;
   gap: 8px;
 }
-.workspace .doom-fullscreen > .panel-heading .button {
+.doom-arena-panel.doom-fullscreen > .panel-heading .button {
   min-height: 36px;
   padding: 8px 12px;
   font-size: 11px;
 }
 @media (max-width: 650px) {
-  .workspace .doom-fullscreen > .panel-heading .doom-window-actions {
+  .doom-arena-panel.doom-fullscreen > .panel-heading .doom-window-actions {
     flex-direction: column;
     gap: 4px;
   }
-  .workspace .doom-fullscreen > .panel-heading .button {
+  .doom-arena-panel.doom-fullscreen > .panel-heading .button {
     min-height: 30px;
     padding: 6px;
     font-size: 9px;
@@ -1322,3 +1322,164 @@ h1,
   .microduck-console { padding: 12px; }
   .microduck-scene-caption { font-size: 9px; }
 }
+
+/* The pilot's decisions and actual position stay visible beside the arena. */
+.doom-tactical-strip.is-jev {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) minmax(140px, 0.7fr);
+  background: #0b1320;
+  border-top: 1px solid #a8c9dd26;
+}
+.doom-pilot {
+  padding: 16px;
+  color: #d9e9f5;
+  min-width: 0;
+}
+.doom-pilot-heading {
+  display: flex;
+  align-items: center;
+  gap: 7px;
+  font: 9px var(--font-mono);
+  letter-spacing: 0.08em;
+}
+.doom-pilot-heading > span:last-child {
+  margin-left: auto;
+  color: #98b0c9;
+}
+.pilot-light {
+  width: 6px;
+  height: 6px;
+  border-radius: 50%;
+  background: #8490a2;
+}
+.pilot-light.active {
+  background: #a5f0da;
+  box-shadow: 0 0 9px #a5f0da70;
+}
+.doom-pilot-action {
+  font-size: clamp(18px, 2vw, 26px);
+  font-weight: 650;
+  text-transform: capitalize;
+  margin: 12px 0;
+  letter-spacing: -0.03em;
+}
+.doom-aim-caption {
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: space-between;
+  gap: 4px;
+  font-size: 10px;
+}
+.doom-aim-caption span {
+  color: #98b0c9;
+  font-variant-numeric: tabular-nums;
+}
+.doom-aim-rail {
+  position: relative;
+  height: 18px;
+  margin-top: 6px;
+  background: linear-gradient(90deg, transparent, #c0b4ef22, transparent);
+  border-top: 1px solid #b8d6e12b;
+}
+.doom-aim-rail > span {
+  position: absolute;
+  left: 50%;
+  height: 12px;
+  border-left: 1px solid #bed6e0;
+}
+.doom-aim-rail i {
+  position: absolute;
+  top: 3px;
+  width: 6px;
+  height: 6px;
+  background: #d1baff;
+  transform: translateX(-50%) rotate(45deg);
+  transition: left 140ms ease-out;
+}
+.doom-pilot[data-target="locked"] .doom-aim-caption strong {
+  color: #a5f0da;
+}
+.doom-pilot[data-target="locked"] .doom-aim-rail i {
+  background: #a5f0da;
+}
+.doom-pilot p,
+.doom-pilot small {
+  display: block;
+  margin: 4px 0 0;
+  color: #98b0c9;
+  font: 9px/1.6 var(--font-mono);
+}
+.doom-tactical-strip.is-jev .doom-minimap {
+  border-top: 0;
+  border-left: 1px solid #a8c9dd26;
+}
+.doom-tactical-strip.is-jev .doom-minimap svg {
+  max-width: 210px;
+  display: block;
+}
+.doom-fullscreen .doom-tactical-strip {
+  display: contents;
+}
+.doom-fullscreen .doom-pilot {
+  position: absolute;
+  left: 28px;
+  top: 175px;
+  width: 245px;
+  padding: 14px;
+  border: 1px solid #b1c9df33;
+  border-radius: 8px;
+  background: #0c1425e8;
+}
+.doom-fullscreen.doom-capture .doom-pilot {
+  display: none;
+}
+@media (max-width: 650px) {
+  .doom-pilot {
+    padding: 10px;
+  }
+  .doom-pilot-heading {
+    font-size: 8px;
+    letter-spacing: 0;
+  }
+  .doom-pilot-heading > span:last-child {
+    display: none;
+  }
+  .doom-fullscreen .doom-pilot {
+    left: 12px;
+    top: 180px;
+    width: calc(100% - 166px);
+    max-width: 245px;
+    padding: 10px;
+  }
+}
+@media (max-height: 550px) and (orientation: landscape) {
+  .doom-fullscreen .doom-pilot {
+    top: 145px;
+    padding: 8px 12px;
+  }
+  .doom-fullscreen .doom-pilot-action {
+    margin: 4px 0;
+    font-size: 18px;
+  }
+  .doom-fullscreen .doom-pilot p,
+  .doom-fullscreen .doom-pilot small {
+    display: none;
+  }
+}
+@media (prefers-reduced-motion: reduce) {
+  .doom-aim-rail i {
+    transition: none;
+  }
+}
+
+.usage-rate-policy {
+  padding: 16px;
+  border: 1px solid var(--line);
+  border-radius: 8px;
+  background: var(--soft);
+  margin-bottom: 16px;
+}
+.usage-rate-policy h3 { margin: 6px 0 12px; font-size: 16px; }
+.usage-rate-policy p { font-size: 12px; line-height: 1.65; color: var(--muted); }
+.usage-rate-policy strong { color: var(--ink); font-variant-numeric: tabular-nums; }
+.usage-rate-policy code { overflow-wrap: anywhere; }

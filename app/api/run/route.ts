@@ -58,7 +58,24 @@ export async function POST(request: Request) {
             ? error.message
             : "TypeSafe could not complete this request. Please try again.",
       },
-      { status: error instanceof JevProviderError ? error.status : 502 },
+      {
+        status: error instanceof JevProviderError ? error.status : 502,
+        headers: {
+          "Cache-Control": "no-store",
+          ...(error instanceof JevProviderError && error.usage?.retryAt
+            ? {
+                "Retry-After": String(
+                  Math.max(
+                    1,
+                    Math.ceil(
+                      (Date.parse(error.usage.retryAt) - Date.now()) / 1000,
+                    ),
+                  ),
+                ),
+              }
+            : {}),
+        },
+      },
     );
   }
 }

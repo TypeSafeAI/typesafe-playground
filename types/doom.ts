@@ -45,6 +45,7 @@ export interface GameState {
 export interface GameFeatures {
   enemy_visible: boolean;
   enemy_distance: "near" | "medium" | "far" | "unknown" | "none";
+  enemy_angle_degrees: number | null;
   enemy_bearing: "left" | "center" | "right" | "none";
   health_pct: number;
   ammo_pct: number;

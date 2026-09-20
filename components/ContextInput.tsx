@@ -45,7 +45,7 @@ export function ContextInput({
       />
       <span className="field-hint">{transcriptHint}</span>
       <label className="gate-label" htmlFor="gate-docs">
-        <BookOpen size={14} /> Docs or FAQ (optional)
+        <BookOpen size={14} /> Additional docs or FAQ (optional)
       </label>
       <textarea
         id="gate-docs"
@@ -57,8 +57,9 @@ export function ContextInput({
         onChange={(event) => onDocs(event.target.value)}
       />
       <span className="field-hint">
-        One line per fact. Headings starting with # name the section a citation
-        points at.
+        Official TypeSafe docs are retrieved automatically. Add optional local
+        notes here. One line per fact. Headings starting with # name the section
+        a citation points at.
       </span>
       <details className="disclosure">
         <summary>

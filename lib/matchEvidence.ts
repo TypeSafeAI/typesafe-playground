@@ -11,9 +11,20 @@ const stopwords = new Set(
   ),
 );
 export function tokenize(text: string): string[] {
-  return (text.toLowerCase().match(/[a-z0-9_]+/g) || []).filter(
-    (token) => token.length > 2 && !stopwords.has(token),
-  );
+  return (
+    text
+      .toLowerCase()
+      .replace(/_/g, " ")
+      .match(/[a-z0-9]+/g) || []
+  )
+    .filter((token) => token.length > 2 && !stopwords.has(token))
+    .map((token) =>
+      /^(authenticat|authoriz|unauthoriz)|^bearer$/.test(token)
+        ? "auth"
+        : token.length > 4 && token.endsWith("s") && !token.endsWith("ss")
+          ? token.slice(0, -1)
+          : token,
+    );
 }
 export function excerpt(text: string, max = 240): string {
   const clean = text.replace(/\s+/g, " ").trim();
@@ -77,7 +88,8 @@ export function rankEvidence(
         id: snippet.id,
         kind: "doc" as const,
         label: snippet.title,
-        excerpt: excerpt(snippet.content),
+        excerpt: excerpt(snippet.content, 1200),
+        sourceUrl: snippet.sourceUrl,
         score: 0,
       },
     })),
@@ -130,6 +142,6 @@ export function suggestReply(
   if (outcome === "already_answered")
     return `This came up earlier — ${evidence.label} covered it: “${evidence.excerpt}” Give that a read and shout if it still doesn't fit.`;
   if (outcome === "answerable_by_docs")
-    return `The docs answer this under ${evidence.label}: “${evidence.excerpt}” Shout if that leaves something out.`;
+    return `The docs answer this under ${evidence.label}: “${evidence.excerpt}”${evidence.sourceUrl ? ` ${evidence.sourceUrl}` : ""} Shout if that leaves something out.`;
   return "";
 }

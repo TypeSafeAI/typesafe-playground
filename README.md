@@ -37,7 +37,7 @@ The home page groups the prototypes into Language & data, Agents & workflows, Co
 | --- | --- |
 | **Example builder** `/examples` | Editable typed questions, a shared example catalog, and declared A/B input changes. |
 | **Conversation lab** `/conversation` | Parse conversations, rank possible reply recipients, and compare full-context versus isolated-message judgments. |
-| **Ask gate** `/gate` | Triage questions against earlier messages or pasted documentation, retaining supporting citations. |
+| **Ask gate** `/gate` | Check official TypeSafe documentation first, then earlier messages, then route to a human, retaining supporting citations. |
 | **Jev Chat** `/jev-chat` | Explore Jev-driven scripted composition with selectable personalities, cited source passages, fictional scenes, saved threads, and verifiable response graphs. See the [chat guide](docs/jev-chat.md). |
 | **Workflow chat** `/workflow` | Apply editable case rules and request missing facts before recommending an action. |
 | **Document extraction** `/extraction` | Find source candidates locally, then ask Jev to choose candidates or `null`. |
@@ -72,6 +72,8 @@ Jev's `noul`, `choice`, and `score` outputs are typed decisions. A single run is
 The conversation parser accepts Discord-style messages, labeled turns, or plain text. Inspect parsed speakers, timestamps, and multiline messages before evaluating. Recipient ranking uses only preceding context for each candidate; ties, incomplete runs, and no-reply outcomes remain explicit. Context A/B compares the conversation against the final message alone. No Discord messages are sent.
 
 The Ask gate chooses `already_answered`, `answerable_by_docs`, `needs_human`, or `needs_more_context`, with a prior-message or documentation-line citation. Suggested replies use fixed templates rather than generated answers. Unsupported outcomes, absent confidence, low-confidence matches, or unsupported citations fall back to human review. Batch triage uses only earlier messages, not future answers; moving the threshold recomputes decisions locally.
+
+Ask gate retrieves `https://docs.typesafe.ai/llms-full.txt` server-side and caches the public corpus for 10 minutes. If the full feed is unavailable, it follows up to six relevant pages from `llms.txt` (three fetches at a time) and labels that limited fallback. Each question sends at most eight shortlisted passages to Jev; community context is checked only when no documentation answer passes the confidence gate. Retrieval failures stop the run visibly. Documentation requests never include your API key.
 
 ### Workflow chat and extraction
 
@@ -118,7 +120,7 @@ The server image loader bounds image size and redirects, blocks private/reserved
 
 **JevDoom** is an original Three.js/WebGL mini-game, not the Doom engine, and uses no Doom assets. Human, Jev, and seeded-random modes share a deterministic maze and action contract. W/S move, A/D strafe, Q/E turn, Space fires, F opens doors, and R uses items; touch controls and a tactical-map fallback are available. Fullscreen and screenshot mode change the presentation, not the model's authority.
 
-The browser sends structured observations rather than rendered pixels. Model choices are limited to the configured action set. Action freshness checks, bounded calls, cancellation, invalid-answer idling, and error pauses prevent an old or unusable response from becoming a new action. Chaos mode withholds a sensor for inspection without assuming confidence must decrease. Timing includes network latency; classification throughput is not the same as game actions per second. No generated code is executed.
+The browser sends structured observations rather than rendered pixels. Model choices are limited to the configured action set. A turn toward a visible enemy uses its signed bearing to stop precisely on target; Jev still chooses whether to turn or shoot. Action freshness checks, bounded calls, cancellation, invalid-answer idling, and error pauses prevent an old or unusable response from becoming a new action. Chaos mode withholds a sensor for inspection without assuming confidence must decrease. Timing includes network latency; classification throughput is not the same as game actions per second. No generated code is executed.
 
 **MicroDuck** is a local deterministic robot arena, not a connection to physical hardware. Inspect sensors, cargo, docks, and bounded seven-action control, and compare with a seeded random baseline. **Chess** intentionally exposes a limitation: choosing one legal move without lookahead is not a competitive chess engine; minimax-based comparison can mark mistakes. Keep simulated outcomes separate from claims about model capability.
 

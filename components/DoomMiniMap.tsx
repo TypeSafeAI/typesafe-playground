@@ -138,6 +138,7 @@ export function DoomMiniMap({ game }: { game: GameState }) {
         />
       )}
       <g
+        data-testid="doom-map-player"
         transform={
           "translate(" +
           p.x * size +
@@ -148,6 +149,14 @@ export function DoomMiniMap({ game }: { game: GameState }) {
           ")"
         }
       >
+        <path
+          d="M12 0H70"
+          stroke="#a9f4eb"
+          strokeWidth="1.5"
+          strokeDasharray="4 4"
+          opacity=".7"
+        />
+        <circle r="17" fill="#a9f4eb" opacity=".12" />
         <circle
           r="10"
           fill="#b9eaff"

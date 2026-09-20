@@ -95,6 +95,23 @@ export async function POST(request: Request) {
             : "The LangChain routing tool could not complete this invocation.",
       },
       {
+        headers: {
+          "Cache-Control": "no-store",
+          ...(providerError instanceof JevProviderError &&
+          providerError.usage?.retryAt
+            ? {
+                "Retry-After": String(
+                  Math.max(
+                    1,
+                    Math.ceil(
+                      (Date.parse(providerError.usage.retryAt) - Date.now()) /
+                        1000,
+                    ),
+                  ),
+                ),
+              }
+            : {}),
+        },
         status:
           providerError instanceof JevProviderError
             ? providerError.status

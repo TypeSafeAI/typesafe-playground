@@ -79,7 +79,14 @@ export function createGame(seed = 7): GameState {
     damageFlash: false,
   };
 }
-export function stepGame(previous: GameState, action: DoomAction): GameState {
+export function stepGame(
+  previous: GameState,
+  action: DoomAction,
+  turnRadians = Math.PI / 8,
+): GameState {
+  const turn = Number.isFinite(turnRadians)
+    ? Math.min(Math.PI / 8, Math.max(0, turnRadians))
+    : Math.PI / 8;
   if (previous.status !== "playing") return previous;
   const s: GameState = {
     ...previous,
@@ -95,9 +102,8 @@ export function stepGame(previous: GameState, action: DoomAction): GameState {
   const p = s.player;
   if (action !== "idle") s.actions++;
   if (action === "turn_left")
-    p.angle = (p.angle - Math.PI / 8 + Math.PI * 2) % (Math.PI * 2);
-  if (action === "turn_right")
-    p.angle = (p.angle + Math.PI / 8) % (Math.PI * 2);
+    p.angle = (p.angle - turn + Math.PI * 2) % (Math.PI * 2);
+  if (action === "turn_right") p.angle = (p.angle + turn) % (Math.PI * 2);
   const movement: Partial<Record<DoomAction, number>> = {
     move_forward: 0,
     move_backward: Math.PI,

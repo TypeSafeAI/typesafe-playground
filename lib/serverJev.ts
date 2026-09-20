@@ -1,3 +1,4 @@
+import { serverRateLimiter } from "./serverRateLimit";
 import type { ProviderUsage } from "../types/usage";
 import { reportedTokens } from "./estimateCost";
 import { readBoundedBody, validatePayload } from "./api";
@@ -30,6 +31,22 @@ export async function serverJevTransport(
     throw new JevProviderError(
       "Set TYPESAFE_API_KEY on the server to run Jev.",
       503,
+    );
+  if (signal?.aborted)
+    throw new JevProviderError("Request cancelled before sending.", 499);
+  const permit = serverRateLimiter.acquire(key);
+  if (!permit.allowed)
+    throw new JevProviderError(
+      "Playground server safety limit reached (60 requests/minute, 2 concurrent per key per server instance). No request was sent to TypeSafe. Retry after the displayed cooldown.",
+      429,
+      {
+        attempted: false,
+        inputTokens: null,
+        outputTokens: null,
+        status: 429,
+        retryAt: permit.report.retryAt,
+        rateLimit: permit.report,
+      },
     );
   try {
     const upstream = await fetch("https://api.typesafe.ai/v1/systemone", {
@@ -97,6 +114,7 @@ export async function serverJevTransport(
         attempted: true,
         status: upstream.status,
         retryAt: null,
+        rateLimit: permit.report,
       } satisfies ProviderUsage,
     };
   } catch (e) {
@@ -112,5 +130,7 @@ export async function serverJevTransport(
         retryAt: null,
       },
     );
+  } finally {
+    permit.release();
   }
 }

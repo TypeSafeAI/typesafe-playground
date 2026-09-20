@@ -10,6 +10,7 @@ import { ActionProbabilities } from "./ActionProbabilities";
 import { ControlModeToggle } from "./ControlModeToggle";
 import { Scoreboard } from "./Scoreboard";
 import { createGame, stepGame, TICK_MS } from "../lib/gameLoop";
+import { executeJevAction } from "../lib/executeJevAction";
 import { extractGameState } from "../lib/extractGameState";
 import { baselineRandomAgent } from "../lib/baselineRandomAgent";
 import {
@@ -188,7 +189,7 @@ export function DoomLab() {
         const latest = result.decisions.at(-1)!;
         const age = state.current.tick - latest.tick;
         const applied =
-          state.current.status === "playing" && age <= 2 && !latest.error;
+          state.current.status === "playing" && age === 0 && !latest.error;
         command.current = applied
           ? { action: latest.action, tick: latest.tick }
           : null;
@@ -233,19 +234,22 @@ export function DoomLab() {
     }
     const timer = setInterval(() => {
       if (document.hidden) return; // background tabs cannot silently keep spending requests.
+      // Keep the observed world stable until Jev responds; latency cannot expire every choice.
+      if (mode === "jev" && inFlight.current) return;
       let action: DoomAction = "idle";
       if (mode === "human") {
         action = humanPulse.current ?? human.current;
         humanPulse.current = null;
       }
       if (mode === "random") action = baselineRandomAgent(state.current);
-      if (
-        mode === "jev" &&
-        command.current &&
-        state.current.tick - command.current.tick <= Math.max(6, batchSize) + 2
-      )
+      if (mode === "jev" && command.current?.tick === state.current.tick) {
         action = command.current.action;
-      const next = stepGame(state.current, action);
+        command.current = null; // One decision, one action pulse; never repeat a turn.
+      }
+      const next =
+        mode === "jev"
+          ? executeJevAction(state.current, action)
+          : stepGame(state.current, action);
       state.current = next;
       setGame(next);
       if (next.status !== "playing") {
@@ -262,11 +266,7 @@ export function DoomLab() {
           ...frames.current,
           { tick: next.tick, features: extractGameState(next, chaos) },
         ].slice(-batchSize);
-        if (
-          frames.current.length === batchSize &&
-          !inFlight.current &&
-          next.tick % Math.max(6, batchSize) === 0
-        )
+        if (frames.current.length === batchSize && !inFlight.current)
           void classify(
             frames.current.map((f) => ({
               tick: f.tick,
@@ -361,6 +361,7 @@ export function DoomLab() {
               }}
             />
             <GameViewport
+              pending={pending}
               game={game}
               active={active}
               mode={mode}
@@ -535,10 +536,12 @@ export function DoomLab() {
               </div>
             </div>
             <p className="doom-controls-hint">
-              Throughput = valid classifications ÷ measured API time, including
-              network. The 200ms target is a demo challenge, not a claim about
-              human perception. One newest decision can control the arena per
-              batch.
+              Jev waits for each response, then applies one action. Turns toward
+              a visible enemy stop at its bearing; Jev still chooses when to
+              turn and shoot. Throughput = valid classifications ÷ elapsed request
+              time, including the safety queue and network. The 200ms target is a demo challenge, not
+              a claim about human perception. One newest decision can control
+              the arena per batch.
             </p>
             <p className="doom-run-status" role="status">
               {pending
@@ -566,10 +569,10 @@ export function DoomLab() {
                 Decision trace <span>{measured.requests} batches</span>
               </summary>
               <p className="muted">
-                Only the newest frame may set the action, and only if at most
-                two ticks old. Older frames demonstrate batched classification;
-                they never execute delayed commands. Held actions expire after{" "}
-                {Math.max(6, batchSize) + 2} ticks. The last eight batches are
+                Only the newest frame may set the action, and only while it is
+                still current. Simulation waits during the request. Each
+                accepted choice executes once; earlier frames are classification
+                samples, never queued controls. The last eight batches are
                 retained.
               </p>
               {[...trace].reverse().map((batch, i) => (

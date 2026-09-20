@@ -10,10 +10,13 @@ import {
   updateAccountUsage,
   useUsage,
 } from "../lib/logUsageEntry";
+import { useRequestQueue } from "../lib/browserRequestQueue";
+import { REQUEST_POLICY } from "../lib/requestRateLimit";
 import { UsageSummaryBadge } from "./UsageSummaryBadge";
 import { UsageDetailPanel } from "./UsageDetailPanel";
 export function UsageDashboard() {
   const usage = useUsage();
+  const queue = useRequestQueue();
   const [open, setOpen] = useState(false);
   const dialog = useRef<HTMLDialogElement>(null);
   const [personal, setPersonal] = useState(false),
@@ -41,6 +44,7 @@ export function UsageDashboard() {
   return (
     <>
       <UsageSummaryBadge
+        queueCount={queue.queued}
         usage={usage}
         personal={personal}
         onClick={() => {
@@ -71,6 +75,50 @@ export function UsageDashboard() {
           </button>
         </div>
         <div className="usage-dialog-body">
+          <section
+            className="usage-rate-policy"
+            aria-label="Request rate policy"
+          >
+            <span className="eyebrow">PLAYGROUND SAFETY LIMITS</span>
+            <h3>Steady requests. Visible limits.</h3>
+            <p>
+              <strong>
+                {queue.active} active · {queue.queued}/
+                {REQUEST_POLICY.maxQueued} queued
+              </strong>
+              {queue.queued > 0 &&
+                ` · ${queue.active >= REQUEST_POLICY.maxConcurrent ? "Waiting for a running request" : `Next slot in ${Math.max(0, Math.ceil((queue.nextStart - now) / 1000))}s`}`}
+            </p>
+            <p>
+              Browser: one start every 1.2 seconds (at most 50/minute), up to 2
+              active calls and 20 waiting. Shared by examples in this tab.
+              Waiting requests cancel when their run is stopped; a full queue
+              rejects new work without an API call.
+            </p>
+            <p>
+              Server: 60 requests per rolling 60 seconds and 2 concurrent calls
+              per key, per server instance. Other tabs using the same key share
+              that instance’s allowance. This in-memory safeguard resets on
+              restart and is not a distributed or account-wide quota.
+            </p>
+            {usage.rateLimit && (
+              <p>
+                Last server snapshot:{" "}
+                <strong>
+                  {usage.rateLimit.remaining}/{usage.rateLimit.limit} starts
+                  remaining
+                </strong>
+                . This is a response-time snapshot, not a live account balance.
+              </p>
+            )}
+            <p>
+              Source: playground policy in <code>lib/requestRateLimit.ts</code>.
+              TypeSafe may impose separate limits. Provider HTTP 429 pauses
+              calls until its reported reset; without a reset time, retry
+              requires your action. HTTP 402 is a budget/billing failure, not a
+              pacing limit. No automatic retries or background replay.
+            </p>
+          </section>
           {usage.block && (
             <div className="quota-warning exhausted" role="status">
               <strong>

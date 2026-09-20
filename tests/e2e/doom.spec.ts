@@ -36,7 +36,7 @@ test("Doom batches real frames, displays all probabilities and exposes chaos sta
     expect(p.state.frames).toHaveLength(4);
     const ticks = p.state.frames.map((f: any) => f.tick);
     expect(ticks).toEqual([ticks[0], ticks[0] + 1, ticks[0] + 2, ticks[0] + 3]);
-    expect(ticks.at(-1) % 6).toBe(0);
+    expect(ticks.at(-1)).toBeGreaterThanOrEqual(4);
     expect(Object.keys(p.questions.frame_0.criteria)).toEqual([
       ...DOOM_ACTIONS,
     ]);
@@ -118,7 +118,7 @@ test("Doom never applies delayed or invented model actions", async ({
   await expect(page.locator(".doom-stats > div").first()).toContainText("0");
 });
 
-test("Doom rejects stale responses and quick taps survive the tick boundary", async ({
+test("Doom waits for delayed decisions and quick taps survive the tick boundary", async ({
   page,
 }) => {
   await page.route("**/api/run", async (route) => {
@@ -145,13 +145,13 @@ test("Doom rejects stale responses and quick taps survive the tick boundary", as
   await page.goto("/doom");
   await page.getByRole("radio", { name: "Jev control", exact: true }).click();
   await page.getByRole("button", { name: "Start arena", exact: true }).click();
-  await expect(page.locator("main").getByRole("alert")).toContainText(
-    "too old",
+  await expect(page.locator(".doom-current-action")).toContainText(
+    "100.0% confidence",
   );
+  await expect(page.locator(".doom-screen-hud")).toContainText("31");
   await page.getByRole("button", { name: "Pause arena", exact: true }).click();
-  await expect(page.locator(".doom-stats > div").last()).toContainText("—");
   await page.locator(".doom-trace > summary").click();
-  await expect(page.locator(".doom-trace")).toContainText("not applied");
+  await expect(page.locator(".doom-trace")).toContainText("latest accepted");
   await page.getByRole("radio", { name: "Human control", exact: true }).click();
   await page.getByRole("button", { name: "Start arena", exact: true }).click();
   await page.getByRole("button", { name: "Shoot", exact: true }).click();
@@ -163,7 +163,9 @@ test("Doom pauses on provider failure without silently retrying", async ({
   page,
 }) => {
   let calls = 0;
+  let submittedTick = 0;
   await page.route("**/api/run", async (route) => {
+    submittedTick = route.request().postDataJSON().state.frames.at(-1).tick;
     calls++;
     await route.fulfill({
       status: 402,
@@ -177,7 +179,7 @@ test("Doom pauses on provider failure without silently retrying", async ({
   await page.getByRole("radio", { name: "Jev control", exact: true }).click();
   await page.getByRole("button", { name: "Start arena", exact: true }).click();
   await expect(page.locator("main").getByRole("alert")).toContainText("402");
-  await expect(page.locator(".doom-state > summary")).toContainText("tick 6");
+  await expect(page.getByTestId("doom-tick")).toHaveText(String(submittedTick));
   await expect(
     page.getByRole("button", { name: "Start arena", exact: true }),
   ).toBeVisible();
@@ -279,4 +281,60 @@ test("Doom fullscreen fallback supports Escape", async ({ page }) => {
   await expect(
     page.getByRole("button", { name: "Fullscreen", exact: true }),
   ).toBeFocused();
+});
+
+test("Jev moves on the map, turns once, and holds aim while awaiting its next choice", async ({
+  page,
+}) => {
+  let calls = 0;
+  let release!: () => void;
+  const waiting = new Promise<void>((resolve) => {
+    release = resolve;
+  });
+  await page.route("**/api/run", async (route) => {
+    const payload = route.request().postDataJSON();
+    const n = ++calls;
+    if (n >= 3) await waiting;
+    else await new Promise((resolve) => setTimeout(resolve, 700));
+    const choice = n === 1 ? "move_forward" : n === 2 ? "turn_right" : "idle";
+    await route
+      .fulfill({
+        json: {
+          answers: Object.fromEntries(
+            Object.keys(payload.questions).map((key) => [
+              key,
+              {
+                type: "choice",
+                choice,
+                confidence: 0.99,
+                probabilities: Object.fromEntries(
+                  DOOM_ACTIONS.map((action) => [
+                    action,
+                    action === choice ? 1 : 0,
+                  ]),
+                ),
+              },
+            ]),
+          ),
+        },
+      })
+      .catch(() => {});
+  });
+  await page.goto("/doom");
+  const viewport = page.locator(".doom-viewport");
+  const x = Number(await viewport.getAttribute("data-player-x"));
+  await page.getByRole("radio", { name: "Jev control", exact: true }).click();
+  await page.getByRole("button", { name: "Start arena", exact: true }).click();
+  await expect.poll(() => calls).toBeGreaterThanOrEqual(3);
+  expect(Number(await viewport.getAttribute("data-player-x"))).toBeGreaterThan(
+    x,
+  );
+  const angle = Number(await viewport.getAttribute("data-player-angle"));
+  expect(angle).toBeCloseTo(Math.PI / 8);
+  const tick = await page.getByTestId("doom-tick").textContent();
+  await page.waitForTimeout(700);
+  await expect(page.getByTestId("doom-tick")).toHaveText(tick!);
+  expect(Number(await viewport.getAttribute("data-player-angle"))).toBe(angle);
+  await page.getByRole("button", { name: "Pause arena", exact: true }).click();
+  release();
 });

@@ -1,3 +1,4 @@
+import { browserRequestQueue } from "./browserRequestQueue";
 import { jevHeaders } from "./api-key";
 import {
   assertUsageAvailable,
@@ -12,7 +13,25 @@ export async function usageRequest(
   signal?: AbortSignal,
   options: { mock?: boolean; example?: string } = {},
 ) {
-  if (!options.mock) assertUsageAvailable();
+  if (options.mock) return sendUsageRequest(endpoint, payload, signal, options);
+  assertUsageAvailable();
+  const key = jevHeaders()["X-TypeSafe-API-Key"];
+  return browserRequestQueue.run(() => {
+    assertUsageAvailable();
+    if (jevHeaders()["X-TypeSafe-API-Key"] !== key)
+      throw Error(
+        "API key changed while queued. Run again with the selected key.",
+      );
+    if (signal?.aborted) throw signal.reason;
+    return sendUsageRequest(endpoint, payload, signal, options);
+  }, signal);
+}
+async function sendUsageRequest(
+  endpoint: string,
+  payload: unknown,
+  signal?: AbortSignal,
+  options: { mock?: boolean; example?: string } = {},
+) {
   const context = usageContext();
   const example =
     options.example ??

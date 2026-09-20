@@ -9,7 +9,7 @@ export const triageOutcomes: Record<TriageOutcome, string> = {
   already_answered:
     "A specific earlier message in the conversation already answers this question.",
   answerable_by_docs:
-    "A specific line of the supplied documentation answers it, even though nobody in the chat did.",
+    "A specific line of the supplied documentation answers it. Check documentation before community context.",
   needs_human:
     "A person has to answer: the question is new, specific, or reaches past the supplied context.",
   needs_more_context:
@@ -42,6 +42,7 @@ export interface DocSnippet {
   id: string;
   title: string;
   content: string;
+  sourceUrl?: string;
 }
 export type EvidenceKind = "message" | "doc";
 /** One auditable thing Jev is allowed to point at, rendered verbatim in the UI. */
@@ -51,6 +52,7 @@ export interface EvidenceCandidate {
   label: string;
   excerpt: string;
   score: number;
+  sourceUrl?: string;
 }
 export interface TriageInput {
   question: string;

@@ -48,6 +48,16 @@ export function EvidenceCard({
         <span>{evidence.label}</span>
       </div>
       <blockquote>{evidence.excerpt}</blockquote>
+      {evidence.sourceUrl && (
+        <a
+          href={evidence.sourceUrl}
+          target="_blank"
+          rel="noreferrer"
+          className="field-hint"
+        >
+          Read the source documentation ↗
+        </a>
+      )}
       <div className="input-meta">
         <span>Cited as {evidence.id}</span>
         <span>Word overlap {percent(evidence.score)}</span>

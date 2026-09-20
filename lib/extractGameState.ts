@@ -49,6 +49,11 @@ export function extractGameState(
           : distance(p, enemy) <= 5
             ? "medium"
             : "far",
+    enemy_angle_degrees: enemy
+      ? (angleDifference(Math.atan2(enemy.y - p.y, enemy.x - p.x), p.angle) *
+          180) /
+        Math.PI
+      : null,
     enemy_bearing: enemy ? bearing(enemy) : "none",
     health_pct: p.health,
     ammo_pct: Math.round((p.ammo / MAX_AMMO) * 100),

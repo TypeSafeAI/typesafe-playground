@@ -3,45 +3,36 @@ import { useEffect, useRef, useState } from "react";
 import { Inbox, ShieldAlert } from "lucide-react";
 import { errorMessage, runJev } from "../lib/client";
 import {
-  buildTriageRequest,
   defaultThreshold,
   resolveTriage,
   sampleContext,
-  sampleDocs,
   sampleQuestion,
   sampleTranscript,
 } from "../lib/classifyQuestionWithJev";
-import { buildBatch, runBatches } from "../lib/batchTriage";
+import { isQuestion, runBatches } from "../lib/batchTriage";
+import { runDocsFirst, type DocsFirstResult } from "../lib/docsFirstTriage";
+import type { DocsLookup } from "../lib/gateDocs";
 import { splitDocs, toHistory } from "../lib/matchEvidence";
 import { parseTranscript } from "../web/conversation";
-import type {
-  BatchRow,
-  ChatMessage,
-  DocSnippet,
-  EvidenceCandidate,
-  JevResponse,
-} from "../types/triage";
+import type { BatchRow, ChatMessage, JevResponse } from "../types/triage";
 import { BatchTriageTable } from "./BatchTriageTable";
 import { ContextInput } from "./ContextInput";
 import { QuestionInput } from "./QuestionInput";
 import { TriageResult } from "./TriageResult";
 import { Empty, ErrorNote, Export, Heading, RunButton } from "./ui";
 const historyLimit = 20;
-interface Single {
-  candidates: EvidenceCandidate[];
-  response: JevResponse;
-}
 export function AskGateLab() {
   const [mode, setMode] = useState<"single" | "batch">("single");
   const [question, setQuestion] = useState(sampleQuestion);
   const [transcript, setTranscript] = useState(sampleContext);
-  const [docs, setDocs] = useState(sampleDocs);
+  const [docs, setDocs] = useState("");
   const [format, setFormat] = useState("auto");
   const [model, setModel] = useState("jev-latest");
   const [threshold, setThreshold] = useState(
     Math.round(defaultThreshold * 100),
   );
-  const [single, setSingle] = useState<Single | null>(null);
+  const [single, setSingle] = useState<DocsFirstResult | null>(null);
+  const [documentation, setDocumentation] = useState<DocsLookup | null>(null);
   const [rows, setRows] = useState<BatchRow[]>([]);
   const [busy, setBusy] = useState(false);
   const [progress, setProgress] = useState("");
@@ -68,13 +59,15 @@ export function AskGateLab() {
     docs,
     format,
     model,
+    threshold,
   ]);
   const stale = !!snapshot && snapshot !== signature;
   const input = { question, transcript, docs, format, model, historyLimit };
   function loadExample() {
     setQuestion(sampleQuestion);
     setTranscript(mode === "batch" ? sampleTranscript : sampleContext);
-    setDocs(sampleDocs);
+    setDocs("");
+    setDocumentation(null);
     setFormat("auto");
     setSingle(null);
     setRows([]);
@@ -85,6 +78,7 @@ export function AskGateLab() {
     setRows([]);
     setError("");
     setSnapshot("");
+    setDocumentation(null);
     if (transcript === sampleContext && next === "batch")
       setTranscript(sampleTranscript);
     if (transcript === sampleTranscript && next === "single")
@@ -96,32 +90,62 @@ export function AskGateLab() {
     setBusy(true);
     setSingle(null);
     setRows([]);
+    setDocumentation(null);
     setSnapshot(signature);
     controller.current = new AbortController();
     const signal = controller.current.signal;
     try {
+      const items = history
+        .map((message, index) => ({ message, index }))
+        .filter(({ message }) => isQuestion(message.content));
+      const questions =
+        mode === "single"
+          ? [question]
+          : items.map(({ message }) => message.content);
+      if (!questions.length)
+        throw Error("No questions found in this transcript.");
+      setProgress("Reading official TypeSafe documentation…");
+      const lookup = await fetch("/api/gate-docs", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ questions }),
+        signal,
+      });
+      const sources = await lookup.json();
+      if (!lookup.ok)
+        throw Error(
+          sources.error || "Official documentation could not be checked.",
+        );
+      if (signal.aborted) return;
+      setDocumentation(sources);
+      const classify = async (
+        request: import("../types/triage").TriageRequest,
+      ) => {
+        if (signal.aborted) throw Error("Triage stopped.");
+        return (await runJev(request.payload, signal)) as JevResponse;
+      };
+      setProgress("Checking documentation matches before community context…");
       if (mode === "single") {
-        const request = buildTriageRequest(input);
-        setSingle({
-          candidates: request.candidates,
-          response: (await runJev(request.payload, signal)) as JevResponse,
-        });
+        setSingle(
+          await runDocsFirst(
+            input,
+            sources.snippets,
+            classify,
+            threshold / 100,
+          ),
+        );
       } else {
-        const items = buildBatch({
-          transcript,
-          docs,
-          format,
-          model,
-          historyLimit,
-        });
         const settled = await runBatches(
           items,
           async (item) => ({
             item,
-            response: (await runJev(
-              item.request.payload,
-              signal,
-            )) as JevResponse,
+            result: await runDocsFirst(
+              { ...input, question: item.message.content },
+              sources.snippets,
+              classify,
+              threshold / 100,
+              history.slice(Math.max(0, item.index - historyLimit), item.index),
+            ),
           }),
           {
             signal,
@@ -134,13 +158,13 @@ export function AskGateLab() {
               ? {
                   index: result.value.item.index,
                   message: result.value.item.message,
-                  candidates: result.value.item.request.candidates,
-                  response: result.value.response,
+                  candidates: result.value.result.candidates,
+                  response: result.value.result.response,
                 }
               : {
                   index: items[index].index,
                   message: items[index].message,
-                  candidates: items[index].request.candidates,
+                  candidates: [],
                   error: errorMessage(result.reason),
                 },
           ),
@@ -158,14 +182,15 @@ export function AskGateLab() {
     : null;
   const ready =
     (mode === "batch" || !!question.trim()) &&
-    (!!history.length || !!snippets.length) &&
+    (mode === "single" ||
+      history.some((message) => isQuestion(message.content))) &&
     !parseError;
   return (
     <div className="workspace">
       <Heading
         eyebrow="Ask gate"
         title="Ask Jev, or ask a human?"
-        description="Gate incoming questions against what the channel already answered and what the docs already say."
+        description="Check official TypeSafe docs first. If they do not resolve it, check community context before asking a person."
       >
         <span className="pill">
           <ShieldAlert size={15} />
@@ -208,6 +233,40 @@ export function AskGateLab() {
                 disabled={busy}
               />
             )}
+            <div className="evidence-card">
+              <strong>Official docs → community context → human</strong>
+              <p className="field-hint">
+                Every run reads{" "}
+                <a
+                  href="https://docs.typesafe.ai/llms-full.txt"
+                  target="_blank"
+                  rel="noreferrer"
+                >
+                  TypeSafe’s full documentation
+                </a>{" "}
+                first (cached for 10 minutes). If unavailable, it follows
+                relevant pages from{" "}
+                <a
+                  href="https://docs.typesafe.ai/llms.txt"
+                  target="_blank"
+                  rel="noreferrer"
+                >
+                  the docs index
+                </a>
+                . No API key is needed to retrieve docs.
+              </p>
+              {documentation && (
+                <p role="status" className="field-hint">
+                  {documentation.snippets.length} passages retrieved from{" "}
+                  {documentation.pages} pages ·{" "}
+                  {documentation.mode === "full"
+                    ? "Full feed searched"
+                    : "Limited index fallback"}{" "}
+                  · fetched{" "}
+                  {new Date(documentation.fetchedAt).toLocaleTimeString()}
+                </p>
+              )}
+            </div>
             <ContextInput
               transcript={transcript}
               onTranscript={setTranscript}
@@ -245,8 +304,8 @@ export function AskGateLab() {
           <div className="panel-bottom">
             <span className="muted">
               {mode === "single"
-                ? "2 closed-set questions · 1 request"
-                : "Up to 3 requests in parallel"}
+                ? "Docs first · up to 2 Jev requests"
+                : "Docs first · 3 questions in parallel"}
             </span>
             <RunButton
               busy={busy}
@@ -267,6 +326,7 @@ export function AskGateLab() {
                   ? {
                       run: JSON.parse(snapshot || signature),
                       threshold: threshold / 100,
+                      documentation,
                       ...(decision
                         ? { decision, response: single?.response }
                         : { rows }),
@@ -288,11 +348,25 @@ export function AskGateLab() {
                 {progress || "Gating…"}
               </p>
             )}
+            {single && documentation && (
+              <p className="notice">
+                Official docs checked first · {single.docsChecked} shortlisted
+                passages.{" "}
+                {single.stage === "no_match"
+                  ? "No matching passages or community context available; human review required. No Jev call made."
+                  : single.stage === "docs"
+                    ? "Decision from the documentation pass."
+                    : "No accepted docs match; community context checked next."}{" "}
+                Retrieval is a shortlist, not proof that an answer is absent.
+              </p>
+            )}
             {decision ? (
               <TriageResult
                 decision={decision}
                 candidates={single!.candidates}
-                response={single!.response}
+                response={
+                  single!.stage === "no_match" ? undefined : single!.response
+                }
               />
             ) : rows.length ? (
               <BatchTriageTable rows={rows} threshold={threshold / 100} />

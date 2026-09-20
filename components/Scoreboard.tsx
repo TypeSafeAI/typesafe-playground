@@ -105,12 +105,15 @@ export function Scoreboard({
         </table>
       </div>
       <p className="doom-score-note">
-        Same seed, 200ms simulation ticks, 90s limit. Jev holds its latest valid
-        action between batches; network delays can leave it idle. These are
-        session observations, not a controlled model benchmark. Jev decisions/s
-        counts valid frame classifications per second of API time, including
-        network; only the newest frame can control the arena. Switching mode
-        saves this run and resets the arena.
+        Same seed, 200ms simulation ticks, 90s simulation limit. Jev pauses the
+        simulation while awaiting each decision; API wait time does not count as
+        survival. Its chosen turns use visible-target precision. Human and
+        random controls run continuously. These are session observations, not a
+        controlled model benchmark. Jev decisions/s counts valid frame
+        classifications per second of elapsed request time, including the safety
+        queue and network; only the
+        newest frame can control the arena. Switching mode saves this run and
+        resets the arena.
       </p>
     </section>
   );

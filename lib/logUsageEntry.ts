@@ -76,6 +76,7 @@ export function initializeUsage() {
         ...saved,
         entries,
         account: initial.account,
+        rateLimit: undefined,
         block:
           saved.keyRevision === apiKeyRevision() &&
           saved.block &&
@@ -93,7 +94,12 @@ export function initializeUsage() {
     if (key === currentKey) return;
     currentKey = key;
     generation++;
-    snapshot = { ...snapshot, block: null, account: initial.account };
+    snapshot = {
+      ...snapshot,
+      block: null,
+      account: initial.account,
+      rateLimit: undefined,
+    };
     publish();
   };
   window.addEventListener(API_KEY_EVENT, keyChanged);
@@ -182,6 +188,21 @@ export function recordUsage(
   context: ReturnType<typeof usageContext>,
   example: string,
 ) {
+  if (context.generation === generation && report?.rateLimit) {
+    snapshot = { ...snapshot, rateLimit: report.rateLimit };
+    if (!report.attempted && report.status === 429) {
+      snapshot = {
+        ...snapshot,
+        block: {
+          kind: "rate_limit",
+          resetAt: report.retryAt,
+          message:
+            "Playground server safety limit reached. No request was sent to TypeSafe. Limit: 60 requests per rolling minute and 2 concurrent per key, per server instance. Retry after the cooldown; availability is checked again then.",
+        },
+      };
+    }
+    publish();
+  }
   if (report && !report.attempted) return;
   const reported = reportedTokens(report?.inputTokens);
   const tokens =
