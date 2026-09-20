@@ -12,6 +12,7 @@ import {
   ChevronRight,
 } from "lucide-react";
 import catalog from "../web/catalog.json";
+import { JsonView } from "./JsonView";
 import * as library from "../web/library";
 import { runJev, errorMessage, percent, download } from "../lib/client";
 import { Empty, ErrorNote, Export, RunButton } from "./ui";
@@ -33,6 +34,7 @@ export function Examples() {
   useUsage();
   const quotaBlocked = usageBlocked();
   const [resultsOpen, setResultsOpen] = useState(false);
+  const [libraryCollapsed, setLibraryCollapsed] = useState(false);
   const [examples, setExamples] = useState(initial);
   const [selected, setSelected] = useState(initial[0].id);
   const [drafts, setDrafts] = useState<Record<string, library.Draft>>({});
@@ -283,11 +285,30 @@ export function Examples() {
     <div className="workspace" inert={!restored} aria-busy={!restored}>
       <ErrorNote message={error} />
       <div
-        className={`examples-layout ${resultsOpen ? "results-open" : "results-collapsed"}`}
+        className={`examples-layout ${resultsOpen ? "results-open" : "results-collapsed"}${
+          libraryCollapsed ? " library-collapsed" : ""
+        }`}
       >
         <aside
           className={`panel library-panel ${libraryOpen ? "library-open" : "library-closed"}`}
         >
+          <button
+            className="library-toggle"
+            type="button"
+            aria-label={
+              libraryCollapsed ? "Expand examples" : "Collapse examples"
+            }
+            aria-expanded={!libraryCollapsed}
+            aria-controls="example-library"
+            onClick={() => setLibraryCollapsed(!libraryCollapsed)}
+          >
+            {libraryCollapsed ? (
+              <ChevronRight size={18} aria-hidden="true" />
+            ) : (
+              <ChevronLeft size={18} aria-hidden="true" />
+            )}
+            <span className="library-toggle-label">Examples</span>
+          </button>
           <button
             className="library-mobile-toggle"
             aria-expanded={libraryOpen}
@@ -588,9 +609,11 @@ export function Examples() {
                         />
                       </label>
                       {q.criteria && (
-                        <pre className="criteria-preview">
-                          {JSON.stringify(q.criteria, null, 2)}
-                        </pre>
+                        <JsonView
+                          value={q.criteria}
+                          label={`${q.label} criteria`}
+                          defaultOpenDepth={2}
+                        />
                       )}
                     </div>
                   </details>
@@ -630,15 +653,17 @@ export function Examples() {
                   <div className="comparison-values">
                     <div>
                       <span>A · {example.comparison.labelA}</span>
-                      <pre>
-                        {JSON.stringify(validation.originalValue, null, 2)}
-                      </pre>
+                      <JsonView
+                        value={validation.originalValue}
+                        label={`A, ${example.comparison.labelA}`}
+                      />
                     </div>
                     <div>
                       <span>B · {example.comparison.labelB}</span>
-                      <pre>
-                        {JSON.stringify(example.comparison.value, null, 2)}
-                      </pre>
+                      <JsonView
+                        value={example.comparison.value}
+                        label={`B, ${example.comparison.labelB}`}
+                      />
                     </div>
                   </div>
                 )}
@@ -654,13 +679,10 @@ export function Examples() {
               <details className="disclosure">
                 <summary>Reference notes</summary>
                 <p>{example.test.note}</p>
-                <pre className="criteria-preview">
-                  {JSON.stringify(
-                    { A: example.test.expectedA, B: example.test.expectedB },
-                    null,
-                    2,
-                  )}
-                </pre>
+                <JsonView
+                  value={{ A: example.test.expectedA, B: example.test.expectedB }}
+                  label="Reference notes"
+                />
               </details>
             )}
           </div>
@@ -790,9 +812,12 @@ export function Examples() {
                   )}
                   <details className="disclosure">
                     <summary>Raw response</summary>
-                    <pre className="criteria-preview">
-                      {JSON.stringify(r.data, null, 2)}
-                    </pre>
+                    <JsonView
+                      value={r.data}
+                      label="Raw response"
+                      defaultOpenDepth={1}
+                      searchable
+                    />
                   </details>
                 </article>
               ))

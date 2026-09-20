@@ -1095,7 +1095,12 @@ blockquote {
 }
 .examples-layout {
   display: grid;
-  grid-template-columns: 245px minmax(280px, 1fr) minmax(260px, 0.92fr);
+  /* Both side panels collapse independently, so the two edge tracks are
+     variables: a breakpoint sets its widths once and the collapsed rules
+     below override a single track without restating the whole grid. */
+  --library-col: 245px;
+  --results-col: minmax(260px, 0.92fr);
+  grid-template-columns: var(--library-col) minmax(280px, 1fr) var(--results-col);
   gap: 16px;
   flex: 1;
   min-height: 0;
@@ -1367,7 +1372,8 @@ blockquote {
     gap: 30px;
   }
   .examples-layout {
-    grid-template-columns: 290px minmax(0, 1fr) minmax(0, 1fr);
+    --library-col: 290px;
+    --results-col: minmax(0, 1fr);
   }
   .panel-content {
     padding: 28px;
@@ -1392,7 +1398,8 @@ blockquote {
     gap: 20px;
   }
   .examples-layout {
-    grid-template-columns: 200px minmax(240px, 1fr);
+    --library-col: 200px;
+    grid-template-columns: var(--library-col) minmax(240px, 1fr);
   }
   .example-results {
     grid-column: 2;
@@ -1469,7 +1476,8 @@ blockquote {
     padding: 15px;
   }
   .examples-layout {
-    grid-template-columns: 185px minmax(220px, 1fr);
+    --library-col: 185px;
+    grid-template-columns: var(--library-col) minmax(220px, 1fr);
   }
 }
 @media (max-width: 650px) {
@@ -1936,10 +1944,54 @@ select {
   display: none;
 }
 .examples-layout {
-  grid-template-columns: 285px minmax(0, 1fr) minmax(290px, 0.8fr);
+  --library-col: 285px;
+  --results-col: minmax(290px, 0.8fr);
+  grid-template-columns: var(--library-col) minmax(0, 1fr) var(--results-col);
 }
 .examples-layout.results-collapsed {
-  grid-template-columns: 285px minmax(0, 1fr) 56px;
+  --results-col: 56px;
+}
+.examples-layout.library-collapsed {
+  --library-col: 56px;
+}
+/* Mirrors the results panel: the rail keeps a vertical toggle when collapsed
+   so the panel is still reachable, and everything else in it is hidden rather
+   than squeezed into 56px. */
+.library-toggle {
+  color: var(--muted);
+  background: transparent;
+  border: 0;
+  padding: 12px;
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  min-height: 44px;
+  font-size: 12px;
+  border-bottom: 1px solid var(--line);
+  cursor: pointer;
+}
+.library-toggle:hover {
+  color: var(--ink);
+}
+.library-collapsed .library-panel > :not(.library-toggle) {
+  display: none;
+}
+.library-collapsed .library-toggle {
+  writing-mode: vertical-rl;
+  min-height: 200px;
+  border: 0;
+  width: 100%;
+}
+.library-collapsed .library-toggle > span:first-child {
+  writing-mode: horizontal-tb;
+  font-size: 24px;
+}
+/* Expanded, the toggle is a quiet affordance in the panel's own corner. */
+.examples-layout:not(.library-collapsed) .library-toggle {
+  justify-content: flex-end;
+}
+.examples-layout:not(.library-collapsed) .library-toggle > .library-toggle-label {
+  display: none;
 }
 .example-results {
   position: relative;
@@ -2041,10 +2093,11 @@ select {
     display: none;
   }
   .examples-layout {
-    grid-template-columns: 230px minmax(0, 1fr);
+    --library-col: 230px;
+    grid-template-columns: var(--library-col) minmax(0, 1fr);
   }
   .examples-layout.results-collapsed {
-    grid-template-columns: 230px minmax(0, 1fr) 50px;
+    grid-template-columns: var(--library-col) minmax(0, 1fr) 50px;
     grid-template-rows: minmax(0, 1fr);
   }
   .results-collapsed .example-results {
@@ -2143,6 +2196,12 @@ select {
     writing-mode: horizontal-tb;
     min-height: 52px;
     justify-content: space-between;
+  }
+  .library-toggle {
+    display: none;
+  }
+  .library-collapsed .library-panel > :not(.library-toggle) {
+    display: revert;
   }
   .results-collapsed .results-toggle .count {
     margin: 0;
@@ -5948,4 +6007,117 @@ button.chess-square:focus-visible {
 .extract-failure dd code {
   font-size: 11px;
   color: var(--ink);
+}
+
+/* JSON viewer ------------------------------------------------------------
+   Type colours are defined as tokens so the dark theme swaps the palette
+   rather than the rules, and both themes are checked against the panel
+   background they actually sit on. */
+:root {
+  --json-key: #2f3d4d;
+  --json-string: #3f7a4d;
+  --json-number: #8a5a2b;
+  --json-boolean: #7463b5;
+  --json-null: #72808e;
+}
+:root[data-theme="dark"] {
+  --json-key: #d7d3dc;
+  --json-string: #8fce9f;
+  --json-number: #e0b083;
+  --json-boolean: #b9a9ee;
+  --json-null: #9a96a0;
+}
+.json-view {
+  background: var(--soft);
+  border: 1px solid var(--line);
+  border-radius: 7px;
+  overflow: hidden;
+}
+.json-tools {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  padding: 6px 8px;
+  border-bottom: 1px solid var(--line);
+}
+.json-search {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  flex: 1;
+  min-width: 0;
+  color: var(--muted);
+}
+.json-search input {
+  flex: 1;
+  min-width: 0;
+  border: 0;
+  background: transparent;
+  color: var(--ink);
+  font: inherit;
+  padding: 4px 0;
+}
+.json-search input:focus {
+  outline: 0;
+}
+.json-copy {
+  display: inline-flex;
+  align-items: center;
+  gap: 5px;
+  font-size: 11px;
+  flex-shrink: 0;
+}
+.json-tree {
+  padding: 10px 12px;
+  overflow: auto;
+  max-height: 420px;
+  font: 12px/1.65 ui-monospace, SFMono-Regular, Menlo, monospace;
+}
+.json-row {
+  display: flex;
+  align-items: baseline;
+  gap: 5px;
+  white-space: pre;
+}
+.json-caret {
+  border: 0;
+  background: transparent;
+  color: var(--muted);
+  padding: 0;
+  margin-left: -14px;
+  display: inline-flex;
+  align-items: center;
+  cursor: pointer;
+}
+.json-caret:hover {
+  color: var(--ink);
+}
+.json-key {
+  color: var(--json-key);
+  font-weight: 600;
+}
+.json-colon,
+.json-punct {
+  color: var(--muted);
+}
+.json-summary {
+  color: var(--muted);
+  font-style: italic;
+  padding: 0 6px;
+}
+.json-string {
+  color: var(--json-string);
+}
+.json-number {
+  color: var(--json-number);
+}
+.json-boolean {
+  color: var(--json-boolean);
+}
+.json-null {
+  color: var(--json-null);
+}
+.json-empty {
+  color: var(--muted);
+  margin: 0;
 }

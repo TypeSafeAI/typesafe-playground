@@ -33,18 +33,19 @@ export function Shell({ children }: { children: React.ReactNode }) {
   );
   const [mobileOpen, setMobileOpen] = useState(false);
   /**
-   * The chat studio is a reading surface, so it starts with the rail collapsed
-   * to its icon width rather than taking a second 224px column beside the
-   * conversation list. This is a per-route starting point, not a stored
-   * preference: the toggle still works here, and leaving the route restores
-   * whatever the reader chose elsewhere.
+   * The chat studio is a reading surface, so it collapses the rail to its icon
+   * width rather than taking a second 224px column beside the conversation
+   * list. Arriving there records the collapse as the stored preference, so it
+   * carries to every other workspace and survives a reload; expanding again
+   * anywhere is equally sticky. The rail is never hidden, only narrowed.
    */
   useEffect(() => {
     try {
-      setCollapsed(
-        NARROW_RAIL_ROUTES.has(path) ||
-          localStorage.getItem("typesafe-nav-collapsed") === "true",
-      );
+      if (NARROW_RAIL_ROUTES.has(path)) {
+        setCollapsed(true);
+        localStorage.setItem("typesafe-nav-collapsed", "true");
+      } else
+        setCollapsed(localStorage.getItem("typesafe-nav-collapsed") === "true");
     } catch {
       setCollapsed(NARROW_RAIL_ROUTES.has(path));
     }

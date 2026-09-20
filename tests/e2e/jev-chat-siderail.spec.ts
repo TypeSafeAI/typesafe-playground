@@ -43,24 +43,33 @@ test("narrow screens reach the same navigation through the menu", async ({
   await rail.getByRole("link", { name: "Ask gate", exact: true }).click();
   await expect(page).toHaveURL(/\/gate$/);
 });
-test("the collapsed default is per-route, not a stored preference", async ({
+test("collapsing on the chat route persists to other workspaces", async ({
   page,
 }) => {
   await page.setViewportSize({ width: 1440, height: 900 });
   await page.goto("/gate");
-  // A workspace that has no stored preference starts expanded.
+  // A fresh visitor with no stored preference starts expanded.
   await expect(page.locator(".dashboard-shell")).not.toHaveClass(
     /nav-collapsed/,
   );
   const expanded = await expandedWidth(page);
   await page.goto("/jev-chat");
   await expect(page.locator(".dashboard-shell")).toHaveClass(/nav-collapsed/);
-  // Expanding here works, and does not leave the rail stuck collapsed later.
+  expect(
+    await page.evaluate(() => localStorage.getItem("typesafe-nav-collapsed")),
+  ).toBe("true");
+  // The point of persisting: the choice carries to other workspaces...
+  await page.goto("/gate");
+  await expect(page.locator(".dashboard-shell")).toHaveClass(/nav-collapsed/);
+  // ...and survives a reload rather than living only in memory.
+  await page.reload();
+  await expect(page.locator(".dashboard-shell")).toHaveClass(/nav-collapsed/);
+  // Expanding again is equally sticky, so the reader is never stuck narrow.
   await page.getByRole("button", { name: "Expand sidebar" }).click();
   await expect(page.locator(".dashboard-shell")).not.toHaveClass(
     /nav-collapsed/,
   );
-  await page.goto("/gate");
+  await page.reload();
   expect(await expandedWidth(page)).toBe(expanded);
 });
 /** Settles the rail's width animation before reporting it. */
