@@ -884,22 +884,35 @@ body {
   color: var(--muted);
   background: var(--soft);
   border: 1px solid var(--line);
-  font-size: 10px;
-  padding: 2px 6px;
+  font:
+    10px/1.6 ui-monospace,
+    monospace;
+  padding: 2px 7px;
   border-radius: 4px;
   letter-spacing: 0;
+}
+.home-section-heading h2 span::before {
+  content: "{ ";
+  color: var(--accent);
+}
+.home-section-heading h2 span::after {
+  content: " }";
+  color: var(--accent);
 }
 .home-section-heading p {
   color: var(--muted);
   font-size: 12px;
   margin: 6px 0 0;
 }
+/* Each set is a bento: one wide lead tile, then rows that fill exactly. The
+   span rides in on --bento-span so a filtered set re-tiles without a hole. */
 .home-card-grid {
   display: grid;
-  grid-template-columns: repeat(auto-fill, minmax(min(100%, 250px), 1fr));
+  grid-template-columns: repeat(6, 1fr);
   gap: 12px;
 }
 .home-example-card {
+  grid-column: span var(--bento-span, 2);
   display: flex;
   flex-direction: column;
   padding: 20px;
@@ -912,20 +925,70 @@ body {
     border-color 0.15s,
     background 0.15s;
   min-width: 0;
+  position: relative;
+  overflow: hidden;
+}
+/* The lead tile carries the set: more room, a larger title, a faint wash. */
+.home-example-card[data-span="4"],
+.home-example-card[data-span="6"] {
+  padding: 24px;
+  background:
+    linear-gradient(
+      135deg,
+      color-mix(in srgb, var(--accent-soft) 45%, transparent),
+      transparent 55%
+    ),
+    var(--panel);
+}
+.home-example-card[data-span="4"] h3,
+.home-example-card[data-span="6"] h3 {
+  font-size: 17px;
+}
+.home-example-card[data-span="4"] p,
+.home-example-card[data-span="6"] p {
+  max-width: 46ch;
+  font-size: 12.5px;
 }
 .home-example-card:hover {
   border-color: var(--accent);
   background: color-mix(in srgb, var(--accent-soft) 20%, var(--panel));
 }
+.home-example-card[data-span="4"]:hover,
+.home-example-card[data-span="6"]:hover {
+  background:
+    linear-gradient(
+      135deg,
+      color-mix(in srgb, var(--accent-soft) 70%, transparent),
+      transparent 60%
+    ),
+    var(--panel);
+}
 .home-card-top {
   display: flex;
   align-items: center;
-  justify-content: space-between;
+  gap: 10px;
   color: var(--accent);
   margin-bottom: 20px;
 }
+/* The ordinal reads as an index into the set, not as a ranking. */
+.home-card-ord {
+  margin-right: auto;
+  font:
+    9px/1 ui-monospace,
+    monospace;
+  letter-spacing: 0.14em;
+  color: var(--muted);
+  border: 1px solid var(--line);
+  border-radius: 3px;
+  padding: 3px 5px;
+}
 .home-card-top .home-card-arrow {
   color: var(--muted);
+  transition: transform 0.15s;
+}
+.home-example-card:hover .home-card-arrow {
+  transform: translateX(2px);
+  color: var(--accent);
 }
 .home-example-card h3 {
   font-family: inherit;
@@ -940,14 +1003,67 @@ body {
   line-height: 1.65;
   margin: 8px 0 18px;
 }
+/* Inline field headers: every tile closes on the two ends a typed judgment
+   connects, the field name sitting inline beside its value. */
 .home-card-flow {
-  color: var(--muted);
+  display: grid;
+  gap: 5px;
   border-top: 1px solid var(--line);
   padding-top: 12px;
-  margin-top: auto;
+  margin: auto 0 0;
+}
+.home-card-flow > div {
+  display: grid;
+  grid-template-columns: 30px 1fr;
+  align-items: baseline;
+  gap: 9px;
+  min-width: 0;
+}
+.home-card-flow dt {
   font:
-    10px/1.5 ui-monospace,
+    9px/1.6 ui-monospace,
     monospace;
+  letter-spacing: 0.14em;
+  text-transform: uppercase;
+  color: var(--accent);
+}
+.home-card-flow dd {
+  margin: 0;
+  font:
+    10px/1.6 ui-monospace,
+    monospace;
+  color: var(--muted);
+  min-width: 0;
+  overflow-wrap: anywhere;
+}
+@media (max-width: 1080px) {
+  .home-card-grid {
+    grid-template-columns: repeat(2, 1fr);
+  }
+  .home-example-card {
+    grid-column: span 1;
+  }
+  .home-example-card[data-span="4"],
+  .home-example-card[data-span="6"] {
+    grid-column: 1 / -1;
+  }
+}
+@media (max-width: 680px) {
+  .home-card-grid {
+    grid-template-columns: 1fr;
+  }
+  .home-example-card,
+  .home-example-card[data-span="4"],
+  .home-example-card[data-span="6"] {
+    grid-column: 1 / -1;
+  }
+}
+@media (prefers-reduced-motion: reduce) {
+  .home-card-top .home-card-arrow,
+  .home-example-card:hover .home-card-arrow {
+    transition: none;
+    transform: none;
+  }
 }
 .home-example-card:focus-visible,
 .home-filters button:focus-visible {
@@ -1057,26 +1173,43 @@ body {
   padding: 0;
   border: 1px solid transparent;
   border-radius: 6px;
-  transition: background-color 120ms, color 120ms, transform 120ms;
+  transition:
+    background-color 120ms,
+    color 120ms,
+    transform 120ms;
 }
 .sidebar-title-row .sidebar-toggle:hover {
   color: var(--ink);
   background: var(--panel);
   border-color: var(--line);
 }
-.sidebar-title-row .sidebar-toggle:active { transform: scale(0.96); }
+.sidebar-title-row .sidebar-toggle:active {
+  transform: scale(0.96);
+}
 .sidebar-title-row button:focus-visible {
   outline: 2px solid var(--accent);
   outline-offset: 3px;
 }
 @media (min-width: 761px) {
-  .dashboard-shell.nav-collapsed .sidebar-title-row .brand { display: none; }
-  .nav-collapsed .sidebar-title-row { justify-content: center; }
+  .dashboard-shell.nav-collapsed .sidebar-title-row .brand {
+    display: none;
+  }
+  .nav-collapsed .sidebar-title-row {
+    justify-content: center;
+  }
 }
 @media (max-width: 760px) {
-  .sidebar-title-row .sidebar-toggle { display: none; }
-  .sidebar-title-row .sidebar-mobile-close { flex-shrink: 0; align-self: center; }
+  .sidebar-title-row .sidebar-toggle {
+    display: none;
+  }
+  .sidebar-title-row .sidebar-mobile-close {
+    flex-shrink: 0;
+    align-self: center;
+  }
 }
 @media (prefers-reduced-motion: reduce) {
-  .dashboard-shell.app-shell, .sidebar-title-row .sidebar-toggle { transition: none; }
+  .dashboard-shell.app-shell,
+  .sidebar-title-row .sidebar-toggle {
+    transition: none;
+  }
 }

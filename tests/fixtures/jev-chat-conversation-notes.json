@@ -1,0 +1,53 @@
+{
+  "version": "jev-chat-conversation-v1",
+  "id": "source-follow-ups",
+  "category": "source-continuity",
+  "input": {
+    "topic": "notes",
+    "notes": "Atlas costs 12 credits. Atlas serves 30 teams.\n\nBirch costs 18 credits. Birch serves 50 teams.",
+    "style": "concise"
+  },
+  "turns": [
+    {
+      "id": "atlas-price",
+      "question": "How many credits does Atlas cost?",
+      "expectations": {
+        "expectedIntent": "answer",
+        "requiredSubstrings": ["12 credits"],
+        "requiredSources": ["note_1"],
+        "mustClarify": false
+      },
+      "evidenceNotes": "Development fixture: the stated Atlas price is 12 credits. Check that the response answers the requested attribute rather than merely including the number."
+    },
+    {
+      "id": "price-difference",
+      "question": "What is the price difference between Atlas and Birch?",
+      "expectations": {
+        "expectedIntent": "answer",
+        "requiredSubstrings": ["6 credits"],
+        "requiredSources": ["note_1", "note_2"],
+        "mustClarify": false
+      },
+      "evidenceNotes": "The absolute difference is |12-18|=6 credits. Review selected operands and task completion; team counts must not replace prices."
+    },
+    {
+      "id": "correct-relationship",
+      "question": "Actually, I want the price ratio of Atlas to Birch, in that order.",
+      "expectations": {
+        "expectedIntent": "answer",
+        "requiredSources": ["note_1", "note_2"],
+        "mustClarify": false
+      },
+      "evidenceNotes": "Expected relationship is 12/18=2/3, dimensionless, with Atlas as numerator. Check the correction and operand order against the actual previous exchange; source presence alone is insufficient."
+    },
+    {
+      "id": "missing-budget",
+      "question": "What is Atlas's total project budget?",
+      "expectations": {
+        "allowedIntents": ["clarify", "unsupported"],
+        "mustClarify": true
+      },
+      "evidenceNotes": "The notes state a price and team count but no total project budget. Do not infer a budget by multiplying those unrelated figures. Synthetic development case, not held-out quality evidence."
+    }
+  ]
+}

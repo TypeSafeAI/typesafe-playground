@@ -1,8 +1,9 @@
 "use client";
 import Link from "next/link";
-import { useState } from "react";
+import { WorkspaceGuide } from "./WorkspaceGuide";
+import { useState, type CSSProperties } from "react";
 import { ArrowRight, Search, X } from "lucide-react";
-import { playgroundGroups } from "../lib/playground";
+import { bentoSpans, flowEnds, playgroundGroups } from "../lib/playground";
 
 export function PlaygroundHome() {
   const [query, setQuery] = useState("");
@@ -37,6 +38,9 @@ export function PlaygroundHome() {
             Explore Jev through {total} hands-on examples. Give it context,
             define the choices, and watch a decision take shape.
           </p>
+          <div className="home-guide">
+            <WorkspaceGuide />
+          </div>
         </div>
         <div
           className="home-signal"
@@ -92,46 +96,73 @@ export function PlaygroundHome() {
         {count} of {total} examples
       </p>
       <div className="home-sections">
-        {groups.map((group) => (
-          <section
-            key={group.id}
-            aria-labelledby={`home-${group.id}`}
-            className="home-section"
-          >
-            <div className="home-section-heading">
-              <h2 id={`home-${group.id}`}>
-                {group.label}
-                <span>{group.examples.length}</span>
-              </h2>
-              <p>{group.description}</p>
-            </div>
-            <div className="home-card-grid">
-              {group.examples.map(
-                ({ href, label, detail, flow, icon: Icon }) => (
-                  <Link
-                    href={href}
-                    prefetch={false}
-                    key={href}
-                    className="home-example-card"
-                    aria-label={`Open ${label}`}
-                  >
-                    <div className="home-card-top">
-                      <Icon size={20} strokeWidth={1.6} aria-hidden="true" />
-                      <ArrowRight
-                        size={16}
-                        className="home-card-arrow"
-                        aria-hidden="true"
-                      />
-                    </div>
-                    <h3>{label}</h3>
-                    <p>{detail}</p>
-                    <span className="home-card-flow">{flow}</span>
-                  </Link>
-                ),
-              )}
-            </div>
-          </section>
-        ))}
+        {groups.map((group) => {
+          const spans = bentoSpans(group.examples.length);
+          return (
+            <section
+              key={group.id}
+              aria-labelledby={`home-${group.id}`}
+              className="home-section"
+            >
+              <div className="home-section-heading">
+                <h2 id={`home-${group.id}`}>
+                  {group.label}
+                  <span>{group.examples.length}</span>
+                </h2>
+                <p>{group.description}</p>
+              </div>
+              <div className="home-card-grid">
+                {group.examples.map(
+                  ({ href, label, detail, flow, icon: Icon }, index) => {
+                    const { input, output } = flowEnds(flow);
+                    const span = spans[index] ?? 2;
+                    return (
+                      <Link
+                        href={href}
+                        prefetch={false}
+                        key={href}
+                        className="home-example-card"
+                        data-span={span}
+                        style={{ "--bento-span": span } as CSSProperties}
+                        aria-label={`Open ${label}`}
+                      >
+                        <div className="home-card-top">
+                          <Icon
+                            size={20}
+                            strokeWidth={1.6}
+                            aria-hidden="true"
+                          />
+                          <span className="home-card-ord" aria-hidden="true">
+                            {String(index + 1).padStart(2, "0")}
+                          </span>
+                          <ArrowRight
+                            size={16}
+                            className="home-card-arrow"
+                            aria-hidden="true"
+                          />
+                        </div>
+                        <h3>{label}</h3>
+                        <p>{detail}</p>
+                        <dl className="home-card-flow">
+                          <div>
+                            <dt>in</dt>
+                            <dd>{input}</dd>
+                          </div>
+                          {output && (
+                            <div>
+                              <dt>out</dt>
+                              <dd>{output}</dd>
+                            </div>
+                          )}
+                        </dl>
+                      </Link>
+                    );
+                  },
+                )}
+              </div>
+            </section>
+          );
+        })}
         {!count && (
           <div className="home-no-results">
             <h2>No matching examples</h2>

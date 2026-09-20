@@ -3,7 +3,7 @@ import { usageRequest } from "../lib/usageRequest";
 
 import Link from "next/link";
 import { useEffect, useRef, useState } from "react";
-import { Heading, RunButton, ErrorNote, Export } from "./ui";
+import { Heading, RunButton, ErrorNote, Export, Empty } from "./ui";
 import { ROUTER_SCENARIOS, nodeById } from "../lib/workflowGraph";
 import { percent, errorMessage } from "../lib/client";
 import { revealResults } from "../lib/scroll";
@@ -270,13 +270,10 @@ export function LangChainLab() {
               </details>
             </div>
           ) : (
-            <div className="empty">
-              <h3>A tool result your application can use</h3>
-              <p>
-                Inspect the selected node, policy override and confidence as
-                structured data. The host retains control of execution.
-              </p>
-            </div>
+            <Empty title="A tool result your application can use">
+              Inspect the selected node, policy override and confidence as
+              structured data. The host retains control of execution.
+            </Empty>
           )}
         </section>
       </div>

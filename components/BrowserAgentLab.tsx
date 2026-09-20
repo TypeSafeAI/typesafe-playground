@@ -14,8 +14,6 @@ import {
   ArrowLeft,
   PanelRight,
   Globe2,
-  HelpCircle,
-  X,
 } from "lucide-react";
 import { useUsage, usageBlocked } from "../lib/logUsageEntry";
 import { errorMessage, percent } from "../lib/client";
@@ -54,6 +52,7 @@ import {
   PC_BUILD_GOAL,
   resolveBrowserContext,
 } from "../lib/browserTaskContext";
+import { WorkspaceGuide } from "./WorkspaceGuide";
 import { BrowserAgentGuide } from "./BrowserAgentGuide";
 const statusLabels: Record<AgentStatus, string> = {
   ready: "Ready",
@@ -106,7 +105,6 @@ export function BrowserAgentLab() {
   const [busy, setBusy] = useState(false);
   const [inspectorOpen, setInspectorOpen] = useState(false);
   const [controlsHost, setControlsHost] = useState<HTMLDivElement | null>(null);
-  const help = useRef<HTMLDialogElement>(null);
   const context = resolveBrowserContext(goal);
   return (
     <div className="browser-studio">
@@ -138,14 +136,9 @@ export function BrowserAgentLab() {
           <PanelRight size={16} />
           Inspector
         </button>
-        <button
-          type="button"
-          className="icon-button"
-          aria-label="Open browser guide"
-          onClick={() => help.current?.showModal()}
-        >
-          <HelpCircle size={18} />
-        </button>
+        <WorkspaceGuide compact>
+          <BrowserAgentGuide />
+        </WorkspaceGuide>
       </header>
       <div className="browser-stage" aria-label="Browser workspace">
         {context.kind === "flight" && (
@@ -248,19 +241,6 @@ export function BrowserAgentLab() {
           </span>
         </div>
       </section>
-      <dialog ref={help} className="browser-help">
-        <div className="browser-help-heading">
-          <h2>Browser guide</h2>
-          <button
-            className="icon-button"
-            aria-label="Close browser guide"
-            onClick={() => help.current?.close()}
-          >
-            <X size={18} />
-          </button>
-        </div>
-        <BrowserAgentGuide />
-      </dialog>
     </div>
   );
 }

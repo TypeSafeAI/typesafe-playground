@@ -9,7 +9,7 @@ import {
   Workflow,
 } from "lucide-react";
 import { download, errorMessage, percent } from "../lib/client";
-import { ErrorNote, Heading, RunButton } from "./ui";
+import { Empty, ErrorNote, Heading, RunButton } from "./ui";
 import {
   aggregateReviewResults,
   buildHunkCandidates,
@@ -356,182 +356,191 @@ export function PullRequestReview() {
             </button>
           </div>
           <div className="panel-content scroll">
-            <div className={`pr-verdict ${summary.decision}`}>
-              <span className="eyebrow">
-                {mode ? "PR CANDIDATE RESULT" : "AWAITING CLASSIFICATION"}
-              </span>
-              <strong>
-                {!mode
-                  ? "Paste a PR to get started"
-                  : busy
-                    ? "Reviewing changes…"
-                    : summary.decision === "block_candidate"
-                      ? "Hold for human review"
-                      : summary.decision === "approve_candidate"
-                        ? "Candidate for approval"
-                        : "Further review required"}
-              </strong>
-              {mode && (
-                <code>
-                  {thresholdError ? "needs_review" : summary.decision}
-                </code>
-              )}
-              <div className="review-next-action">
-                {!mode
-                  ? "Paste a link or diff, then choose Review PR."
-                  : summary.pending
-                    ? "Wait for the remaining hunks, or stop and export the incomplete review."
-                    : queue.length
-                      ? `Next: export ${queue.length} flagged hunk${queue.length === 1 ? "" : "s"} for ${summary.counts.human ? "human review" : "LLM review"}${summary.counts.human && summary.counts.llm ? " and the LLM queue" : ""}.`
-                      : "Next: confirm this candidate through your normal approval process."}
-              </div>
-              <p>
-                {summary.pending
-                  ? `${summary.pending} hunks still need classification. Unfinished reviews cannot approve.`
-                  : "Based on this snapshot only. Model scores are not proof that a change is safe or faulty."}
-              </p>
-            </div>
-            {mode === "mock" && (
-              <p className="notice">Mock results — no Jev request was made.</p>
-            )}
-            <div className="review-progress" role="status">
-              {Object.keys(results).length} of {hunks.length} hunks processed
-              {busy ? " · reviewing…" : ""}
-            </div>
-            <div className="review-metrics">
-              <div>
-                <ShieldCheck size={17} />
-                <strong>{summary.counts.skip}</strong>
-                <span>Skip expensive review</span>
-              </div>
-              <div>
-                <Workflow size={17} />
-                <strong>{summary.counts.llm}</strong>
-                <span>LLM queue</span>
-              </div>
-              <div>
-                <Users size={17} />
-                <strong>{summary.counts.human}</strong>
-                <span>Human queue</span>
-              </div>
-            </div>
-            {mode && !thresholdError && (
-              <PrDecisionTrace
-                results={routed}
-                pending={summary.pending}
-                thresholds={thresholds}
-                onInspect={(id) => {
-                  setRiskFilter("all");
-                  setLabelFilter("all");
-                  setFileFilter("all");
-                  requestAnimationFrame(() => {
-                    const target = document.getElementById("pr-hunk-" + id);
-                    target?.setAttribute("open", "");
-                    target?.scrollIntoView({
-                      block: "start",
-                      behavior: matchMedia("(prefers-reduced-motion: reduce)")
-                        .matches
-                        ? "instant"
-                        : "smooth",
-                    });
-                  });
-                }}
-              />
-            )}
-            {pr && (
-              <div className="review-source-meta">
-                <h3>{pr.title}</h3>
-                <p>{pr.description}</p>
-                <span>
-                  {pr.files.length} changed files · {hunks.length} hunks ·{" "}
-                  {pr.url
-                    ? `GitHub snapshot ${pr.headSha?.slice(0, 8)}`
-                    : "Pasted diff only; full PR coverage is not verified."}
-                </span>
-              </div>
-            )}
-            <div className="review-filters">
-              <label>
-                Risk filter
-                <select
-                  value={riskFilter}
-                  onChange={(e) => setRiskFilter(e.target.value)}
-                >
-                  <option value="all">All risks</option>
-                  {["low", "medium", "high", "unknown"].map((value) => (
-                    <option key={value}>{value}</option>
-                  ))}
-                </select>
-              </label>
-              <label>
-                Label filter
-                <select
-                  value={labelFilter}
-                  onChange={(e) => setLabelFilter(e.target.value)}
-                >
-                  <option value="all">All labels</option>
-                  {[...LABELS, "unknown"].map((value) => (
-                    <option key={value}>{value}</option>
-                  ))}
-                </select>
-              </label>
-              <label>
-                Changed file
-                <select
-                  value={fileFilter}
-                  onChange={(e) => setFileFilter(e.target.value)}
-                >
-                  <option value="all">All files</option>
-                  {[...new Set(pr?.files.map((file) => file.path))].map(
-                    (path) => (
-                      <option key={path}>{path}</option>
-                    ),
+            {!pr ? (
+              <Empty title="Inspect a diff to begin">
+                Paste a public PR or a unified diff, then choose Review PR. Try
+                Run mock demo for a complete walkthrough without an API call.
+              </Empty>
+            ) : (
+              <>
+                <div className={`pr-verdict ${summary.decision}`}>
+                  <span className="eyebrow">
+                    {mode ? "PR CANDIDATE RESULT" : "AWAITING CLASSIFICATION"}
+                  </span>
+                  <strong>
+                    {!mode
+                      ? "Paste a PR to get started"
+                      : busy
+                        ? "Reviewing changes…"
+                        : summary.decision === "block_candidate"
+                          ? "Hold for human review"
+                          : summary.decision === "approve_candidate"
+                            ? "Candidate for approval"
+                            : "Further review required"}
+                  </strong>
+                  {mode && (
+                    <code>
+                      {thresholdError ? "needs_review" : summary.decision}
+                    </code>
                   )}
-                </select>
-              </label>
-            </div>
-            <p className="muted">
-              {visible.length} of {hunks.length} hunks shown. Open a hunk for
-              the original diff and every scored decision.
-            </p>
-            {visible.map((hunk) => (
-              <HunkCard
-                key={hunk.id}
-                result={
-                  results[hunk.id] ||
-                  unclassified(
-                    hunk,
-                    buildHunkCandidates(hunk, []),
-                    hunk.issue || "Not classified yet.",
-                  )
-                }
-                thresholds={thresholds}
-                routed={routed.find(
-                  (result) => result.result.hunk.id === hunk.id,
+                  <div className="review-next-action">
+                    {!mode
+                      ? "Paste a link or diff, then choose Review PR."
+                      : summary.pending
+                        ? "Wait for the remaining hunks, or stop and export the incomplete review."
+                        : queue.length
+                          ? `Next: export ${queue.length} flagged hunk${queue.length === 1 ? "" : "s"} for ${summary.counts.human ? "human review" : "LLM review"}${summary.counts.human && summary.counts.llm ? " and the LLM queue" : ""}.`
+                          : "Next: confirm this candidate through your normal approval process."}
+                  </div>
+                  <p>
+                    {summary.pending
+                      ? `${summary.pending} hunks still need classification. Unfinished reviews cannot approve.`
+                      : "Based on this snapshot only. Model scores are not proof that a change is safe or faulty."}
+                  </p>
+                </div>
+                {mode === "mock" && (
+                  <p className="notice">
+                    Mock results — no Jev request was made.
+                  </p>
                 )}
-              />
-            ))}
-            {!visible.length && (
-              <div className="empty">
-                <h3>{pr ? "No matching hunks" : "Inspect a diff to begin"}</h3>
-                <p>
-                  {pr
-                    ? "Adjust the risk, label, or file filter."
-                    : "Load the sample, paste a unified diff, or load a public GitHub PR."}
-                </p>
-                {pr && (
-                  <button
-                    className="button"
-                    onClick={() => {
+                <div className="review-progress" role="status">
+                  {Object.keys(results).length} of {hunks.length} hunks
+                  processed
+                  {busy ? " · reviewing…" : ""}
+                </div>
+                <div className="review-metrics">
+                  <div>
+                    <ShieldCheck size={17} />
+                    <strong>{summary.counts.skip}</strong>
+                    <span>Skip expensive review</span>
+                  </div>
+                  <div>
+                    <Workflow size={17} />
+                    <strong>{summary.counts.llm}</strong>
+                    <span>LLM queue</span>
+                  </div>
+                  <div>
+                    <Users size={17} />
+                    <strong>{summary.counts.human}</strong>
+                    <span>Human queue</span>
+                  </div>
+                </div>
+                {mode && !thresholdError && (
+                  <PrDecisionTrace
+                    results={routed}
+                    pending={summary.pending}
+                    thresholds={thresholds}
+                    onInspect={(id) => {
                       setRiskFilter("all");
                       setLabelFilter("all");
                       setFileFilter("all");
+                      requestAnimationFrame(() => {
+                        const target = document.getElementById("pr-hunk-" + id);
+                        target?.setAttribute("open", "");
+                        target?.scrollIntoView({
+                          block: "start",
+                          behavior: matchMedia(
+                            "(prefers-reduced-motion: reduce)",
+                          ).matches
+                            ? "instant"
+                            : "smooth",
+                        });
+                      });
                     }}
-                  >
-                    Clear review filters
-                  </button>
+                  />
                 )}
-              </div>
+                {pr && (
+                  <div className="review-source-meta">
+                    <h3>{pr.title}</h3>
+                    <p>{pr.description}</p>
+                    <span>
+                      {pr.files.length} changed files · {hunks.length} hunks ·{" "}
+                      {pr.url
+                        ? `GitHub snapshot ${pr.headSha?.slice(0, 8)}`
+                        : "Pasted diff only; full PR coverage is not verified."}
+                    </span>
+                  </div>
+                )}
+                <div className="review-filters">
+                  <label>
+                    Risk filter
+                    <select
+                      value={riskFilter}
+                      onChange={(e) => setRiskFilter(e.target.value)}
+                    >
+                      <option value="all">All risks</option>
+                      {["low", "medium", "high", "unknown"].map((value) => (
+                        <option key={value}>{value}</option>
+                      ))}
+                    </select>
+                  </label>
+                  <label>
+                    Label filter
+                    <select
+                      value={labelFilter}
+                      onChange={(e) => setLabelFilter(e.target.value)}
+                    >
+                      <option value="all">All labels</option>
+                      {[...LABELS, "unknown"].map((value) => (
+                        <option key={value}>{value}</option>
+                      ))}
+                    </select>
+                  </label>
+                  <label>
+                    Changed file
+                    <select
+                      value={fileFilter}
+                      onChange={(e) => setFileFilter(e.target.value)}
+                    >
+                      <option value="all">All files</option>
+                      {[...new Set(pr?.files.map((file) => file.path))].map(
+                        (path) => (
+                          <option key={path}>{path}</option>
+                        ),
+                      )}
+                    </select>
+                  </label>
+                </div>
+                <p className="muted">
+                  {visible.length} of {hunks.length} hunks shown. Open a hunk
+                  for the original diff and every scored decision.
+                </p>
+                {visible.map((hunk) => (
+                  <HunkCard
+                    key={hunk.id}
+                    result={
+                      results[hunk.id] ||
+                      unclassified(
+                        hunk,
+                        buildHunkCandidates(hunk, []),
+                        hunk.issue || "Not classified yet.",
+                      )
+                    }
+                    thresholds={thresholds}
+                    routed={routed.find(
+                      (result) => result.result.hunk.id === hunk.id,
+                    )}
+                  />
+                ))}
+                {!visible.length && (
+                  <div className="empty">
+                    <h3>No matching hunks</h3>
+                    <p>Adjust the risk, label, or file filter.</p>
+                    {pr && (
+                      <button
+                        className="button"
+                        onClick={() => {
+                          setRiskFilter("all");
+                          setLabelFilter("all");
+                          setFileFilter("all");
+                        }}
+                      >
+                        Clear review filters
+                      </button>
+                    )}
+                  </div>
+                )}
+              </>
             )}
           </div>
         </section>

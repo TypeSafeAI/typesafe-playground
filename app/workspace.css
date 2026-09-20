@@ -1,0 +1,1040 @@
+/* Shared workspace finish. Domain layouts and execution state stay in their labs. */
+.dashboard-shell {
+  --card-bg: color-mix(in srgb, var(--soft) 64%, var(--panel));
+  --card-hover: var(--soft);
+  --card-radius: 12px;
+  --card-padding: 16px;
+}
+/* One surface treatment for evidence, metrics, choices, and result cards.
+   Verdicts and selected choices keep their semantic state colors. */
+.dashboard-shell
+  .workspace
+  :is(
+    .compact-finding,
+    .evidence-card,
+    .answer-card,
+    .ranked-message,
+    .routing-facts,
+    .message-preview,
+    .question-row,
+    .router-journey,
+    .router-step-log li,
+    .solver-scenario:not(.selected),
+    .scenario-card,
+    .sample-picker,
+    .workspace-guide-breakdown,
+    .workspace-guide-steps li
+  ) {
+  background: var(--card-bg);
+  border: 1px solid var(--line);
+  border-radius: var(--card-radius);
+}
+.dashboard-shell
+  .workspace
+  :is(.compact-finding, .evidence-card, .answer-card, .message-preview) {
+  padding: var(--card-padding);
+  min-width: 0;
+}
+.dashboard-shell .workspace .question-row.excluded {
+  background: transparent;
+}
+.dashboard-shell .workspace .ranked-message.is-unavailable {
+  border-style: dashed;
+}
+.dashboard-shell .workspace .workspace-guide-steps li {
+  padding: var(--card-padding);
+}
+
+.dashboard-shell .workspace {
+  padding: 28px 28px 0;
+  gap: 24px;
+}
+.dashboard-shell .workspace .page-heading {
+  gap: 24px;
+  align-items: center;
+}
+.dashboard-shell .page-heading > div:first-child {
+  min-width: 0;
+}
+.dashboard-shell .page-heading .eyebrow {
+  display: block;
+  color: var(--muted);
+  font: 500 10px/1.4 var(--font-mono);
+  letter-spacing: 1.1px;
+  margin-bottom: 9px;
+}
+.dashboard-shell .page-heading h1 {
+  font-size: clamp(25px, 2.2vw, 32px);
+  font-weight: 650;
+  letter-spacing: -1.1px;
+  text-wrap: balance;
+}
+.dashboard-shell .page-heading p {
+  font-size: 13px;
+  max-width: 680px;
+  line-height: 1.65;
+  text-wrap: pretty;
+}
+.dashboard-shell .page-heading > .heading-actions {
+  display: flex;
+  align-items: center;
+  justify-content: flex-end;
+  gap: 10px;
+  flex-wrap: wrap;
+  flex-shrink: 0;
+  min-width: 0;
+  max-width: 38%;
+}
+.heading-actions .pill {
+  max-width: 100%;
+}
+.dashboard-shell .workspace .panel {
+  border-radius: 16px;
+  box-shadow:
+    0 2px 4px #00000003,
+    0 12px 32px #00000003;
+}
+.dashboard-shell .workspace .panel-heading {
+  min-height: 56px;
+  height: auto;
+  padding: 14px 20px;
+  background: transparent;
+  flex-shrink: 0;
+}
+.dashboard-shell .workspace .panel-heading h2 {
+  font-size: 13px;
+  font-weight: 650;
+}
+.dashboard-shell .workspace .panel-content {
+  padding: 20px;
+}
+.dashboard-shell .workspace .panel-bottom {
+  padding: 14px 20px;
+}
+.dashboard-shell .compact-lab .lab-panel {
+  padding: 20px;
+}
+.dashboard-shell .compact-lab .lab-panel > .panel-heading {
+  margin: -20px -20px 20px;
+  border-radius: 16px 16px 0 0;
+}
+.dashboard-shell .workspace .button {
+  min-height: 38px;
+  border-radius: 9px;
+  font-size: 12px;
+  line-height: 1.35;
+  padding: 9px 13px;
+  gap: 7px;
+  transition:
+    background-color 120ms ease-out,
+    border-color 120ms ease-out,
+    transform 120ms ease-out;
+}
+.dashboard-shell .workspace .button.quiet {
+  min-height: 32px;
+  padding: 6px 9px;
+  border-color: transparent;
+  background: transparent;
+}
+.dashboard-shell .workspace .button.quiet:hover:not(:disabled) {
+  background: var(--soft);
+}
+.dashboard-shell .workspace .button:active:not(:disabled) {
+  transform: scale(0.96);
+}
+.dashboard-shell .workspace input:not([type="checkbox"]):not([type="range"]),
+.dashboard-shell .workspace textarea,
+.dashboard-shell .workspace select {
+  border-radius: 10px;
+  background: color-mix(in srgb, var(--bg) 42%, var(--panel));
+  line-height: 1.6;
+}
+.dashboard-shell .workspace label {
+  font-weight: 500;
+}
+.dashboard-shell .workspace :is(.tag, .pill, .type-badge, .count) {
+  border-radius: 6px;
+  line-height: 1.4;
+}
+.dashboard-shell
+  .workspace
+  :is(
+    .compact-verdict,
+    .winner-card,
+    .ranked-message,
+    .hunk-card,
+    .rule,
+    .recommendation,
+    .scenario-card,
+    .smt-scenario,
+    .routing-facts,
+    .message-preview,
+    .classification,
+    .sample-picker
+  ) {
+  border-radius: var(--card-radius);
+  box-shadow: none;
+}
+.dashboard-shell .workspace :is(.winner-card, .rank-column:nth-child(2)) {
+  box-shadow: none;
+}
+.dashboard-shell .workspace .compact-verdict {
+  padding: 22px;
+}
+.dashboard-shell .workspace .compact-verdict h2 {
+  font-size: 25px;
+  letter-spacing: -0.7px;
+  line-height: 1.25;
+  margin: 12px 0 8px;
+}
+.dashboard-shell .workspace .compact-verdict p {
+  font-size: 13px;
+}
+.dashboard-shell .workspace .empty {
+  min-height: 300px;
+  padding: 36px 20px;
+  gap: 0;
+}
+.dashboard-shell .workspace .empty h3 {
+  font-size: 19px;
+  letter-spacing: -0.4px;
+  line-height: 1.35;
+  margin-top: 22px;
+}
+.dashboard-shell .workspace .empty p {
+  font-size: 13px;
+  max-width: 350px;
+  line-height: 1.7;
+  margin-top: 10px;
+  text-wrap: pretty;
+}
+.decision-preview {
+  display: grid;
+  justify-items: center;
+  gap: 23px;
+  width: 100%;
+}
+.decision-preview-icon {
+  display: grid;
+  place-items: center;
+  width: 72px;
+  height: 72px;
+  border-radius: 22px;
+  color: var(--accent);
+  border: 1px solid color-mix(in srgb, var(--accent) 22%, var(--line));
+  background: radial-gradient(
+    circle at 25% 15%,
+    var(--accent-soft),
+    var(--panel)
+  );
+  box-shadow:
+    0 8px 28px color-mix(in srgb, var(--accent) 7%, transparent),
+    inset 0 1px 0 #ffffff08;
+}
+.decision-preview-flow {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  flex-wrap: wrap;
+  gap: 8px;
+  color: var(--muted);
+  font-size: 10px;
+}
+.decision-preview-flow > span {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+}
+.decision-preview-flow > span > span {
+  padding: 6px 8px;
+  border: 1px solid var(--line);
+  border-radius: 6px;
+}
+/* Native disclosures share a padded card header and a separated content area.
+   Keep the in-game minimap's own dark HUD surface and compact dimensions. */
+/* Preserve the compact minimap header while keeping its existing chevron. */
+.dashboard-shell .workspace details > summary {
+  display: flex;
+  align-items: center;
+  gap: 9px;
+  list-style: none;
+  min-height: 38px;
+  line-height: 1.5;
+}
+.dashboard-shell .workspace details:not(.doom-minimap) {
+  min-width: 0;
+  padding: var(--card-padding);
+  margin-block: 12px;
+  border: 1px solid var(--line);
+  border-radius: var(--card-radius);
+  background: var(--card-bg);
+  box-shadow: 0 1px 2px #00000004;
+}
+.dashboard-shell .workspace details:not(.doom-minimap) > summary {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  list-style: none;
+  min-height: 52px;
+  padding: 14px var(--card-padding);
+  margin: calc(-1 * var(--card-padding));
+  border-radius: calc(var(--card-radius) - 1px);
+  color: var(--ink);
+  font-size: 12px;
+  font-weight: 600;
+  line-height: 1.6;
+  cursor: pointer;
+  overflow-wrap: anywhere;
+  transition: background-color 120ms ease-out;
+}
+.dashboard-shell .workspace details:not(.doom-minimap) > summary:hover {
+  background: var(--card-hover);
+}
+.dashboard-shell .workspace details:not(.doom-minimap) > summary:focus-visible {
+  outline: 2px solid var(--accent);
+  outline-offset: -3px;
+}
+.dashboard-shell .workspace details:not(.doom-minimap)[open] > summary {
+  margin-bottom: var(--card-padding);
+  border-bottom: 1px solid var(--line);
+  border-radius: calc(var(--card-radius) - 1px) calc(var(--card-radius) - 1px) 0
+    0;
+}
+.dashboard-shell .workspace details > summary::-webkit-details-marker {
+  display: none;
+}
+.dashboard-shell .workspace details > summary::after {
+  content: "";
+  display: block;
+  width: 6px;
+  height: 6px;
+  border: solid var(--muted);
+  border-width: 0 1.5px 1.5px 0;
+  transform: rotate(-45deg);
+  margin: 0 3px 0 auto;
+  flex: 0 0 6px;
+}
+.dashboard-shell .workspace details[open] > summary::after {
+  transform: rotate(45deg);
+}
+.dashboard-shell .workspace details > :last-child:not(summary) {
+  margin-bottom: 0;
+}
+.dashboard-shell .workspace details > pre {
+  padding: 14px;
+  border: 1px solid var(--line);
+  border-radius: 8px;
+  background: var(--panel);
+  line-height: 1.7;
+  max-width: 100%;
+  overflow: auto;
+}
+/* Question rows already provide the card around their checkbox and disclosure. */
+.dashboard-shell .workspace .question-row .question-edit {
+  border-radius: 0 var(--card-radius) var(--card-radius) 0;
+  background: transparent;
+  border: 0;
+  box-shadow: none;
+  margin: 0;
+  padding: 0;
+}
+.dashboard-shell .workspace .question-row .question-edit > summary {
+  border-radius: 0 calc(var(--card-radius) - 1px) calc(var(--card-radius) - 1px)
+    0;
+  padding: 8px;
+  margin: 0;
+  min-height: 54px;
+}
+.dashboard-shell .workspace .question-row .question-edit[open] > summary {
+  border-radius: 0 calc(var(--card-radius) - 1px) 0 0;
+  margin-bottom: 12px;
+}
+.dashboard-shell .workspace .question-edit > .rule-edit {
+  border-top: 0;
+}
+.dashboard-shell .workspace .rule > .rule-edit {
+  padding: 0;
+  border: 0;
+  background: transparent;
+}
+/* Evidence inside an existing card stays compact; the outer card owns its surface. */
+.dashboard-shell .workspace :is(.router-step-log li, .compact-finding) details {
+  padding: 0;
+  margin: 12px 0 0;
+  border: 0;
+  background: transparent;
+  box-shadow: none;
+}
+.dashboard-shell
+  .workspace
+  :is(.router-step-log li, .compact-finding)
+  details
+  > summary {
+  padding: 8px;
+  margin: 0;
+  min-height: 36px;
+  border-radius: 6px;
+}
+.dashboard-shell
+  .workspace
+  :is(.router-step-log li, .compact-finding)
+  details[open]
+  > summary {
+  margin-bottom: 12px;
+}
+/* Keep risk cues alongside the shared surface. */
+.dashboard-shell .workspace .hunk-card.risk-high {
+  border-left: 3px solid #ad626d;
+}
+.dashboard-shell .workspace .hunk-card.risk-low {
+  border-left: 3px solid #609c88;
+}
+/* These summaries include their own multi-line layout / toggle. */
+.dashboard-shell .workspace .hunk-card > summary {
+  flex-wrap: wrap;
+}
+.dashboard-shell .workspace .rerank-guide > summary::after {
+  display: none;
+}
+.dashboard-shell .workspace .rerank-guide-body {
+  padding: 0;
+}
+.dashboard-shell
+  .workspace
+  :is(.rerank-guide-grid > article, .rerank-guide-note) {
+  padding: var(--card-padding);
+  background: var(--panel);
+  border: 1px solid var(--line);
+  border-radius: var(--card-radius);
+}
+.rerank-guide-grid > article {
+  display: flex;
+  flex-direction: column;
+}
+.rerank-guide-grid > article > svg {
+  flex-shrink: 0;
+}
+.rerank-guide-grid :is(.relevance-scale, .guide-example, .guide-inspect-hint) {
+  margin-top: auto;
+}
+.dashboard-shell .workspace .solver-groups {
+  display: grid;
+  gap: 10px;
+  margin-top: 16px;
+}
+.dashboard-shell .workspace .solver-groups > details {
+  margin: 0;
+}
+.solver-group-title {
+  display: grid;
+  gap: 2px;
+  min-width: 0;
+}
+.solver-group-title strong {
+  font-size: 13px;
+  font-weight: 650;
+}
+.solver-group-title small,
+.solver-group-prediction small {
+  color: var(--muted);
+  font-size: 11px;
+  font-weight: 400;
+}
+.solver-group-prediction {
+  display: grid;
+  justify-items: end;
+  gap: 4px;
+  margin-left: auto;
+  text-align: right;
+}
+.solver-group-prediction .tag {
+  white-space: normal;
+}
+.dashboard-shell .workspace .solver-group > summary::after {
+  margin-left: 6px;
+}
+.solver-group-label {
+  display: block;
+  margin-bottom: 8px;
+  color: var(--muted);
+  font-size: 11px;
+  font-weight: 500;
+}
+.dashboard-shell .workspace .field-hint {
+  font-size: 11px;
+  line-height: 1.7;
+}
+.dashboard-shell .workspace .error-note {
+  border-radius: 10px;
+  line-height: 1.6;
+}
+.dashboard-shell .workspace :is(pre, .table-wrap, .table-scroll) {
+  overscroll-behavior-inline: contain;
+}
+.workspace-guide-dialog {
+  width: min(880px, calc(100% - 32px));
+  max-width: none;
+  max-height: calc(100dvh - 40px);
+  padding: 0;
+  color: var(--ink);
+  background: var(--panel);
+  border: 1px solid var(--line);
+  border-radius: 20px;
+  box-shadow: 0 24px 80px #0003;
+  overflow: hidden;
+  text-align: left;
+}
+.workspace-guide-dialog[open] {
+  display: flex;
+  flex-direction: column;
+}
+.workspace-guide-dialog::backdrop {
+  background: #10101980;
+  backdrop-filter: blur(5px);
+}
+.workspace-guide-header {
+  padding: 24px 28px 22px;
+  border-bottom: 1px solid var(--line);
+  flex-shrink: 0;
+}
+.workspace-guide-heading {
+  display: flex;
+  align-items: center;
+  gap: 14px;
+  margin-bottom: 14px;
+}
+.workspace-guide-heading > div {
+  min-width: 0;
+  flex: 1;
+}
+.workspace-guide-heading .icon-button {
+  flex-shrink: 0;
+  width: 40px;
+  height: 40px;
+  align-self: flex-start;
+}
+.workspace-guide-heading .eyebrow {
+  display: block;
+  font: 10px/1.5 var(--font-mono);
+  letter-spacing: 1px;
+  color: var(--muted);
+  margin-bottom: 4px;
+}
+.workspace-guide-icon {
+  display: grid;
+  place-items: center;
+  width: 48px;
+  height: 48px;
+  flex-shrink: 0;
+  color: var(--accent);
+  background: var(--accent-soft);
+  border-radius: 14px;
+}
+.workspace-guide-dialog h2 {
+  font-size: 25px;
+  font-family: inherit;
+  letter-spacing: -0.7px;
+  line-height: 1.2;
+}
+.dashboard-shell .workspace-guide-dialog p {
+  font-size: 13px;
+  line-height: 1.7;
+  font-family: inherit;
+  letter-spacing: normal;
+  margin: 0;
+  color: var(--muted);
+  text-align: left;
+  max-width: none;
+}
+.workspace-guide-body {
+  padding: 24px 28px;
+  overflow: auto;
+  min-height: 0;
+  overscroll-behavior: contain;
+}
+.workspace-guide-flow {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 10px;
+  margin-bottom: 22px;
+}
+.workspace-guide-flow > span {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  color: var(--muted);
+  font-size: 11px;
+}
+.workspace-guide-flow > span > span {
+  padding: 6px 10px;
+  border-radius: 6px;
+  background: var(--soft);
+  border: 1px solid var(--line);
+}
+.workspace-guide-flow > span:last-child > span {
+  color: var(--accent);
+  background: var(--accent-soft);
+  border-color: transparent;
+}
+.workspace-guide-breakdown {
+  display: grid;
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+  border: 1px solid var(--line);
+  border-radius: 12px;
+  overflow: hidden;
+}
+.workspace-guide-breakdown > section {
+  padding: 18px;
+  min-width: 0;
+}
+.workspace-guide-breakdown > section + section {
+  border-left: 1px solid var(--line);
+}
+.workspace-guide-breakdown svg {
+  margin-bottom: 12px;
+  color: var(--accent);
+}
+.workspace-guide-dialog h3 {
+  font-size: 13px;
+  line-height: 1.5;
+  font-family: inherit;
+  font-weight: 650;
+  letter-spacing: normal;
+  margin: 0 0 8px;
+}
+.workspace-guide-dialog h4 {
+  font-size: 13px;
+  line-height: 1.5;
+  margin: 0 0 4px;
+}
+.workspace-guide-walkthrough {
+  margin-top: 26px;
+}
+.workspace-guide-steps {
+  list-style: none;
+  padding: 0;
+  margin: 18px 0 24px;
+  display: grid;
+  gap: 18px;
+}
+.workspace-guide-steps li {
+  display: flex;
+  gap: 14px;
+}
+.workspace-guide-steps li > span {
+  display: grid;
+  place-items: center;
+  width: 30px;
+  height: 30px;
+  flex-shrink: 0;
+  border: 1px solid var(--line);
+  border-radius: 9px;
+  color: var(--accent);
+  font: 11px var(--font-mono);
+}
+.workspace-guide-experiment,
+.workspace-guide-limits {
+  display: flex;
+  align-items: flex-start;
+  gap: 12px;
+  padding: 16px;
+  border-radius: 12px;
+}
+.workspace-guide-experiment {
+  background: var(--accent-soft);
+  margin-bottom: 12px;
+}
+.workspace-guide-limits {
+  border: 1px solid var(--line);
+  background: var(--soft);
+}
+.workspace-guide-experiment > svg,
+.workspace-guide-limits > svg {
+  flex-shrink: 0;
+  color: var(--accent);
+  margin-top: 1px;
+}
+.workspace-guide-footer {
+  flex-shrink: 0;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 16px;
+  padding: 16px 28px;
+  border-top: 1px solid var(--line);
+  background: var(--panel);
+}
+.workspace-guide-footer > span {
+  color: var(--muted);
+  font-size: 11px;
+}
+.workspace-guide-footer .button {
+  flex-shrink: 0;
+}
+.workspace-guide-more {
+  margin-top: 20px;
+}
+.workspace-guide-more summary {
+  cursor: pointer;
+  font-weight: 600;
+  font-size: 13px;
+  padding: 10px 0;
+}
+.workspace-guide-more .browser-quick-guide {
+  margin-top: 20px;
+  display: grid;
+  gap: 24px;
+}
+.workspace-guide-more .guide-intro h2 {
+  font-size: 20px;
+  margin-bottom: 10px;
+}
+.workspace-guide-more .guide-steps {
+  padding-left: 20px;
+}
+.workspace-guide-more .guide-steps li {
+  margin: 10px 0;
+}
+.workspace-guide-more .guide-steps li > span {
+  display: none;
+}
+.home-guide {
+  margin-top: 18px;
+}
+@media (max-width: 640px) {
+  .workspace-guide-dialog {
+    width: calc(100% - 20px);
+    max-height: calc(100dvh - 20px);
+    border-radius: 16px;
+  }
+  .workspace-guide-header {
+    padding: 18px;
+  }
+  .workspace-guide-heading {
+    gap: 10px;
+  }
+  .workspace-guide-icon {
+    width: 38px;
+    height: 38px;
+    border-radius: 11px;
+  }
+  .workspace-guide-dialog h2 {
+    font-size: 21px;
+  }
+  .workspace-guide-body {
+    padding: 18px;
+  }
+  .workspace-guide-breakdown {
+    grid-template-columns: minmax(0, 1fr);
+  }
+  .workspace-guide-breakdown > section {
+    padding: 16px;
+  }
+  .workspace-guide-breakdown > section + section {
+    border-left: 0;
+    border-top: 1px solid var(--line);
+  }
+  .workspace-guide-breakdown svg {
+    margin-bottom: 8px;
+  }
+  .workspace-guide-footer {
+    padding: 14px 18px;
+    justify-content: flex-end;
+  }
+  .workspace-guide-footer > span {
+    display: none;
+  }
+}
+@media (max-height: 450px) {
+  .workspace-guide-header {
+    padding: 12px 18px;
+  }
+  .workspace-guide-header > p {
+    display: none;
+  }
+  .workspace-guide-heading {
+    margin: 0;
+  }
+  .workspace-guide-footer {
+    padding: 10px 18px;
+  }
+}
+/* Router: request -> visible decision -> evidence on demand. */
+.router-journey {
+  display: flex;
+  align-items: center;
+  gap: 18px;
+  padding: 16px 20px;
+  border: 1px solid var(--line);
+  border-radius: 12px;
+  color: var(--muted);
+}
+.router-journey > span {
+  display: flex;
+  align-items: center;
+  gap: 9px;
+  font-size: 12px;
+}
+.router-journey strong {
+  font-weight: 500;
+  color: var(--ink);
+}
+.router-journey small {
+  margin-left: auto;
+  font-size: 11px;
+}
+.router-journey-dot {
+  width: 8px;
+  height: 8px;
+  border-radius: 50%;
+  background: var(--accent);
+  box-shadow: 0 0 0 4px var(--accent-soft);
+  margin: 0 5px;
+}
+.dashboard-shell .router-workspace .lab-columns {
+  grid-template-columns: minmax(300px, 0.7fr) minmax(0, 1.3fr);
+  gap: 20px;
+}
+.dashboard-shell .router-workspace .lab-fields {
+  gap: 18px;
+}
+.dashboard-shell .router-workspace textarea {
+  min-height: 140px;
+  font-size: 14px;
+}
+.dashboard-shell .router-workspace .lab-actions {
+  margin: 20px 0 12px;
+}
+.router-workspace .router-inspector {
+  margin-top: 24px;
+}
+.router-workspace .router-policy {
+  border-bottom: 0;
+}
+.dashboard-shell .router-workspace .router-output {
+  padding: 18px 20px;
+  border: 0;
+  border-radius: 11px;
+}
+.dashboard-shell .router-workspace .router-next-action {
+  padding: 8px 0;
+  flex-wrap: wrap;
+}
+.router-next-action > p {
+  flex: 1 1 200px;
+}
+.dashboard-shell .router-workspace .router-step-log {
+  margin-top: 28px;
+  padding-top: 20px;
+  border-top: 1px solid var(--line);
+}
+.router-workspace .router-step-log li {
+  border: 0;
+  padding: 12px 0;
+}
+.router-workspace .step-number {
+  border-radius: 50%;
+  width: 28px;
+  height: 28px;
+  display: grid;
+  place-items: center;
+  background: var(--soft);
+  color: var(--muted);
+}
+.router-workspace .router-candidates {
+  grid-template-columns: 1fr;
+}
+.router-workspace .router-candidates .compact-finding {
+  margin: 0;
+}
+.router-workspace .router-candidates code {
+  color: var(--muted);
+}
+.router-workspace .compact-router-tree {
+  grid-template-columns: 1fr;
+}
+.router-workspace .routing-facts {
+  margin: 12px 0;
+}
+/* Keep the catalog's editor, question list, and result rail intact. */
+.dashboard-shell .experiment-panel .panel-heading {
+  flex-wrap: wrap;
+}
+.dashboard-shell .setup-draft-actions {
+  flex-wrap: wrap;
+  justify-content: flex-end;
+}
+
+.dashboard-shell .workspace .example-item {
+  border-radius: 9px;
+  margin-block: 3px;
+}
+.dashboard-shell .workspace .example-item.selected {
+  background: var(--accent-soft);
+}
+.dashboard-shell .workspace .example-item strong {
+  line-height: 1.5;
+}
+.dashboard-shell .workspace .setup-step > span {
+  border-radius: 6px;
+}
+.dashboard-shell .workspace .rank-column {
+  border-radius: 14px;
+  overflow: hidden;
+}
+.dashboard-shell .workspace .rank-column-heading {
+  background: var(--panel);
+}
+.dashboard-shell .workspace .rank-column-heading h2 {
+  font-family: inherit;
+}
+.dashboard-shell .workspace .governance-steps {
+  border-radius: 12px;
+}
+@media (max-width: 1100px) {
+  .dashboard-shell .page-heading > .heading-actions {
+    max-width: 100%;
+  }
+  .router-journey {
+    flex-wrap: wrap;
+    gap: 12px;
+  }
+  .router-journey small {
+    flex-basis: 100%;
+    margin-left: 0;
+  }
+  .dashboard-shell .router-workspace .lab-columns {
+    grid-template-columns: minmax(0, 1fr);
+  }
+}
+@media (max-width: 760px) {
+  .dashboard-shell .workspace {
+    padding: 20px 12px 0;
+    gap: 20px;
+  }
+  .dashboard-shell .workspace .page-heading {
+    flex-wrap: wrap;
+    gap: 12px;
+  }
+  .dashboard-shell .page-heading > .heading-actions {
+    max-width: 100%;
+    justify-content: flex-start;
+  }
+  .dashboard-shell .workspace .page-heading p {
+    font-size: 13px;
+  }
+  .dashboard-shell .workspace .panel-heading {
+    padding: 12px 16px;
+  }
+  .dashboard-shell .workspace .panel-content {
+    padding: 16px;
+  }
+  .dashboard-shell .workspace .panel-bottom {
+    padding: 12px 16px;
+  }
+  .dashboard-shell .compact-lab .lab-panel {
+    padding: 16px;
+  }
+  .dashboard-shell .compact-lab .lab-panel > .panel-heading {
+    margin: -16px -16px 16px;
+  }
+  .dashboard-shell .workspace .button {
+    min-height: 44px;
+  }
+  .dashboard-shell .workspace .button.quiet {
+    min-height: 36px;
+  }
+  .dashboard-shell .workspace .empty {
+    min-height: 260px;
+    padding: 28px 12px;
+  }
+  .dashboard-shell .workspace .empty h3 {
+    font-size: 18px;
+  }
+  .router-journey {
+    display: grid;
+    grid-template-columns: repeat(3, minmax(0, 1fr));
+    padding: 14px;
+    gap: 10px;
+  }
+  .router-journey > span {
+    font-size: 11px;
+  }
+  .router-journey > svg {
+    display: none;
+  }
+  .router-journey > span {
+    flex-direction: column;
+    align-items: flex-start;
+    line-height: 1.4;
+  }
+  .router-journey small {
+    grid-column: 1 / -1;
+  }
+  .decision-preview-flow {
+    gap: 5px;
+  }
+  .decision-preview-flow > span {
+    gap: 5px;
+  }
+  .decision-preview-flow > span > span {
+    padding: 5px;
+  }
+}
+@media (prefers-reduced-motion: reduce) {
+  .dashboard-shell .workspace .button {
+    transition: none;
+  }
+  .dashboard-shell .workspace .button:active:not(:disabled) {
+    transform: none;
+  }
+}
+
+.router-workspace .router-step-log ol {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(170px, 1fr));
+  gap: 12px;
+}
+.router-workspace .router-step-log li {
+  align-items: flex-start;
+  padding: 14px;
+  border: 1px solid var(--line);
+  border-radius: 12px;
+  gap: 10px;
+}
+.router-step-from {
+  display: block;
+  color: var(--muted);
+  font-size: 10px;
+  line-height: 1.5;
+  margin-bottom: 5px;
+}
+.router-workspace .router-step-log .step-badges {
+  margin: 8px 0 0;
+}
+.router-workspace .router-step-log details {
+  margin-top: 5px;
+}
+@media (max-width: 440px) {
+  .router-workspace .router-step-log ol {
+    grid-template-columns: minmax(0, 1fr);
+  }
+}
+
+/* A landscape phone should scroll a usable editor, not compress it to one line. */
+@media (min-width: 651px) and (max-height: 600px) {
+  .dashboard-shell main:has(> .workspace > .split) {
+    overflow: auto;
+    overscroll-behavior: contain;
+  }
+  .dashboard-shell .workspace:has(> .split) {
+    height: auto;
+    min-height: 100%;
+    padding-bottom: 20px;
+  }
+  .dashboard-shell .workspace > .split {
+    height: 560px;
+    flex: none;
+  }
+}

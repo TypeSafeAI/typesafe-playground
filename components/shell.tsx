@@ -237,7 +237,7 @@ export function Shell({ children }: { children: React.ReactNode }) {
             <ApiKeySettings />
             <a
               className="icon-button github-link"
-              href="https://github.com/BunsDev/typesafe-ai-playground"
+              href="https://github.com/TypeSafeAI/typesafe-playground"
               target="_blank"
               rel="noopener noreferrer"
               aria-label="View TypeSafe AI Playground on GitHub"

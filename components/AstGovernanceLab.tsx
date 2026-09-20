@@ -2,7 +2,7 @@
 import { useUsage, usageBlocked } from "../lib/logUsageEntry";
 import { revealResults } from "../lib/scroll";
 import { useEffect, useRef, useState } from "react";
-import { Heading, ErrorNote, RunButton, Export } from "./ui";
+import { Heading, ErrorNote, RunButton, Export, Empty } from "./ui";
 import { DiffInput } from "./DiffInput";
 import { ReviewResults } from "./ReviewResults";
 import { analyzeGovernance } from "../lib/analyzeImpact";
@@ -280,13 +280,10 @@ export function AstGovernanceLab() {
               busy={busy}
             />
           ) : (
-            <div className="empty">
-              <h3>Follow the change through the codebase</h3>
-              <p>
-                Analyze a diff to see symbols, callers, activated policy and
-                test scope.
-              </p>
-            </div>
+            <Empty title="Follow the change through the codebase">
+              Analyze a diff to see symbols, callers, activated policy and test
+              scope.
+            </Empty>
           )}
         </section>
       </div>

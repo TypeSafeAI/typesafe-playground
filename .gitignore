@@ -30,3 +30,6 @@ package-lock.json
 npm-shrinkwrap.json
 yarn.lock
 bun.lockb
+
+# Local clean-room rebuilt apps and captured evidence.
+.clean-room/

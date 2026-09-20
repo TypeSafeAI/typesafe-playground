@@ -320,7 +320,7 @@ test("meta meme, image URL OCR review, and GitHub link are usable", async ({
     page.getByRole("link", { name: "View TypeSafe AI Playground on GitHub" }),
   ).toHaveAttribute(
     "href",
-    "https://github.com/BunsDev/typesafe-ai-playground",
+    "https://github.com/TypeSafeAI/typesafe-playground",
   );
   await expect(page.getByRole("img", { name: /Meta meme:/ })).toBeVisible();
   await expect(

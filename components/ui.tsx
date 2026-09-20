@@ -1,11 +1,6 @@
 "use client";
-import {
-  ArrowRight,
-  LoaderCircle,
-  Download,
-  Square,
-  CircleDashed,
-} from "lucide-react";
+import { ArrowRight, LoaderCircle, Download, Square } from "lucide-react";
+import { DecisionPreview, WorkspaceGuide } from "./WorkspaceGuide";
 import { useUsage, usageBlocked } from "../lib/logUsageEntry";
 import { download } from "../lib/client";
 export function Heading({
@@ -26,7 +21,10 @@ export function Heading({
         <h1>{title}</h1>
         <p>{description}</p>
       </div>
-      {children}
+      <div className="heading-actions">
+        {children}
+        <WorkspaceGuide />
+      </div>
     </div>
   );
 }
@@ -85,9 +83,7 @@ export function Empty({
 }) {
   return (
     <div className="empty">
-      <span className="empty-icon">
-        <CircleDashed size={29} />
-      </span>
+      <DecisionPreview />
       <h3>{title}</h3>
       <p>{children}</p>
     </div>

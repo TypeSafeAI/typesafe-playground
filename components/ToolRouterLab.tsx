@@ -8,6 +8,12 @@ import { initialRouterState, ROUTER_SCENARIOS } from "../lib/workflowGraph";
 import { routeStep, approveMockStep } from "../lib/routeStep";
 import { errorMessage } from "../lib/client";
 import { revealResults } from "../lib/scroll";
+import {
+  ArrowRight,
+  Route,
+  ShieldCheck,
+  SlidersHorizontal,
+} from "lucide-react";
 export function ToolRouterLab() {
   const [scenario, setScenario] = useState(0),
     [state, setState] = useState(
@@ -83,12 +89,29 @@ export function ToolRouterLab() {
       <Heading
         eyebrow="LANGGRAPH-STYLE · MOCK EXECUTION"
         title="Jev tool router"
-        description="Follow a request through a graph. Jev chooses the next node; fixed policy controls what can proceed."
+        description="Find the right tool for a request. Follow each decision, approval, and policy stop."
       />
+      <div className="router-journey" aria-label="How routing works">
+        <span>
+          <Route size={18} />
+          <strong>Choose a request</strong>
+        </span>
+        <ArrowRight size={15} aria-hidden="true" />
+        <span>
+          <ShieldCheck size={18} />
+          <strong>Check the next step</strong>
+        </span>
+        <ArrowRight size={15} aria-hidden="true" />
+        <span>
+          <span className="router-journey-dot" />
+          <strong>Follow the path</strong>
+        </span>
+        <small>All execution is simulated</small>
+      </div>
       <div className="lab-columns">
         <section className="panel lab-panel">
           <div className="panel-heading">
-            <h2>Routing request</h2>
+            <h2>Your request</h2>
             <button
               className="button quiet"
               disabled={busy}
@@ -157,8 +180,13 @@ export function ToolRouterLab() {
             Live step: Jev chooses. Mock scenario: seeded choices. All execution
             is simulated.
           </p>
-          <GraphView state={state} />
-          <details>
+          <details className="router-inspector">
+            <summary>
+              <SlidersHorizontal size={15} /> Routing inspector
+            </summary>
+            <GraphView state={state} />
+          </details>
+          <details className="router-policy">
             <summary>How policy overrides Jev</summary>
             <ol>
               <li>
@@ -184,7 +212,7 @@ export function ToolRouterLab() {
           className="panel lab-panel lab-result-target"
         >
           <div className="panel-heading">
-            <h2>Routing decision</h2>
+            <h2>The next step</h2>
             <Export
               data={
                 state.log.length
@@ -202,6 +230,8 @@ export function ToolRouterLab() {
             state={state}
             onApprove={approve}
             busy={busy}
+            onContinue={step}
+            onCancel={() => abort.current?.abort()}
             onEdit={() => {
               const field = document.querySelector<HTMLTextAreaElement>(
                 'textarea[aria-label="User request"]',

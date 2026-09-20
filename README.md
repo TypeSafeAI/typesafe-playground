@@ -4,7 +4,7 @@ A community playground for **TypeSafe AI's Jev**: edit classification experiment
 
 **Small experiments. Clear decisions.** This is an independent community project, not an official TypeSafe AI product, production agent harness, or claim that a typed answer is correct.
 
-**Shout-out to [@nickthompson480](https://github.com/nickthompson480) for the [original TypeSafe AI playground](https://github.com/nickthompson480/typesafe-ai-playground).** This community extension builds on that project's example library and Python foundation with a Next.js interface and interactive prototypes. The original credit and [MIT license](LICENSE) are retained.
+**Shout-out to [@nickthompson480](https://github.com/nickthompson480) for the [original TypeSafe AI playground (examples only)](https://github.com/nickthompson480/typesafe-ai-playground).** This community extension builds on that project's example library and Python foundation with a Next.js interface and interactive prototypes. The original credit and [MIT license](LICENSE) are retained.
 
 [Open the live playground](https://typesafe-ai-playground.vercel.app) · [TypeSafe API documentation](https://docs.typesafe.ai/introduction/quickstart) · [Contributing](CONTRIBUTING.md) · [Agent guide](AGENTS.md)
 
@@ -15,8 +15,8 @@ A community playground for **TypeSafe AI's Jev**: edit classification experiment
 Use **Node.js 22+** and the exact pnpm version pinned in [package.json](package.json), currently `10.34.5`. Use pnpm only: the repository's local guard rejects other package managers, and `pnpm-lock.yaml` is the single JavaScript dependency lockfile.
 
 ```sh
-git clone https://github.com/BunsDev/typesafe-ai-playground.git
-cd typesafe-ai-playground
+git clone https://github.com/TypeSafeAI/typesafe-playground.git
+cd typesafe-playground
 # Install/activate the pnpm version declared in package.json.
 # Where Corepack is installed, `corepack enable` enables its shims.
 pnpm install --frozen-lockfile
@@ -25,7 +25,7 @@ cp .env.example .env.local
 pnpm dev
 ```
 
-Open the address printed by Next.js, normally `http://localhost:3000`. Use `pnpm dev --port 3001` to select another port. You can browse/edit examples without a key; explicitly mocked demos and local solver/simulation paths do not require live Jev calls. Controls labeled **Live Jev** need a configured key.
+Open the dedicated development address, `http://localhost:3042`. `pnpm dev` keeps this port by default; use `pnpm dev --port 3001` to explicitly select another port. You can browse/edit examples without a key; explicitly mocked demos and local solver/simulation paths do not require live Jev calls. Controls labeled **Live Jev** need a configured key.
 
 The server environment key is not sent to the browser. Never prefix it with `NEXT_PUBLIC_`, put it in a component, or commit `.env.local`. A browser-supplied personal key follows a different path, documented below.
 
@@ -38,14 +38,17 @@ The home page groups the prototypes into Language & data, Agents & workflows, Co
 | **Example builder** `/examples` | Editable typed questions, a shared example catalog, and declared A/B input changes. |
 | **Conversation lab** `/conversation` | Parse conversations, rank possible reply recipients, and compare full-context versus isolated-message judgments. |
 | **Ask gate** `/gate` | Triage questions against earlier messages or pasted documentation, retaining supporting citations. |
+| **Jev Chat** `/jev-chat` | Explore Jev-driven scripted composition with selectable personalities, cited source passages, fictional scenes, saved threads, and verifiable response graphs. See the [chat guide](docs/jev-chat.md). |
 | **Workflow chat** `/workflow` | Apply editable case rules and request missing facts before recommending an action. |
 | **Document extraction** `/extraction` | Find source candidates locally, then ask Jev to choose candidates or `null`. |
+| **YouTube extract** `/youtube-extract` | Select original caption passages with Jev relevance scores, live usage metrics, and timestamp-linked source verification. See [contract and limits](docs/youtube-extract.md). |
 | **PR review** `/pr-review` | Classify public PR/diff hunks and inspect policy-gated review queues. |
 | **AST governance** `/ast-governance` | Explore changed symbols, callers, deterministic policy, and ambiguous findings. |
 | **SMT solver** `/smt-solver` | Compare Jev classifications with real server-side Z3 checks and decomposition. |
 | **Tool router** `/tool-router` | Inspect closed-set routing with simulated tools, policy blocks, and mock approval gates. |
 | **LangChain** `/langchain` | Invoke a real LangChain tool adapter with mocked or live Jev predictions. |
 | **Vector reranker** `/reranker` | Compare vector order, batched Jev relevance, and a labeled lexical mock baseline. |
+| **Clean-room rebuild** `/clean-room` | Run three complete local rebuild demos, or use the CLI with live Jev classification and deterministic code generation. Export the app and verification evidence. |
 | **Browser agent** `/jev-browser-agent` | Research a Newegg PC build in a local browser-use session with Jev closed choices, or run the synthetic flight demo. No text-generation model required. |
 | **Jev plays Doom** `/doom` | Try an original browser shooter with human, Jev, and seeded random control. |
 | **Meme lab** `/memes` | Classify reviewed captions and visual descriptions for tone, audience fit, and possible confusion. |
@@ -170,6 +173,10 @@ Use original synthetic scenarios, stable ids, and clear questions. See [CONTRIBU
 
 Thanks again to **[@nickthompson480](https://github.com/nickthompson480)** for the original playground, and to TypeSafe AI for Jev. This extension retains the [MIT license](LICENSE). TypeSafe brand artwork is stored in `public/brand`; IBM Plex font licensing is retained in [public/brand/OFL.txt](public/brand/OFL.txt). Branding does not imply vendor endorsement.
 
-Other `BunsDev` community projects serve distinct roles: [Clarity Judge](https://github.com/BunsDev/clarity-judge) evaluates writing against named checks; [Jev Tool & Model Router](https://github.com/BunsDev/typesafe-router) provides source-level routing logic; [TypeSafe UI](https://github.com/BunsDev/typesafe-ui) provides reusable interface patterns. They are not automatically wired together or officially supported as a suite.
+Other community projects serve distinct roles: [Clarity Judge](https://github.com/TypeSafeAI/clarity-judge) evaluates writing against named checks; [Jev Tool & Model Router](https://github.com/BunsDev/typesafe-router) provides source-level routing logic; [TypeSafe UI](https://github.com/TypeSafeAI/typesafe-ui) provides reusable interface patterns; [Jev Social](https://github.com/socai-io/jev-social) pairs Jev's typed routing with the local socai CLI for Instagram, TikTok, and LinkedIn research with streamed, source-linked evidence. They are not automatically wired together or officially supported as a suite.
 
 The intended GitHub About description and discovery topics are recorded in [repository-metadata.json](repository-metadata.json). Editing that file does not apply GitHub settings automatically, and discovery topics are not release tags.
+
+### Clean-room rebuild pipeline
+
+Open `/clean-room` for three prefilled, functional demos: catalog search, contacts CRUD, and support tickets. Each observes a real local target, reconstructs its UI and endpoint bindings, and independently compares browser behavior. Demo Jev choices are explicitly simulated; custom targets use live Jev. Both use the same local, deterministic code generator. No external generation model or extra credentials are required. `pnpm clean-room --demo catalog --serve` runs the same pipeline from the terminal. See [setup, artifacts, cost tracking, and limits](docs/clean-room/README.md).

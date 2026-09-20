@@ -360,17 +360,38 @@ export function SmtSolverLab() {
                   Only variable-disjoint groups are separated. The combined
                   score is a minimum score, not a calibrated joint probability.
                 </p>
-                {result.groups.map((g, i) => (
-                  <details key={i} className="compact-finding">
-                    <summary>
-                      Group {i + 1} · {g.problem.constraints.length} constraints
-                      · {g.prediction.prediction} ·{" "}
-                      {percent(g.prediction.confidence)}
-                    </summary>
-                    <pre>{g.problem.constraints.join("\n")}</pre>
-                    {g.prediction.error && <p>{g.prediction.error}</p>}
-                  </details>
-                ))}
+                <div className="solver-groups">
+                  {result.groups.map((g, i) => (
+                    <details key={i} className="compact-finding solver-group">
+                      <summary>
+                        <span className="solver-group-title">
+                          <strong>Group {i + 1}</strong>
+                          <small>
+                            {g.problem.constraints.length}{" "}
+                            {g.problem.constraints.length === 1
+                              ? "constraint"
+                              : "constraints"}
+                          </small>
+                        </span>
+                        <span className="solver-group-prediction">
+                          <span className="tag">
+                            {g.prediction.prediction.replaceAll("_", " ")}
+                          </span>
+                          <small>
+                            Jev confidence · {percent(g.prediction.confidence)}
+                          </small>
+                        </span>
+                      </summary>
+                      <span className="solver-group-label">
+                        Source constraints
+                      </span>
+                      <pre>{g.problem.constraints.join("\n")}</pre>
+                      {g.prediction.error && (
+                        <p className="error-note">{g.prediction.error}</p>
+                      )}
+                    </details>
+                  ))}
+                </div>
               </section>
             </div>
           ) : (

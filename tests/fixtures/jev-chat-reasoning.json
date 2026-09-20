@@ -1,0 +1,142 @@
+{
+  "version": "jev-chat-evaluation-v1",
+  "cases": [
+    {
+      "id": "price-difference",
+      "category": "arithmetic",
+      "input": {
+        "topic": "notes",
+        "notes": "Alpha costs 12 credits.\n\nBeta costs 18 credits.",
+        "messages": [
+          {
+            "role": "user",
+            "text": "What is the price difference between Alpha and Beta?"
+          }
+        ]
+      },
+      "expectations": {
+        "allowedIntents": ["answer", "compare"],
+        "requiredSubstrings": ["= 6 credits"],
+        "requiredSources": ["note_1", "note_2"],
+        "mustClarify": false
+      },
+      "evidenceNotes": "Synthetic development case. Absolute difference is independently 18 minus 12 = 6 credits. This guided implementation; it is not held-out semantic evaluation."
+    },
+    {
+      "id": "decimal-price-total",
+      "category": "arithmetic",
+      "input": {
+        "topic": "notes",
+        "notes": "Alpha costs 0.1 credits.\n\nBeta costs 0.2 credits.",
+        "messages": [{ "role": "user", "text": "What is the combined price?" }]
+      },
+      "expectations": {
+        "allowedIntents": ["answer", "compare"],
+        "requiredSubstrings": ["= 0.3 credits"],
+        "forbiddenSubstrings": ["0.30000000000000004"],
+        "mustClarify": false
+      },
+      "evidenceNotes": "One tenth plus two tenths equals three tenths exactly. Synthetic development fixture, not a semantic quality score."
+    },
+    {
+      "id": "duration-total",
+      "category": "arithmetic",
+      "input": {
+        "topic": "notes",
+        "notes": "Alpha takes 30 seconds.\n\nBeta takes 2 minutes.",
+        "messages": [
+          { "role": "user", "text": "What is the combined duration?" }
+        ]
+      },
+      "expectations": {
+        "allowedIntents": ["answer", "compare"],
+        "requiredSubstrings": ["= 150 seconds"],
+        "requiredSources": ["note_1", "note_2"],
+        "mustClarify": false
+      },
+      "evidenceNotes": "With 60 seconds per minute, 30 + 2 times 60 = 150 seconds. Both sources explicitly give duration; no scheduling or overlap claim follows."
+    },
+    {
+      "id": "mixed-currencies",
+      "category": "arithmetic-boundary",
+      "input": {
+        "topic": "notes",
+        "notes": "Alpha costs $12.\n\nBeta costs €18.",
+        "messages": [{ "role": "user", "text": "What is the combined price?" }]
+      },
+      "expectations": {
+        "expectedIntent": "clarify",
+        "mustClarify": true,
+        "forbiddenSubstrings": ["= 30"]
+      },
+      "evidenceNotes": "USD and EUR are different currencies. No exchange rate or currency conversion operation is supplied."
+    },
+    {
+      "id": "qualified-price",
+      "category": "arithmetic-boundary",
+      "input": {
+        "topic": "notes",
+        "notes": "Alpha costs about 12 credits.\n\nBeta costs 18 credits.",
+        "messages": [
+          { "role": "user", "text": "What is the exact price difference?" }
+        ]
+      },
+      "expectations": {
+        "expectedIntent": "clarify",
+        "mustClarify": true,
+        "forbiddenSubstrings": ["= 6 credits"]
+      },
+      "evidenceNotes": "An approximate price does not support an exact numerical difference. Local extraction deliberately excludes qualified quantities."
+    },
+    {
+      "id": "unsupported-currency-scale",
+      "category": "arithmetic-boundary",
+      "input": {
+        "topic": "notes",
+        "notes": "Alpha costs $12 bn.\n\nBeta costs $18 bn.",
+        "messages": [{ "role": "user", "text": "What is the combined price?" }]
+      },
+      "expectations": {
+        "expectedIntent": "clarify",
+        "mustClarify": true,
+        "forbiddenSubstrings": ["= 30 USD"]
+      },
+      "evidenceNotes": "Magnitude suffixes are outside the supported numeric grammar. Reject the unsupported representation; do not discard the suffix."
+    },
+    {
+      "id": "duplicate-price-statements",
+      "category": "arithmetic-boundary",
+      "input": {
+        "topic": "notes",
+        "notes": "Alpha costs 12 credits.\n\nAlpha costs 12 credits.",
+        "messages": [{ "role": "user", "text": "What is the total price?" }]
+      },
+      "expectations": {
+        "expectedIntent": "clarify",
+        "mustClarify": true,
+        "forbiddenSubstrings": ["= 24 credits"]
+      },
+      "evidenceNotes": "Two copies of a price statement do not establish two purchased items or distinct charges. This fixture tests duplicate evidence handling."
+    },
+    {
+      "id": "unsupported-multiplicity",
+      "category": "arithmetic-boundary",
+      "input": {
+        "topic": "notes",
+        "notes": "Alpha costs 12 credits.\n\nBeta costs 18 credits.",
+        "messages": [
+          {
+            "role": "user",
+            "text": "What is the combined price of two Alpha and two Beta?"
+          }
+        ]
+      },
+      "expectations": {
+        "expectedIntent": "clarify",
+        "mustClarify": true,
+        "forbiddenSubstrings": ["= 30 credits"]
+      },
+      "evidenceNotes": "The chat currently supports binary operations over selected figures, not quantity multiplication. The full requested total would be 60 credits under per-item pricing, so silently answering 30 is incorrect."
+    }
+  ]
+}

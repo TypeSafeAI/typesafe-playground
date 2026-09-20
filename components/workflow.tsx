@@ -29,8 +29,11 @@ export function Workflow() {
   useEffect(() => () => controller.current?.abort(), []);
   useEffect(() => {
     log.current?.scrollTo({
-      top: log.current.scrollHeight,
-      behavior: "smooth",
+      top: turns.length ? log.current.scrollHeight : 0,
+      behavior:
+        turns.length && !matchMedia("(prefers-reduced-motion: reduce)").matches
+          ? "smooth"
+          : "instant",
     });
   }, [turns, busy]);
   async function send(content = message) {

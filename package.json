@@ -4,7 +4,7 @@
   "packageManager": "pnpm@10.34.5",
   "scripts": {
     "preinstall": "node scripts/require-pnpm.cjs",
-    "dev": "next dev",
+    "dev": "next dev --hostname 127.0.0.1 --port 3042",
     "example:langchain": "tsx scripts/langchain-example.ts",
     "build": "next build",
     "start": "next start",
@@ -17,7 +17,9 @@
     "pretest": "node scripts/require-pnpm.cjs",
     "pretypecheck": "node scripts/require-pnpm.cjs",
     "pretest:e2e": "node scripts/require-pnpm.cjs",
-    "preexample:langchain": "node scripts/require-pnpm.cjs"
+    "preexample:langchain": "node scripts/require-pnpm.cjs",
+    "clean-room": "tsx scripts/clean-room.ts",
+    "preclean-room": "node scripts/require-pnpm.cjs"
   },
   "devDependencies": {
     "@playwright/test": "1.63.0",

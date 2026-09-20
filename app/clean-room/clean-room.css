@@ -1,0 +1,223 @@
+.clean-room-lab {
+  max-width: 1320px;
+  margin: 0 auto;
+}
+.cr-examples {
+  display: grid;
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+  gap: 14px;
+  margin: 24px 0;
+}
+.cr-example {
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+  gap: 12px;
+  text-align: left;
+  padding: 22px;
+  border: 1px solid var(--line);
+  border-radius: 14px;
+  background: var(--panel);
+  color: inherit;
+  cursor: pointer;
+}
+.cr-example strong {
+  font-size: 17px;
+}
+.cr-example span {
+  font-size: 13px;
+  line-height: 1.6;
+  opacity: 0.75;
+}
+.cr-example small {
+  margin-top: auto;
+  color: var(--accent);
+}
+.cr-example.selected {
+  border-color: var(--accent);
+  box-shadow: inset 0 0 0 1px var(--accent);
+}
+.cr-example:focus-visible {
+  outline: 3px solid var(--accent);
+  outline-offset: 3px;
+}
+.cr-example:disabled {
+  cursor: wait;
+}
+.cr-workbench {
+  display: grid;
+  grid-template-columns: 1.2fr 1fr;
+  border: 1px solid var(--line);
+  border-radius: 16px;
+  overflow: hidden;
+  background: var(--panel);
+}
+.cr-brief,
+.cr-progress {
+  padding: 28px;
+  min-width: 0;
+}
+.cr-progress {
+  border-left: 1px solid var(--line);
+}
+.cr-workbench h2,
+.cr-results h2 {
+  font-size: 21px;
+  margin: 10px 0 20px;
+}
+.cr-brief label {
+  display: block;
+  font-size: 13px;
+  margin: 12px 0 8px;
+}
+.cr-brief textarea {
+  width: 100%;
+  resize: none;
+  line-height: 1.6;
+  padding: 14px;
+  border: 1px solid var(--line);
+  border-radius: 8px;
+  background: var(--bg);
+  color: inherit;
+  font: inherit;
+  font-size: 14px;
+}
+.cr-note {
+  font-size: 12px;
+  line-height: 1.7;
+  opacity: 0.72;
+  margin: 14px 0;
+}
+.cr-brief .button {
+  margin-top: 18px;
+}
+.cr-progress ol {
+  padding: 0;
+  list-style: none;
+  margin: 20px 0;
+}
+.cr-progress li {
+  display: flex;
+  align-items: center;
+  gap: 14px;
+  padding: 10px 0;
+  font-size: 14px;
+}
+.cr-progress li > span {
+  display: grid;
+  place-items: center;
+  width: 29px;
+  height: 29px;
+  border: 1px solid var(--line);
+  border-radius: 50%;
+  font-size: 12px;
+}
+.cr-progress li small {
+  margin-left: 14px;
+  opacity: 0.7;
+}
+.cr-progress li[data-done="true"] > span,
+.cr-progress li[data-current="true"] > span {
+  background: var(--accent);
+  color: white;
+  border-color: var(--accent);
+}
+.cr-status {
+  border-top: 1px solid var(--line);
+  padding-top: 18px;
+  font-size: 14px;
+}
+.clean-room-lab details {
+  margin: 18px 0;
+  font-size: 13px;
+}
+.clean-room-lab summary {
+  cursor: pointer;
+}
+.clean-room-lab pre {
+  max-height: 280px;
+  overflow: auto;
+  padding: 14px;
+  background: var(--bg);
+  border: 1px solid var(--line);
+  border-radius: 8px;
+  font-size: 12px;
+}
+.cr-results {
+  margin-top: 24px;
+  padding: 28px;
+  border: 1px solid var(--line);
+  border-radius: 16px;
+  background: var(--panel);
+}
+.cr-result-heading {
+  display: flex;
+  justify-content: space-between;
+  gap: 20px;
+  flex-wrap: wrap;
+}
+.cr-links {
+  display: flex;
+  gap: 10px;
+  flex-wrap: wrap;
+  align-items: center;
+}
+.cr-checks {
+  list-style: none;
+  padding: 0;
+}
+.cr-checks li {
+  display: flex;
+  gap: 20px;
+  align-items: center;
+  flex-wrap: wrap;
+  padding: 14px 0;
+  border-bottom: 1px solid var(--line);
+  font-size: 13px;
+}
+.cr-checks li p {
+  flex-basis: 100%;
+  color: var(--error);
+}
+.cr-checks li small {
+  margin-left: auto;
+  opacity: 0.7;
+}
+.cr-results > p {
+  font-size: 13px;
+  opacity: 0.75;
+  line-height: 1.6;
+}
+.cr-artifacts {
+  display: flex;
+  gap: 16px;
+  flex-wrap: wrap;
+  padding: 16px 0;
+}
+@media (max-width: 800px) {
+  .cr-examples {
+    grid-template-columns: 1fr;
+  }
+  .cr-example {
+    gap: 8px;
+    padding: 18px;
+  }
+  .cr-workbench {
+    grid-template-columns: 1fr;
+  }
+  .cr-progress {
+    border-left: 0;
+    border-top: 1px solid var(--line);
+  }
+  .cr-brief,
+  .cr-progress,
+  .cr-results {
+    padding: 20px;
+  }
+  .cr-checks li small {
+    margin-left: 0;
+  }
+  .cr-links .button {
+    white-space: normal;
+  }
+}

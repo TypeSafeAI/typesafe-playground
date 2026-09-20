@@ -8,9 +8,9 @@ import { POST } from "../app/api/pull-request/route";
 test("GitHub loader accepts only canonical public GitHub PR URLs", () => {
   assert.deepEqual(
     parseGitHubPrUrl(
-      "https://github.com/BunsDev/typesafe-ai-playground/pull/5/files",
+      "https://github.com/TypeSafeAI/typesafe-playground/pull/5/files",
     ),
-    { owner: "BunsDev", repo: "typesafe-ai-playground", number: "5" },
+    { owner: "TypeSafeAI", repo: "typesafe-playground", number: "5" },
   );
   for (const url of [
     "http://github.com/a/b/pull/1",

@@ -1,0 +1,36 @@
+{
+  "version": "jev-chat-conversation-v1",
+  "id": "story-follow-ups",
+  "category": "creative-continuity",
+  "input": { "topic": "guide", "notes": "", "style": "balanced", "seed": 7 },
+  "turns": [
+    {
+      "id": "discover",
+      "question": "What can you do?",
+      "expectations": {
+        "expectedIntent": "capabilities",
+        "mustClarify": false
+      },
+      "evidenceNotes": "Development fixture. Check that actual offered options are usable; fixture does not supply an assistant answer."
+    },
+    {
+      "id": "choose-story",
+      "question": "The second one, please.",
+      "expectations": { "expectedIntent": "create", "mustClarify": false },
+      "evidenceNotes": "The preceding actual capability response must offer fiction second. Review whether this turn follows that offer and remains clearly fictional."
+    },
+    {
+      "id": "change-tone",
+      "question": "Make it more suspenseful; keep the character and setting.",
+      "expectations": { "expectedIntent": "create", "mustClarify": false },
+      "evidenceNotes": "Review the actual previous scene and this revision together. Character and setting must remain; suspense should be apparent. Substring checks cannot establish either quality."
+    },
+    {
+      "id": "open-ending",
+      "question": "Give it an open ending and keep the suspenseful tone.",
+      "style": "concise",
+      "expectations": { "expectedIntent": "create", "mustClarify": false },
+      "evidenceNotes": "Review continuity, open outcome, suspense and concise rendering against the real previous response. Synthetic development case, not held-out or independently reviewed evidence."
+    }
+  ]
+}

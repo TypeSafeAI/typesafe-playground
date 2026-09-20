@@ -1,6 +1,8 @@
 import type { RouterState } from "../types/workflow";
 import { nodeById } from "../lib/workflowGraph";
 import { percent } from "../lib/client";
+import { DecisionPreview } from "./WorkspaceGuide";
+import { RunButton } from "./ui";
 const policyNames: Record<string, string> = {
   always_blocked: "Sensitive-data protection",
   confidence_gate: "85% confidence gate",
@@ -13,16 +15,21 @@ export function RoutingResult({
   onApprove,
   busy,
   onEdit,
+  onContinue,
+  onCancel,
 }: {
   state: RouterState;
   onApprove: (approved: boolean) => void;
   busy: boolean;
   onEdit?: () => void;
+  onContinue?: () => void;
+  onCancel?: () => void;
 }) {
   const last = state.log.at(-1);
   if (!last)
     return (
       <div className="empty">
+        <DecisionPreview />
         <h3>See the decision, then follow the path</h3>
         <p>
           Run one live routing step, or try the full seeded scenario without an
@@ -31,6 +38,12 @@ export function RoutingResult({
       </div>
     );
   const modelCalled = last.source === "jev" || last.source === "mock";
+  const output =
+    state.status === "ended"
+      ? state.log.findLast(
+          (entry) => nodeById(entry.finalNode)?.type === "tool" && entry.output,
+        )?.output || last.output
+      : last.output;
   return (
     <section className="lab-result-stack">
       <div
@@ -43,7 +56,11 @@ export function RoutingResult({
               ? "POLICY STOP"
               : state.status === "approval"
                 ? "YOUR APPROVAL NEEDED"
-                : "NEXT STEP"}
+                : state.status === "ended"
+                  ? "Path complete"
+                  : state.status === "clarification"
+                    ? "MORE CONTEXT NEEDED"
+                    : "NEXT STEP"}
           </span>
           <span className="tag">
             {last.source === "mock"
@@ -64,34 +81,6 @@ export function RoutingResult({
           </div>
         )}
       </div>
-      {last.selected && (
-        <dl className="routing-facts">
-          <div>
-            <dt>Proposed node</dt>
-            <dd>{nodeById(last.selected)?.label || last.selected}</dd>
-          </div>
-          {modelCalled && (
-            <>
-              <div>
-                <dt>Jev confidence</dt>
-                <dd>{percent(last.confidence)}</dd>
-              </div>
-              <div>
-                <dt>Selected probability</dt>
-                <dd>{percent(last.probability)}</dd>
-              </div>
-            </>
-          )}
-          <div>
-            <dt>Policy</dt>
-            <dd>
-              {last.policyOverride
-                ? policyNames[last.policyOverride] || last.policyOverride
-                : "Allowed"}
-            </dd>
-          </div>
-        </dl>
-      )}
       {state.status === "approval" && (
         <div className="approval-card">
           <h3>Allow this simulated configuration change?</h3>
@@ -117,16 +106,16 @@ export function RoutingResult({
           </div>
         </div>
       )}
-      {last.output && (
+      {output && (
         <div className="router-output">
           <span className="eyebrow">SIMULATED OUTPUT</span>
-          <p>{last.output}</p>
+          <p>{output}</p>
         </div>
       )}
       <div className="router-next-action">
         <p>
           {state.status === "ready"
-            ? "Continue with Run Routing Step to follow the next edge."
+            ? "This step passed policy. Continue to see where the request goes next."
             : state.status === "clarification"
               ? "Add detail to the request so the router has a clear next step."
               : state.status === "ended"
@@ -135,6 +124,11 @@ export function RoutingResult({
                   ? "Try a request that reads settings without asking for sensitive data."
                   : "Approve or decline to resolve this checkpoint."}
         </p>
+        {state.status === "ready" && onContinue && (
+          <RunButton busy={busy} onClick={onContinue} onCancel={onCancel}>
+            Continue routing
+          </RunButton>
+        )}
         {["blocked", "clarification", "ended"].includes(state.status) &&
           onEdit && (
             <button className="button" disabled={busy} onClick={onEdit}>
@@ -144,6 +138,34 @@ export function RoutingResult({
       </div>
       <details className="router-technical">
         <summary>Decision details</summary>
+        {last.selected && (
+          <dl className="routing-facts">
+            <div>
+              <dt>Proposed node</dt>
+              <dd>{nodeById(last.selected)?.label || last.selected}</dd>
+            </div>
+            {modelCalled && (
+              <>
+                <div>
+                  <dt>Jev confidence</dt>
+                  <dd>{percent(last.confidence)}</dd>
+                </div>
+                <div>
+                  <dt>Selected probability</dt>
+                  <dd>{percent(last.probability)}</dd>
+                </div>
+              </>
+            )}
+            <div>
+              <dt>Policy</dt>
+              <dd>
+                {last.policyOverride
+                  ? policyNames[last.policyOverride] || last.policyOverride
+                  : "Allowed"}
+              </dd>
+            </div>
+          </dl>
+        )}
         <p>
           Final node: <code>{last.finalNode}</code>
         </p>

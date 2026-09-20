@@ -34,6 +34,14 @@ export const playgroundGroups = [
         flow: "Context → typed answer",
       },
       {
+        href: "/jev-chat",
+        label: "Jev Chat",
+        icon: MessageSquare,
+        detail:
+          "Explore Jev-driven response composition, source passages, constrained fiction, and visible decisions.",
+        flow: "Question → composed response",
+      },
+      {
         href: "/conversation",
         label: "Conversation lab",
         icon: MessageSquare,
@@ -48,6 +56,14 @@ export const playgroundGroups = [
         detail:
           "Select dates, vendors and amounts from values actually present in a document.",
         flow: "Document → selected fields",
+      },
+      {
+        href: "/youtube-extract",
+        label: "YouTube extract",
+        icon: FileScan,
+        detail:
+          "Select original caption passages with Jev scores, cost tracking and timestamp-linked verification.",
+        flow: "Video captions → chronological extract",
       },
       {
         href: "/reranker",
@@ -104,6 +120,14 @@ export const playgroundGroups = [
         detail:
           "Try a typed routing tool with live classification or a mocked response.",
         flow: "Tool call → governed route",
+      },
+      {
+        href: "/clean-room",
+        label: "Clean-room rebuild",
+        icon: Blocks,
+        detail:
+          "Rebuild observed screens and API contracts, then compare behavior in a real browser.",
+        flow: "Observed app → verified rebuild",
       },
       {
         href: "/jev-browser-agent",
@@ -179,6 +203,37 @@ export const playgroundGroups = [
     ],
   },
 ];
+/**
+ * Bento spans over a six-column set. Every set opens with a wide lead tile,
+ * and the rows that follow always fill exactly, so a filtered set never
+ * leaves a ragged hole where a tile used to be.
+ */
+export function bentoSpans(total: number): number[] {
+  if (total < 1) return [];
+  if (total === 1) return [6];
+  const spans = [4, 2];
+  for (let rest = total - 2; rest > 0;) {
+    if (rest >= 3) {
+      spans.push(2, 2, 2);
+      rest -= 3;
+    } else if (rest === 2) {
+      spans.push(3, 3);
+      rest -= 2;
+    } else {
+      spans.push(6);
+      rest -= 1;
+    }
+  }
+  return spans;
+}
+/** Every flow reads "in → out", the two ends a typed judgment connects. */
+export function flowEnds(flow: string): { input: string; output: string } {
+  const [input, output] = flow.split("→");
+  return {
+    input: (input ?? flow).trim(),
+    output: (output ?? "").trim(),
+  };
+}
 export const homePage = { href: "/", label: "Home", icon: House };
 export const playgroundPages = [
   homePage,

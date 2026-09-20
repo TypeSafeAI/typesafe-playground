@@ -40,6 +40,76 @@ test("local browser refuses hosted and cross-origin access", () => {
   );
 });
 
+test("local browser validates the actual loopback Host when Next canonicalizes the URL", () => {
+  for (const host of ["localhost:3121", "127.0.0.1:3121", "[::1]:3121"]) {
+    assert.doesNotThrow(
+      () =>
+        requireLocalBrowser(
+          new Request("http://localhost:3121/api/local-browser", {
+            headers: {
+              host,
+              origin: `http://${host}`,
+              "sec-fetch-site": "same-origin",
+            },
+          }),
+        ),
+      host,
+    );
+  }
+});
+
+test("local browser does not trust public Hosts, forwarded hosts, or another origin", () => {
+  for (const headers of [
+    { host: "public.example", origin: "http://public.example" },
+    { host: "public.example" },
+    { host: "127.0.0.1:3121", origin: "http://127.0.0.1:3000" },
+    { host: "127.0.0.1:3121", origin: "http://localhost:3121" },
+    { host: "127.0.0.1:3121", origin: "https://evil.example" },
+    { host: "127.0.0.1:3121", origin: "null" },
+    { host: "127.0.0.1:3121", "sec-fetch-site": "cross-site" },
+    { host: "public.example", "x-forwarded-host": "localhost:3121" },
+    {
+      host: "127.0.0.1:3121",
+      origin: "http://localhost:3121",
+      "x-forwarded-host": "localhost:3121",
+    },
+    { host: "localhost:3121/path" },
+    { host: "user@localhost:3121" },
+  ]) {
+    assert.throws(() =>
+      requireLocalBrowser(
+        new Request("http://localhost:3121/api/local-browser", {
+          headers: headers as Record<string, string>,
+        }),
+      ),
+    );
+  }
+  assert.throws(() =>
+    requireLocalBrowser(
+      new Request("https://public.example/api/local-browser", {
+        headers: { host: "localhost", origin: "https://localhost" },
+      }),
+    ),
+  );
+});
+
+test("hosted execution remains unavailable even with loopback request headers", () => {
+  const previous = process.env.VERCEL;
+  try {
+    process.env.VERCEL = "1";
+    assert.throws(() =>
+      requireLocalBrowser(
+        new Request("http://localhost:3121/api/local-browser", {
+          headers: { host: "127.0.0.1:3121", origin: "http://127.0.0.1:3121" },
+        }),
+      ),
+    );
+  } finally {
+    if (previous === undefined) delete process.env.VERCEL;
+    else process.env.VERCEL = previous;
+  }
+});
+
 test("retired public research routes cannot spend text-model credits", async () => {
   const helper = await import("../app/api/text-helper/route");
   const research = await import("../app/api/browser-research/route");

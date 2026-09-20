@@ -1,4 +1,5 @@
 "use client";
+import { WorkspaceGuide } from "./WorkspaceGuide";
 import { useUsage, usageBlocked } from "../lib/logUsageEntry";
 import { useEffect, useMemo, useRef, useState } from "react";
 import {
@@ -447,6 +448,7 @@ export function Examples() {
           <div className="panel-heading">
             <h2>Test setup</h2>
             <div className="setup-draft-actions">
+              <WorkspaceGuide />
               <span className="count">
                 {edited ? "Edited draft" : "Original example"}
               </span>

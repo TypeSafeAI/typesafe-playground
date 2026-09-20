@@ -38,7 +38,7 @@ cp .env.example .env.local
 pnpm dev
 ```
 
-Open http://localhost:3000/extraction (or the port printed by Next.js). The server
+Open http://localhost:3042/extraction (or the port printed by Next.js). The server
 reads `TYPESAFE_API_KEY`; it is never sent to the browser. `.env.local` is ignored
 by Git. Do not use a `NEXT_PUBLIC_` variable for this key.
 

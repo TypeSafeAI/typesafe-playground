@@ -25,11 +25,18 @@ export function validateNeweggBrowserUrl(value: string) {
 }
 export function requireLocalBrowser(request: Request) {
   const url = new URL(request.url);
+  // Next can canonicalize request.url to localhost while the browser uses
+  // 127.0.0.1 or [::1]. Validate the actual authority, not forwarded headers.
+  const host = request.headers.get("host") || url.host;
+  const validHost = /^(?:localhost|127\.0\.0\.1|\[::1\])(?::\d+)?$/i.test(host);
+  const actual = validHost ? new URL(`${url.protocol}//${host}`) : null;
   if (
     process.env.VERCEL ||
+    !["http:", "https:"].includes(url.protocol) ||
     !["localhost", "127.0.0.1", "[::1]"].includes(url.hostname) ||
+    !actual ||
     (request.headers.get("origin") &&
-      request.headers.get("origin") !== url.origin) ||
+      request.headers.get("origin") !== actual.origin) ||
     request.headers.get("sec-fetch-site") === "cross-site"
   )
     throw Error(
