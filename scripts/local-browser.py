@@ -37,7 +37,13 @@ async def main():
                     parsed = urlparse(final_url)
                     if f'{parsed.scheme}://{parsed.netloc}' != native_origin:
                         raise ValueError('The browser left the allowed task origin.')
-                    value = json.loads(await page.evaluate(command['script'])) if 'script' in command else None
+                    value = None
+                    if 'script' in command:
+                        # browser-use 0.13.10 JSON-stringifies objects out of
+                        # evaluate(); tolerate a decoded value so a future pin
+                        # returning Playwright-style types cannot break silently.
+                        raw = await page.evaluate(command['script'])
+                        value = json.loads(raw) if isinstance(raw, (str, bytes, bytearray)) else raw
                     screenshot = base64.b64encode(await browser.take_screenshot(format='jpeg', quality=65)).decode()
                     protocol.write(json.dumps({'id': request['id'], 'result': {'url': final_url, 'value': value, 'screenshot': screenshot}}) + '\n')
                     protocol.flush()

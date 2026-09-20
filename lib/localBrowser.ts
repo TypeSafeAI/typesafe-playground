@@ -12,6 +12,29 @@ type BrowserReply = {
   value?: unknown;
 };
 
+/**
+ * Inject trusted source verbatim; compiled functions can capture bundler
+ * helpers. The file never changes while the process runs, so read it once
+ * rather than on every observe/execute/verify call.
+ */
+let nativeRuntime: Promise<string> | null = null;
+function nativeRuntimeSource() {
+  return (nativeRuntime ??= readFile(
+    path.join(process.cwd(), "lib/nativeBrowser/dom-runtime.js"),
+    "utf8",
+  )
+    .then((source) =>
+      source.replace(
+        "export async function nativeBrowserDom",
+        "async function nativeBrowserDom",
+      ),
+    )
+    .catch((error) => {
+      nativeRuntime = null;
+      throw error;
+    }));
+}
+
 export function validateNeweggBrowserUrl(value: string) {
   const target = new URL(value);
   if (
@@ -177,12 +200,8 @@ class LocalBrowser {
   native = async (command: NativeDomCommand, signal: AbortSignal) => {
     if (!this.nativeOrigin)
       throw Error("This session does not support native actions.");
-    // Inject trusted source verbatim; compiled functions can capture bundler helpers.
-    const source = await readFile(
-      path.join(process.cwd(), "lib/nativeBrowser/dom-runtime.js"),
-      "utf8",
-    );
-    const script = `() => (${source.replace("export async function nativeBrowserDom", "async function nativeBrowserDom")})(${JSON.stringify(command)})`;
+    const source = await nativeRuntimeSource();
+    const script = `() => (${source})(${JSON.stringify(command)})`;
     return (await this.command({ native: { script } }, signal))
       .value as NativeDomReply;
   };

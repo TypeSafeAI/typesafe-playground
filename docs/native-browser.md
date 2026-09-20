@@ -65,4 +65,6 @@ The comparison targets are the user's reported BetterWrite figures: approximatel
 
 On 2026-09-17, the scripted real-browser staged PC and profile runs completed in seven decision calls each, with 12 executed actions each. Their serialized requests were approximately 7.3% and 9.0% smaller than the same-menu fresh-baseline counterfactual. No token performance claim follows from scripted decisions.
 
+Re-running the same command on 2026-09-20 reproduced both results exactly: `done` on each task, 12 executed actions in 7 decision calls, zero model calls, null tokens, and 7.33% / 9.02% request-character reduction.
+
 The live Jev benchmark returned HTTP 402 on its first call, before any action. Output-token targets and live policy success are **not verified**. Restore provider quota and rerun the live command before claiming either target is met.

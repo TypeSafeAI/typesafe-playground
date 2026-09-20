@@ -60,15 +60,21 @@ Checks above describe protocol/executor implementation verified with scripted re
 
 ## Remaining work
 
-1. Verify and push the staged-benchmark / field-correction follow-up to draft PR #19, then inspect its exact-commit CI.
-2. Restore quota or update the local TypeSafe key (requested asynchronously); rerun both live benchmarks. Do not repeatedly retry HTTP 402 or treat scripted decisions as live measurement.
-3. Inspect real Jev choices, provider token coverage and achieved outcomes against the original targets; fix any live-only failures.
-4. Re-audit requirements, obtain terminal exact-commit CI, and merge main as already authorized.
+1. Restore provider quota or supply a TypeSafe key with budget, then run the live
+   benchmark command in `docs/native-browser.md`. Do not repeatedly retry HTTP 402
+   or treat scripted decisions as live measurement.
+2. Inspect real Jev choices, provider token coverage and achieved outcomes against
+   the reported BetterWrite targets; fix any live-only failures.
+3. Until then the output-token targets and live Jev task success stay unverified in
+   the README, `docs/native-browser.md` and this ledger.
 
 ## Local benchmark artifacts
 
 - `/tmp/typesafe-native-scripted-verified.json` — SHA-256 `fb3a9457362f4f6f772e05fdcd3c75f45c0982d5af3b0fe802e62c0d898f28c6`.
 - `/tmp/typesafe-native-live.json` — SHA-256 `a7ce27ae702ce980c1c8d9612aea2ea2642f9a9ccd31cac8b5b7586d7774de37`.
+- 2026-09-20 rerun of `scripts/benchmark-native-browser.ts --scripted` — SHA-256
+  `8a190e0ba3e06aa42a67512fe6f22b1885be93cd65650876e67f256e7a7e82e4`. Reports are
+  local artifacts and are not committed.
 
 ## Staged benchmark follow-up
 
@@ -80,3 +86,40 @@ Checks above describe protocol/executor implementation verified with scripted re
 - Current staged v2 raw report: `/tmp/typesafe-native-staged-v2.json`. Earlier local artifacts above remain historical evidence, not the current benchmark comparison.
 
 - Follow-up verification: `pnpm test` passed 201 TypeScript tests plus legacy JavaScript checks; typecheck/build passed. Production native executor, staged benchmark, native UI and shared key-settings suites passed all 32 cases. Native key replacement clears the old billing block and sends the replacement header; dialog IDs are unique across the shell and native toolbar.
+
+## Close-out audit — 2026-09-20
+
+`origin/main` (6eb3bdd, through Jev Chat and the playground rename) is merged into the
+branch and the whole suite was re-run on the merged tree.
+
+- `pnpm test`: 475 TypeScript tests passed, plus the legacy JavaScript suite.
+- `pnpm typecheck` and `pnpm build`: passed.
+- `E2E_PRODUCTION=1 pnpm test:e2e`: 335 passed, 15 skipped. The four `clean-room.spec.ts`
+  failures were reproduced as a local artifact of three Playwright workers competing for
+  the two-slot demo admission cap, not a regression: the same spec passes 6/6 at
+  `--workers=1`, which is what CI uses. The 35 native-browser executor, staged-benchmark
+  and UI cases passed after the review fixes below.
+- `python3 -m unittest discover -s tests`: 26 passed; `py_compile` passed on the bridge,
+  `server.py` and `run.py`.
+- `scripts/benchmark-native-browser.ts --scripted` re-run against a real local
+  browser-use session: both staged tasks reached `done` with 12 executed actions in 7
+  decision calls, 0 model calls, null tokens, and 7.33% / 9.02% request-character
+  reduction — the same figures the earlier run reported.
+
+Automated review findings, resolved:
+
+- The Python bridge's `json.loads` around `page.evaluate` was reported as a Playwright
+  type error. It is correct for the pinned browser-use 0.13.10, whose `Page.evaluate`
+  returns a string and JSON-stringifies objects, and the scripted benchmark above
+  exercises that path end to end. The call now also accepts an already-decoded value so
+  a future pin cannot break it silently.
+- The injected DOM runtime source is read and rewritten once per process instead of on
+  every observe/execute/verify call.
+- Usage entries keep `success` for a cycle whose Jev call was answered but whose browser
+  batch then failed. That matches `PcBuildResearch`, where the status describes the Jev
+  exchange, and those input tokens were genuinely spent; the run's own status still
+  reports `failed`, and `outputTokensPerAction` is suppressed for uncertain batches.
+
+Open requirement: live token measurement. Every other requirement is implemented,
+tested offline and documented, so the branch merges with the live targets labelled
+unverified in the README, `docs/native-browser.md` and this ledger.
