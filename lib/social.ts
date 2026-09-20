@@ -150,6 +150,18 @@ export const SOCIAL_PAGES = {
     ],
     result: "Diff → review decision",
   },
+  "proposal-review": {
+    path: "/proposal-review",
+    title: "Proposal review",
+    description: "One proposal. Four questions. Code decides.",
+    category: "AGENT REVIEW GATE",
+    steps: [
+      "Propose one patch",
+      "Ask Jev four questions",
+      "Decide in code, keep the receipt",
+    ],
+    result: "Proposal → verdict + receipt",
+  },
   "ast-governance": {
     path: "/ast-governance",
     title: "AST-aware governance",

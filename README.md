@@ -68,6 +68,7 @@ The home page groups the prototypes into Language & data, Agents & workflows, Co
 | **Document extraction** `/extraction` | Find source candidates locally, then ask Jev to choose candidates or `null`. |
 | **YouTube extract** `/youtube-extract` | Select original caption passages with Jev relevance scores, live usage metrics, and timestamp-linked source verification. See [contract and limits](docs/youtube-extract.md). |
 | **PR review** `/pr-review` | Classify public PR/diff hunks and inspect policy-gated review queues. |
+| **Proposal review** `/proposal-review` | Let an agent propose one patch, ask Jev four yes/no questions, and let a fixed decision table decide. Receipts, mock and live; nothing is applied. See [the harness guide](docs/proposal-review.md). |
 | **AST governance** `/ast-governance` | Explore changed symbols, callers, deterministic policy, and ambiguous findings. |
 | **SMT solver** `/smt-solver` | Compare Jev classifications with real server-side Z3 checks and decomposition. |
 | **Tool router** `/tool-router` | Inspect closed-set routing with simulated tools, policy blocks, and mock approval gates. |

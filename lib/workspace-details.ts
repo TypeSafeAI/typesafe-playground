@@ -108,6 +108,16 @@ export const workspaceDetails: Record<string, WorkspaceDetails> = {
     experiment:
       "Run the mock demo, filter the risky hunks, and move a threshold to see how the review queue changes.",
   },
+  "/proposal-review": {
+    input:
+      "A synthetic fixture: a task, a few tiny files, evidence lines, and a scripted good or bad proposal. Mock mode needs no key; Live Jev needs a configured key.",
+    process:
+      "Code validates the proposal first: an allowlisted tool, a path inside the fixture root, one parseable single-file diff. A failure rejects before Jev is called. Otherwise one request asks Jev four noul questions, and a fixed decision table maps the answers to permit, proposal-only, reject, or unavailable.",
+    output:
+      "A receipt with the proposal, validation result, four answers with confidence, the verdict, and its reason. A verdict is evidence about the proposal, not permission; patches are recorded as pending and nothing is applied or executed.",
+    experiment:
+      "Review a clean fixture’s good proposal in Mock, switch to the bad arm, then open a prompt-injection fixture and read which question caught it.",
+  },
   "/ast-governance": {
     input:
       "A proposed diff, symbol information, and repository policy. The supplied sample is a safe starting point.",

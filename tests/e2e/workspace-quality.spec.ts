@@ -79,6 +79,7 @@ const routes = [
   "/tool-router",
   "/langchain",
   "/pr-review",
+  "/proposal-review",
   "/ast-governance",
   "/smt-solver",
   "/reranker",

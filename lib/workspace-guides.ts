@@ -230,6 +230,25 @@ export const workspaceGuides: Record<string, WorkspaceGuide> = {
       "Review recommendations only. This lab does not post reviews, run a second-stage model, or merge code.",
     flow: ["Diff", "Risk & policy", "Review queue"],
   },
+  "/proposal-review": {
+    steps: [
+      [
+        "Pick a fixture",
+        "Choose a synthetic task and its good or bad proposal. Everything shown is fixture data, never a real repository.",
+      ],
+      [
+        "Review it",
+        "Mock returns scripted probabilities and makes no request. Live Jev asks the pinned model four yes/no questions in one request.",
+      ],
+      [
+        "Read the receipt",
+        "Follow the verdict to the four answers, the threshold, and the validation checks. Open the receipt JSON to keep the evidence.",
+      ],
+    ],
+    boundary:
+      "Verdicts are evidence, not authorization. Patches are recorded as pending and never applied; no proposed code runs; an unavailable review is never treated as safe.",
+    flow: ["Proposal", "Four Jev answers", "Code verdict"],
+  },
   "/ast-governance": {
     steps: [
       [

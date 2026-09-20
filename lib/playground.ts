@@ -5,6 +5,7 @@ import {
   GitBranch,
   FileScan,
   GitPullRequest,
+  ClipboardCheck,
   Network,
   Scale,
   Route,
@@ -152,6 +153,14 @@ export const playgroundGroups = [
         detail:
           "Paste a PR or diff to separate routine changes from hunks needing review.",
         flow: "Diff → review gate",
+      },
+      {
+        href: "/proposal-review",
+        label: "Proposal review",
+        icon: ClipboardCheck,
+        detail:
+          "Let an agent propose one patch, ask Jev four questions about it, and let code decide.",
+        flow: "Proposal → code verdict",
       },
       {
         href: "/ast-governance",

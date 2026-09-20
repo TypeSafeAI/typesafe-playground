@@ -31,6 +31,7 @@ test("all workspaces fit the viewport and navigate without runtime errors", asyn
     "/memes",
     "/microduck",
     "/pr-review",
+    "/proposal-review",
     "/ast-governance",
     "/smt-solver",
     "/tool-router",
@@ -256,6 +257,7 @@ for (const [width, height] of [
         "/memes",
         "/microduck",
         "/pr-review",
+        "/proposal-review",
         "/ast-governance",
         "/smt-solver",
         "/tool-router",
@@ -296,6 +298,8 @@ for (const [width, height] of [
                           ? "Step"
                           : route === "/pr-review"
                             ? "Review PR"
+                            : route === "/proposal-review"
+                              ? "Review proposal"
                             : route === "/ast-governance"
                               ? "Analyze changes"
                               : route === "/smt-solver"
@@ -859,6 +863,7 @@ test("every workspace has a distinct branded OG and matching Twitter preview", a
     "/memes",
     "/microduck",
     "/pr-review",
+    "/proposal-review",
     "/ast-governance",
     "/smt-solver",
     "/tool-router",

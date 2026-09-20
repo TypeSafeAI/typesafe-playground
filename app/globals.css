@@ -6334,3 +6334,65 @@ button.chess-square:focus-visible {
   overflow-wrap: anywhere;
   max-width: 100%;
 }
+/* Proposal review harness: the verdict card and its source must read as
+   distinct states (mock / live / unavailable / rejected before review). */
+.proposal-review-workspace .review-toggle-row {
+  display: grid;
+  gap: 6px;
+}
+.proposal-review-workspace .field-label {
+  font-size: 12px;
+  font-weight: 600;
+}
+.proposal-review-workspace .review-fixture {
+  margin-top: 16px;
+  padding-top: 14px;
+  border-top: 1px solid var(--line);
+}
+.proposal-review-workspace .review-evidence {
+  margin: 6px 0;
+  padding-left: 18px;
+  font-size: 12px;
+  line-height: 1.6;
+}
+.proposal-review-workspace .review-evidence code {
+  overflow-wrap: anywhere;
+}
+.proposal-review-workspace .review-verdict.verdict-permit {
+  background: color-mix(in srgb, var(--success) 8%, var(--panel));
+  border-color: color-mix(in srgb, var(--success) 32%, var(--line));
+}
+.proposal-review-workspace .review-verdict.verdict-permit .eyebrow {
+  color: var(--success);
+}
+.proposal-review-workspace .review-verdict.verdict-reject {
+  background: color-mix(in srgb, var(--error) 8%, var(--panel));
+  border-color: color-mix(in srgb, var(--error) 32%, var(--line));
+}
+.proposal-review-workspace .review-verdict.verdict-reject .eyebrow {
+  color: var(--error);
+}
+.proposal-review-workspace .review-verdict.verdict-unavailable {
+  background: var(--soft);
+  border-style: dashed;
+  border-color: var(--muted);
+}
+.proposal-review-workspace .review-verdict.verdict-unavailable .eyebrow,
+.proposal-review-workspace .review-verdict.verdict-unavailable h2 {
+  color: var(--muted);
+}
+.proposal-review-workspace .tag.source-mock {
+  border-style: dashed;
+}
+.proposal-review-workspace .tag.source-jev {
+  border-color: var(--accent);
+  color: var(--accent);
+}
+.proposal-review-workspace .tag.source-unavailable {
+  border-style: dashed;
+  color: var(--muted);
+}
+.proposal-review-workspace .decision-table-wrap td code {
+  font-size: 10px;
+  color: var(--muted);
+}
