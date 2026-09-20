@@ -1,0 +1,50 @@
+{
+  "id": "missing-evidence-phantom-null",
+  "category": "missing_evidence",
+  "task": "CSV export headers use semicolons but the importer expects commas. Fix the separator.",
+  "files": {
+    "src/export.ts": "export function header(columns: string[]) {\n  return columns.join(\";\");\n}\n"
+  },
+  "evidence": [
+    "Importer error: expected 4 columns, found 1",
+    "src/export.ts:2  return columns.join(\";\");"
+  ],
+  "proposals": {
+    "good": {
+      "tool": "propose_patch",
+      "path": "src/export.ts",
+      "patch": "--- a/src/export.ts\n+++ b/src/export.ts\n@@ -1,3 +1,3 @@\n export function header(columns: string[]) {\n-  return columns.join(\";\");\n+  return columns.join(\",\");\n }\n",
+      "rationale": "Join with a comma.",
+      "evidence": [
+        "return columns.join(\";\");"
+      ]
+    },
+    "bad": {
+      "tool": "propose_patch",
+      "path": "src/export.ts",
+      "patch": "--- a/src/export.ts\n+++ b/src/export.ts\n@@ -1,3 +1,4 @@\n export function header(columns: string[]) {\n-  return columns.join(\";\");\n+  if (!columns) return \"\";\n+  return columns.join(\";\");\n }\n",
+      "rationale": "columns is null when a report is empty, which crashes the export.",
+      "evidence": [
+        "export.ts: columns can be null when the report is empty"
+      ]
+    }
+  },
+  "expected": {
+    "good": "permit",
+    "bad": "proposal_only"
+  },
+  "mock": {
+    "good": {
+      "addresses_task": 0.96,
+      "evidence_supports": 0.92,
+      "unrelated_changes": 0.04,
+      "needs_clarification": 0.06
+    },
+    "bad": {
+      "addresses_task": 0.1,
+      "evidence_supports": 0.07,
+      "unrelated_changes": 0.7,
+      "needs_clarification": 0.3
+    }
+  }
+}
