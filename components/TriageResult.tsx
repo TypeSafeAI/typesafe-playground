@@ -3,11 +3,13 @@ import { useState } from "react";
 import {
   BookOpen,
   CheckCheck,
+  Check,
   CircleHelp,
   Copy,
   UserRound,
 } from "lucide-react";
 import { percent } from "../lib/client";
+import { JsonView } from "./JsonView";
 import { Markdown } from "./Markdown";
 import {
   citesEvidence,
@@ -24,6 +26,15 @@ const icons = {
   needs_human: UserRound,
   needs_more_context: CircleHelp,
 };
+/** "docs.typesafe.ai/patterns/rag" — enough to tell two sources apart. */
+function sourceLabel(url: string): string {
+  try {
+    const parsed = new URL(url);
+    return `${parsed.host}${parsed.pathname}`.replace(/\/$/, "");
+  } catch {
+    return url;
+  }
+}
 export function OutcomeBadge({ outcome }: { outcome: TriageOutcome }) {
   const Icon = icons[outcome];
   return (
@@ -79,23 +90,37 @@ export function EvidenceCard({
 }
 function CopyButton({ text }: { text: string }) {
   const [copied, setCopied] = useState(false);
+  const [failed, setFailed] = useState(false);
   return (
-    <button
-      className="button quiet"
-      type="button"
-      onClick={async () => {
-        try {
-          await navigator.clipboard.writeText(text);
-          setCopied(true);
-          setTimeout(() => setCopied(false), 1500);
-        } catch {
-          setCopied(false);
-        }
-      }}
-    >
-      <Copy size={14} />
-      {copied ? "Copied" : "Copy reply"}
-    </button>
+    <div className="copy-reply">
+      <button
+        className="button copy-reply-button"
+        type="button"
+        onClick={async () => {
+          try {
+            await navigator.clipboard.writeText(text);
+            setFailed(false);
+            setCopied(true);
+            setTimeout(() => setCopied(false), 1500);
+          } catch {
+            // A refused clipboard used to leave the button silently inert,
+            // which reads as the click not registering. Say so instead; the
+            // reply stays selectable above.
+            setCopied(false);
+            setFailed(true);
+          }
+        }}
+      >
+        {copied ? <Check size={14} /> : <Copy size={14} />}
+        <span className="copy-reply-label">
+          {copied ? "Copied" : "Copy reply"}
+        </span>
+      </button>
+      <span role="status" aria-live="polite" className="copy-reply-status">
+        {copied ? "Markdown copied to the clipboard." : ""}
+        {failed ? "Could not reach the clipboard — select the text above." : ""}
+      </span>
+    </div>
   );
 }
 export function TriageResult({
@@ -142,7 +167,14 @@ export function TriageResult({
             <h3>Suggested reply</h3>
             <span>TEMPLATE, NOT GENERATED</span>
           </div>
-          <p className="suggested-reply">{decision.suggestedReply}</p>
+          {/* Rendered so the quote and the sender's own words are visibly
+              separate, while Copy takes the markdown source: this is pasted
+              into a chat client that renders markdown itself, so the source is
+              the useful thing to put on the clipboard. */}
+          <Markdown
+            text={decision.suggestedReply}
+            className="suggested-reply markdown-body"
+          />
           <CopyButton text={decision.suggestedReply} />
         </article>
       )}
@@ -168,21 +200,43 @@ export function TriageResult({
           Evidence Jev could choose from <span>{candidates.length}</span>
         </summary>
         {candidates.map((candidate) => (
-          <div className="parsed-message" key={candidate.id}>
+          <div className="parsed-message candidate-evidence" key={candidate.id}>
             <strong>
               {candidate.id} · {candidate.label}
             </strong>
             <time>{candidate.kind === "doc" ? "docs" : "chat"}</time>
-            <p>{candidate.excerpt}</p>
+            {/* Docs are markdown, and mostly fenced code and diagrams, so a
+                flat paragraph rendered them unreadable. Chat stays literal. */}
+            {candidate.kind === "doc" ? (
+              <Markdown
+                text={candidate.excerpt}
+                base={candidate.sourceUrl}
+                className="candidate-body markdown-body"
+                tabIndex={0}
+                ariaLabel={`Evidence excerpt ${candidate.id}`}
+              />
+            ) : (
+              <p>{candidate.excerpt}</p>
+            )}
+            {candidate.sourceUrl && (
+              /* The heading already carries the title, so the link says where
+                 it goes instead of repeating it. */
+              <a
+                href={candidate.sourceUrl}
+                target="_blank"
+                rel="noreferrer"
+                className="evidence-source candidate-source"
+              >
+                {sourceLabel(candidate.sourceUrl)} ↗
+              </a>
+            )}
           </div>
         ))}
       </details>
       {response && (
         <details className="disclosure">
           <summary>Raw response</summary>
-          <pre className="criteria-preview">
-            {JSON.stringify(response, null, 2)}
-          </pre>
+          <JsonView value={response} label="Raw response" defaultOpenDepth={2} />
         </details>
       )}
     </>

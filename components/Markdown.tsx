@@ -15,11 +15,15 @@ export function Markdown({
   text,
   base,
   className = "markdown-body",
+  tabIndex,
+  ariaLabel,
 }: {
   text: string;
   /** The document this markdown came from, so its relative links resolve. */
   base?: string;
   className?: string;
+  tabIndex?: number;
+  ariaLabel?: string;
 }) {
   const blocks = useMemo(() => safeMarkdownBlocks(text, base), [text, base]);
   const host = useRef<HTMLDivElement>(null);
@@ -34,7 +38,7 @@ export function Markdown({
   }, [blocks]);
   if (!blocks.length) return null;
   return (
-    <div ref={host} className={className}>
+    <div ref={host} className={className} tabIndex={tabIndex} aria-label={ariaLabel}>
       <BlockRenderer blocks={blocks} />
     </div>
   );

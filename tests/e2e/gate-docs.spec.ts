@@ -50,9 +50,11 @@ test("official docs are checked before chat and expose a source-linked reply", a
   await expect(
     page.getByRole("link", { name: "Read the source documentation" }),
   ).toHaveAttribute("href", "https://docs.typesafe.ai/api");
-  await expect(page.locator(".suggested-reply")).toContainText(
-    "https://docs.typesafe.ai/api",
-  );
+  // The reply cites the same source, but as a named link rather than a bare
+  // URL pasted into the prose, so the citation lives in the href now.
+  await expect(
+    page.locator(".suggested-reply").getByRole("link"),
+  ).toHaveAttribute("href", "https://docs.typesafe.ai/api");
   expect(steps).toEqual(["docs", "jev"]);
 });
 test("an unsupported docs match falls through to community; retrieval failure makes no Jev call", async ({

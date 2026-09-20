@@ -4898,13 +4898,59 @@ main:has(> .compact-lab) {
   color: var(--success);
   border-color: color-mix(in srgb, var(--success) 35%, var(--line));
 }
-.suggested-reply {
+.suggested-reply.markdown-body {
   background: var(--soft);
   border-radius: 8px;
-  padding: 13px;
+  padding: 13px 15px;
   margin: 0 0 13px;
-  font-size: 12px;
+  font-size: 12.5px;
   line-height: 1.7;
+  /* The reply is a paste target, not a scroll region: seeing all of it before
+     copying is the point, so it grows instead of clipping. */
+  max-height: none;
+  overflow: visible;
+  overflow-y: visible;
+  border-left: 0;
+}
+.suggested-reply.markdown-body blockquote {
+  border-left: 2px solid var(--line);
+  padding: 2px 0 2px 11px;
+  margin: 0 0 10px;
+  background: none;
+  color: var(--muted);
+}
+/* The copy control wraps to its own row when the panel is narrow, and the
+   status sits beside it when there is room. Announced politely so a refused
+   clipboard is not a silent no-op for anyone. */
+.copy-reply {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 8px 10px;
+}
+.copy-reply-button {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+}
+.copy-reply-status {
+  font-size: 11px;
+  color: var(--muted);
+  flex: 1 1 12ch;
+  min-width: 0;
+}
+@media (max-width: 650px) {
+  /* Full width where the panel is a single column. Height is left to the
+     workspace rule that already grows .button to a 44px tap target under
+     760px -- this is a primary action, so it is not marked .quiet, which that
+     rule deliberately keeps at 36px. */
+  .copy-reply .copy-reply-button {
+    flex: 1 1 100%;
+    justify-content: center;
+  }
+  .copy-reply .copy-reply-status {
+    flex-basis: 100%;
+  }
 }
 .annoyance-meter {
   display: grid;
@@ -6255,4 +6301,36 @@ button.chess-square:focus-visible {
 }
 .evidence-source:hover {
   text-decoration: underline;
+}
+
+/* Candidate evidence -----------------------------------------------------
+   The shortlist is skim-read before picking one, so each entry keeps its
+   document structure but stays compact and clearly bounded. */
+.candidate-evidence {
+  display: flex;
+  flex-direction: column;
+  gap: 7px;
+}
+.candidate-body {
+  margin: 0;
+  font-size: 12px;
+  max-height: 220px;
+}
+.candidate-body pre {
+  font-size: 11px;
+  max-height: 170px;
+}
+/* An MDX component wrapper is not prose. The parser leaves the tag as literal
+   text, which is correct -- evidence stays verbatim -- so it is only styled
+   down, making it read as source rather than as something Jev said. */
+.candidate-body p:has(> code:only-child),
+.markdown-body p:has(> code:only-child) {
+  color: var(--muted);
+}
+.candidate-source {
+  align-self: flex-start;
+  font-size: 11px;
+  white-space: normal;
+  overflow-wrap: anywhere;
+  max-width: 100%;
 }

@@ -1,4 +1,4 @@
-import { parse } from "@create-markdown/core";
+import { blocksToMarkdown, parse } from "@create-markdown/core";
 import type { Block, TextSpan } from "@create-markdown/core";
 
 /**
@@ -68,4 +68,16 @@ function scrub(blocks: Block[], base?: string) {
 export function safeMarkdownBlocks(markdown: string, base?: string) {
   if (!markdown.trim()) return [];
   return scrub(parse(markdown), base);
+}
+
+/**
+ * Markdown with the same URL guarantees, serialized back to markdown rather
+ * than rendered. The suggested reply is pasted into a chat client that does its
+ * own rendering, so what it needs is clean source: unsafe links gone and
+ * relative ones made absolute, because `/api/rate-limits` means nothing once it
+ * leaves this page.
+ */
+export function normalizedMarkdown(markdown: string, base?: string): string {
+  const blocks = safeMarkdownBlocks(markdown, base);
+  return blocks.length ? blocksToMarkdown(blocks).trim() : "";
 }

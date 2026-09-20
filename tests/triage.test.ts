@@ -1,6 +1,6 @@
 import { test } from "node:test";
 import assert from "node:assert/strict";
-import { rankEvidence, splitDocs, toHistory } from "../lib/matchEvidence";
+import { docExcerpt, rankEvidence, splitDocs, toHistory } from "../lib/matchEvidence";
 import {
   buildTriagePayload,
   buildTriageRequest,
@@ -39,7 +39,42 @@ const answered = (
     ...(evidence ? { evidence: { type: "choice", choice: evidence } } : {}),
   },
 });
-test("splits docs into one citable line per fact under its heading", () => {
+test("splits docs into citable markdown blocks under their heading", () => {
+  const docs = `# Guide
+- first item
+- second item
+
+\`\`\`python
+print("hi")
+\`\`\`
+
+Paragraph one.
+line two.`;
+  const blocks = splitDocs(docs);
+  assert.equal(blocks.length, 3);
+  assert.equal(blocks[0].title, "Guide");
+  assert.equal(blocks[0].content, "- first item\n- second item");
+  assert.equal(blocks[1].content, '```python\nprint("hi")\n```');
+  assert.equal(blocks[2].content, "Paragraph one.\nline two.");
+  assert.ok(blocks.every((s) => !s.content.startsWith("#")));
+});
+
+test("closes an opened fence when a long excerpt truncates mid-block", () => {
+  const excerpt = docExcerpt(
+    `\`\`\`python
+def first():
+    return 1
+
+def second():
+    return 2
+\`\`\`
+tail`,
+    42,
+  );
+  assert.match(excerpt, /…\n```$/);
+});
+
+test("splits sample docs under their heading", () => {
   assert.equal(snippets[0].id, "D1");
   assert.equal(snippets[0].title, "Questions");
   assert.match(snippets[0].content, /at least two named candidates/);
