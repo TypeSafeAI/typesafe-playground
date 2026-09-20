@@ -25,7 +25,12 @@ const NARROW_RAIL_ROUTES = new Set(["/jev-chat"]);
 export function Shell({ children }: { children: React.ReactNode }) {
   const path = usePathname();
   const sidebarRef = useRef<HTMLElement>(null);
-  const [collapsed, setCollapsed] = useState(false);
+  // Seeded from the route during the first render, not in an effect: the route
+  // is known on the server too, so this matches on hydration and the rail never
+  // paints at full width and then animates down.
+  const [collapsed, setCollapsed] = useState(() =>
+    NARROW_RAIL_ROUTES.has(path),
+  );
   const [mobileOpen, setMobileOpen] = useState(false);
   /**
    * The chat studio is a reading surface, so it starts with the rail collapsed

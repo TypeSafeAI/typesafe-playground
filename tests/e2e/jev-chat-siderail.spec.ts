@@ -11,13 +11,16 @@ test("the shell siderail navigates out of the chat studio", async ({
   await page.goto("/jev-chat");
   const rail = page.locator("aside.sidebar");
   await expect(rail).toBeVisible();
-  const bounds = await rail.boundingBox();
-  expect(bounds!.x).toBe(0);
+  // Assert the state before measuring: the grid width animates, so a bare
+  // boundingBox() can sample mid-transition and read neither 224 nor 64.
+  await expect(page.locator(".dashboard-shell")).toHaveClass(/nav-collapsed/);
+  expect((await rail.boundingBox())!.x).toBe(0);
   // Collapsed to icon width by default here, not hidden and not a second
   // full-width column beside the conversation list.
-  expect(bounds!.width).toBeGreaterThan(40);
-  expect(bounds!.width).toBeLessThan(120);
-  await expect(page.locator(".dashboard-shell")).toHaveClass(/nav-collapsed/);
+  await expect
+    .poll(async () => (await rail.boundingBox())!.width)
+    .toBeLessThan(120);
+  expect((await rail.boundingBox())!.width).toBeGreaterThan(40);
   // The studio's own panel is a separate surface, not the shell rail.
   await expect(page.locator(".jev-chat-studio")).toBeVisible();
   expect(
@@ -49,7 +52,7 @@ test("the collapsed default is per-route, not a stored preference", async ({
   await expect(page.locator(".dashboard-shell")).not.toHaveClass(
     /nav-collapsed/,
   );
-  const expanded = (await page.locator("aside.sidebar").boundingBox())!.width;
+  const expanded = await expandedWidth(page);
   await page.goto("/jev-chat");
   await expect(page.locator(".dashboard-shell")).toHaveClass(/nav-collapsed/);
   // Expanding here works, and does not leave the rail stuck collapsed later.
@@ -58,7 +61,22 @@ test("the collapsed default is per-route, not a stored preference", async ({
     /nav-collapsed/,
   );
   await page.goto("/gate");
-  expect((await page.locator("aside.sidebar").boundingBox())!.width).toBe(
-    expanded,
-  );
+  expect(await expandedWidth(page)).toBe(expanded);
 });
+/** Settles the rail's width animation before reporting it. */
+async function expandedWidth(page: import("@playwright/test").Page) {
+  const rail = page.locator("aside.sidebar");
+  await expect(page.locator(".dashboard-shell")).not.toHaveClass(
+    /nav-collapsed/,
+  );
+  let last = -1;
+  await expect
+    .poll(async () => {
+      const width = (await rail.boundingBox())!.width;
+      const settled = width === last;
+      last = width;
+      return settled;
+    })
+    .toBe(true);
+  return last;
+}
