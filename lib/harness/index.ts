@@ -6,3 +6,4 @@ export * from "./run";
 export * from "./proposer";
 export * from "./mock";
 export * from "./fixtures";
+export * from "./bench";
