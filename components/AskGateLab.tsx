@@ -237,6 +237,27 @@ export function AskGateLab() {
                 disabled={busy}
               />
             )}
+            <ContextInput
+              transcript={transcript}
+              onTranscript={setTranscript}
+              format={format}
+              onFormat={setFormat}
+              docs={docs}
+              onDocs={setDocs}
+              history={history}
+              snippets={snippets}
+              parseError={parseError}
+              ignoredStageNotices={ignoredStageNotices}
+              disabled={busy}
+              transcriptLabel={
+                mode === "single" ? "Recent conversation" : "Chat dump"
+              }
+              transcriptHint={
+                mode === "single"
+                  ? `Only the last ${historyLimit} messages are sent as context.`
+                  : "Every question in here is gated against the messages above it."
+              }
+            />
             <div className="evidence-card">
               <strong>Official docs → community context → human</strong>
               <p className="field-hint">
@@ -271,27 +292,6 @@ export function AskGateLab() {
                 </p>
               )}
             </div>
-            <ContextInput
-              transcript={transcript}
-              onTranscript={setTranscript}
-              format={format}
-              onFormat={setFormat}
-              docs={docs}
-              onDocs={setDocs}
-              history={history}
-              snippets={snippets}
-              parseError={parseError}
-              ignoredStageNotices={ignoredStageNotices}
-              disabled={busy}
-              transcriptLabel={
-                mode === "single" ? "Recent conversation" : "Chat dump"
-              }
-              transcriptHint={
-                mode === "single"
-                  ? `Only the last ${historyLimit} messages are sent as context.`
-                  : "Every question in here is gated against the messages above it."
-              }
-            />
             <fieldset disabled={busy}>
               <details className="disclosure">
                 <summary>Model</summary>

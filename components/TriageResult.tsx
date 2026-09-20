@@ -8,6 +8,7 @@ import {
   UserRound,
 } from "lucide-react";
 import { percent } from "../lib/client";
+import { Markdown } from "./Markdown";
 import {
   citesEvidence,
   outcomeHeadlines,
@@ -47,21 +48,32 @@ export function EvidenceCard({
         </h3>
         <span>{evidence.label}</span>
       </div>
-      <blockquote>{evidence.excerpt}</blockquote>
-      {evidence.sourceUrl && (
-        <a
-          href={evidence.sourceUrl}
-          target="_blank"
-          rel="noreferrer"
-          className="field-hint"
-        >
-          Read the source documentation ↗
-        </a>
+      {/* Documentation arrives as markdown. Rendering it as prose is not
+          decoration: the raw form buries the emphasis and turns every link
+          into visual noise, which is the opposite of what citing evidence is
+          for. Prior messages stay verbatim -- a chat line is not markdown and
+          reflowing it would misrepresent what someone actually typed. */}
+      {evidence.kind === "doc" ? (
+        <Markdown text={evidence.excerpt} base={evidence.sourceUrl} />
+      ) : (
+        <blockquote>{evidence.excerpt}</blockquote>
       )}
-      <div className="input-meta">
-        <span>Cited as {evidence.id}</span>
-        <span>Word overlap {percent(evidence.score)}</span>
-      </div>
+      <footer className="evidence-foot">
+        <div className="input-meta">
+          <span>Cited as {evidence.id}</span>
+          <span>Word overlap {percent(evidence.score)}</span>
+        </div>
+        {evidence.sourceUrl && (
+          <a
+            href={evidence.sourceUrl}
+            target="_blank"
+            rel="noreferrer"
+            className="evidence-source"
+          >
+            Read the source documentation ↗
+          </a>
+        )}
+      </footer>
     </article>
   );
 }

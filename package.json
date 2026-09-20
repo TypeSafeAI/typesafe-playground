@@ -36,6 +36,8 @@
     "typescript": "7.0.2"
   },
   "dependencies": {
+    "@create-markdown/core": "^2.0.3",
+    "@create-markdown/react": "^2.0.3",
     "@langchain/core": "1.2.11",
     "cheerio": "1.2.0",
     "chess.js": "1.4.0",

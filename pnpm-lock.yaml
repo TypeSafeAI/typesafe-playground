@@ -8,6 +8,12 @@ importers:
 
   .:
     dependencies:
+      '@create-markdown/core':
+        specifier: ^2.0.3
+        version: 2.0.3
+      '@create-markdown/react':
+        specifier: ^2.0.3
+        version: 2.0.3(@create-markdown/core@2.0.3)(react@19.3.0)
       '@langchain/core':
         specifier: 1.2.11
         version: 1.2.11
@@ -77,6 +83,17 @@ packages:
 
   '@cfworker/json-schema@4.1.1':
     resolution: {integrity: sha512-gAmrUZSGtKc3AiBL71iNWxDsyUC5uMaKKGdvzYsBoTW/xi42JQHl7eKV2OYzCUqvc+D2RCcf7EXY2iCyFIk6og==}
+
+  '@create-markdown/core@2.0.3':
+    resolution: {integrity: sha512-qAYukvE603z42OGZF1LzwxxkOVDksB76wXu+fnlKBzGizhR7uN3xHQO8PFFZDqjkZpaTrmtDd768qzl+Ir+3pQ==}
+    engines: {node: '>=20.0.0'}
+
+  '@create-markdown/react@2.0.3':
+    resolution: {integrity: sha512-McalJZoHnP7ZDSut9FiHDeM1Ms1Sox94aaHopsoH9f3eURVBQsQzCl2+l5j7oJBMIzp1cRlMRugd38+oP5L3lw==}
+    engines: {node: '>=20.0.0'}
+    peerDependencies:
+      '@create-markdown/core': '>=2.0.3'
+      react: '>=18.0.0'
 
   '@dimforge/rapier3d-compat@0.12.0':
     resolution: {integrity: sha512-uekIGetywIgopfD97oDL5PfeezkFpNhwlzlaEYNOA0N6ghdsOvh/HYjSMek5Q2O1PYvRSDFcqFVJl4r4ZBwOow==}
@@ -955,6 +972,13 @@ packages:
 snapshots:
 
   '@cfworker/json-schema@4.1.1': {}
+
+  '@create-markdown/core@2.0.3': {}
+
+  '@create-markdown/react@2.0.3(@create-markdown/core@2.0.3)(react@19.3.0)':
+    dependencies:
+      '@create-markdown/core': 2.0.3
+      react: 19.3.0
 
   '@dimforge/rapier3d-compat@0.12.0': {}
 
