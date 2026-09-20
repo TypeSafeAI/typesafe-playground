@@ -1,4 +1,5 @@
 "use client";
+import { STATE_CAPITALS_REFERENCE } from "../lib/jev-chat/state-capitals";
 import { useState } from "react";
 import {
   Check,
@@ -119,9 +120,13 @@ export function JevResponseDetails({
         <div className="jc-decision">
           <div className="jc-trace-flow">
             <span>
-              {result.trace.semanticVerification === "scripted-help"
-                ? "Match help"
-                : "Interpret"}
+              {result.trace.semanticVerification === "scripted-knowledge"
+                ? "Reference lookup"
+                : result.trace.semanticVerification === "scripted-personality"
+                  ? "Hometown preference"
+                  : result.trace.semanticVerification === "scripted-help"
+                    ? "Match help"
+                    : "Interpret"}
             </span>
             <ChevronRight size={12} />
             <span>Compose</span>
@@ -161,11 +166,15 @@ export function JevResponseDetails({
               <dt>Jev requests</dt>
               <dd>
                 {result.trace.calls}
-                {result.trace.semanticVerification === "scripted-help"
-                  ? " · scripted help"
-                  : result.provenance === "demo"
-                    ? " · local rules"
-                    : ""}
+                {result.trace.semanticVerification === "scripted-knowledge"
+                  ? " · built-in knowledge"
+                  : result.trace.semanticVerification === "scripted-personality"
+                    ? " · scripted personality"
+                    : result.trace.semanticVerification === "scripted-help"
+                      ? " · scripted help"
+                      : result.provenance === "demo"
+                        ? " · local rules"
+                        : ""}
               </dd>
             </div>
             <div>
@@ -201,11 +210,27 @@ export function JevResponseDetails({
             {restored
               ? "Saved trace · model attribution is not cryptographically authenticated. "
               : ""}
-            {result.trace.semanticVerification === "scripted-help"
-              ? "This is documented application help, rendered by local rules. No Jev request or model assessment was used."
-              : result.provenance === "demo"
-                ? "Demo behavior is scripted. These are not measurements of Jev quality."
-                : "Model relevance checks are probabilistic and do not establish factual correctness."}
+            {result.trace.semanticVerification === "scripted-knowledge" ? (
+              <>
+                This response uses the built-in U.S. state-capital table.{" "}
+                <a
+                  href={STATE_CAPITALS_REFERENCE}
+                  target="_blank"
+                  rel="noreferrer"
+                >
+                  State-capital reference
+                </a>
+                . No Jev request or model assessment was used.
+              </>
+            ) : result.trace.semanticVerification === "scripted-personality" ? (
+              "This is Jev Chat’s authored hometown preference. No Jev request, model assessment, or factual city ranking was used."
+            ) : result.trace.semanticVerification === "scripted-help" ? (
+              "This is documented application help, rendered by local rules. No Jev request or model assessment was used."
+            ) : result.provenance === "demo" ? (
+              "Demo behavior is scripted. These are not measurements of Jev quality."
+            ) : (
+              "Model relevance checks are probabilistic and do not establish factual correctness."
+            )}
           </p>
           <details className="jc-candidate-details">
             <summary>

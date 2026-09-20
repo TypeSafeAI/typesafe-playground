@@ -2,6 +2,8 @@
 import { useEffect, useRef, useState } from "react";
 import Link from "next/link";
 import { respond } from "../lib/jev-chat/engine";
+import { hometownPlan } from "../lib/jev-chat/hometown";
+import { stateCapitalPlan } from "../lib/jev-chat/state-capitals";
 import { readChatStorage, serializeChats } from "../lib/jev-chat/storage";
 import type { EngineResult } from "../lib/jev-chat/types";
 import {
@@ -253,7 +255,11 @@ export function JevChatLab() {
     try {
       let engineResult: EngineResult | undefined;
       let result: Decision | undefined;
-      if (chat.engine === "compose") {
+      if (
+        chat.engine === "compose" ||
+        hometownPlan(messages.at(-1)!.text) ||
+        stateCapitalPlan(messages.at(-1)!.text)
+      ) {
         engineResult = await respond(
           {
             messages: messages.map((m) => ({
@@ -676,11 +682,18 @@ export function JevChatLab() {
                         {message.engineResult && (
                           <span>
                             {message.engineResult.trace.semanticVerification ===
-                            "scripted-help"
-                              ? `Scripted help · ${message.engineResult.provenance === "live" ? "live" : "demo"} mode`
-                              : message.engineResult.provenance === "demo"
-                                ? "Local demo"
-                                : "Live Jev"}{" "}
+                            "scripted-knowledge"
+                              ? `Built-in knowledge · ${message.engineResult.provenance === "live" ? "live" : "demo"} mode`
+                              : message.engineResult.trace
+                                    .semanticVerification ===
+                                  "scripted-personality"
+                                ? `Hometown preference · ${message.engineResult.provenance === "live" ? "live" : "demo"} mode`
+                                : message.engineResult.trace
+                                      .semanticVerification === "scripted-help"
+                                  ? `Scripted help · ${message.engineResult.provenance === "live" ? "live" : "demo"} mode`
+                                  : message.engineResult.provenance === "demo"
+                                    ? "Local demo"
+                                    : "Live Jev"}{" "}
                             ·{" "}
                             {message.engineResult.status === "answered"
                               ? "Composed response"

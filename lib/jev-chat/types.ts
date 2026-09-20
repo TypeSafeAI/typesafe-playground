@@ -123,7 +123,12 @@ export type EngineResult = {
     reason: string;
     integrity: "verified";
     semanticVerification:
-      "model-assessed" | "scripted-demo" | "scripted-help" | "not-assessed";
+      | "model-assessed"
+      | "scripted-demo"
+      | "scripted-help"
+      | "scripted-personality"
+      | "scripted-knowledge"
+      | "not-assessed";
   };
 };
 export type JevTransport = (

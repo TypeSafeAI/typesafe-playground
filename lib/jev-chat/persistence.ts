@@ -84,6 +84,8 @@ const resultSchema = z.object({
       "model-assessed",
       "scripted-demo",
       "scripted-help",
+      "scripted-personality",
+      "scripted-knowledge",
       "not-assessed",
     ]),
   }),

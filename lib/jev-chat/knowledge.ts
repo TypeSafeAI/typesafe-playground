@@ -6,7 +6,7 @@ import { looksLikeStoryRevision, storyControls } from "./creative";
 import { sourceExcerpts } from "./source-excerpts";
 import { isPersonality } from "./personality";
 
-export const ENGINE_VERSION = "jev-language-12";
+export const ENGINE_VERSION = "jev-language-14";
 export const intents: Record<Intent, string> = {
   capabilities:
     "The user asks what THIS chat assistant can do, how it can help, available features, or getting started. This is not a greeting. Examples: what can you do; help me get started; how can you help me.",
@@ -142,6 +142,7 @@ export const supportEvidence: Evidence[] = [
 ];
 export const capabilityVerbs = [
   "explain how Jev works",
+  "name all 50 U.S. state capitals",
   "find relevant passages in your notes",
   "compare information supplied in your notes",
   "calculate relationships between two supported figures",

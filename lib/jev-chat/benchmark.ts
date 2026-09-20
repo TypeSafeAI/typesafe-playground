@@ -570,10 +570,12 @@ export async function parseBenchmarkReport(
     if (
       c.status === "completed" &&
       !c.requests.length &&
-      result?.trace.semanticVerification !== "scripted-help"
+      result?.trace.semanticVerification !== "scripted-help" &&
+      result?.trace.semanticVerification !== "scripted-personality" &&
+      result?.trace.semanticVerification !== "scripted-knowledge"
     )
       throw Error(
-        "A completed zero-request case requires a scripted help route.",
+        "A completed zero-request case requires a scripted help, personality, or knowledge route.",
       );
     if (
       c.result !== null &&

@@ -7,6 +7,8 @@ import {
   demoCalculation,
 } from "./reasoning";
 import { verifyCalculation } from "./quantities";
+import { hometownPlan } from "./hometown";
+import { stateCapitalPlan } from "./state-capitals";
 import {
   demoStoryDecision,
   hasStoryRequest,
@@ -610,19 +612,25 @@ export async function respond(
   const context = buildContext(input);
   const contextHash = await hashValue(context.state);
   check();
-  const help = scriptedHelp(context);
+  const hometown = hometownPlan(context.question);
+  const knowledge = stateCapitalPlan(context.question);
+  const localPlan = hometown ?? knowledge ?? scriptedHelp(context);
   emit(
     "interpret",
-    help
-      ? "Matching documented chat help"
+    localPlan
+      ? hometown
+        ? "Applying the hometown preference"
+        : knowledge
+          ? "Looking up the state-capital reference"
+          : "Matching documented chat help"
       : input.mode === "demo"
         ? "Applying local demo rules"
         : "Jev is interpreting the question",
   );
   const payload = analysisPayload(context);
-  const analysis: Analysis = help
+  const analysis: Analysis = localPlan
     ? {
-        intent: help.intent,
+        intent: localPlan.intent,
         signal: { probability: null, confidence: null },
         relevant: [],
         conflict: false,
@@ -636,10 +644,13 @@ export async function respond(
   let plans: Plan[],
     reason =
       "The selected semantic plan was rendered by scripted language rules.";
-  if (help) {
-    plans = [help];
-    reason =
-      "A complete documented help or conversation-recovery command matched a scripted route. No Jev inference or model confidence was used.";
+  if (localPlan) {
+    plans = [localPlan];
+    reason = hometown
+      ? "A direct Houston–Dallas rivalry question matched the authored hometown preference. No Jev inference, factual ranking, or model confidence was used."
+      : knowledge
+        ? "A complete state-capital question matched the built-in reference table. No Jev inference or model confidence was used."
+        : "A complete documented help or conversation-recovery command matched a scripted route. No Jev inference or model confidence was used.";
   } else if (input.mode === "live" && !usable(analysis.signal)) {
     plans = [clarification("uncertain", context)];
     reason =
@@ -649,13 +660,18 @@ export async function respond(
     plans = calculated ? [calculated] : composePlans(context, analysis);
   } else plans = composePlans(context, analysis);
   let selected = plans[0];
-  let semanticVerification: EngineResult["trace"]["semanticVerification"] = help
-    ? "scripted-help"
-    : input.mode === "demo"
-      ? "scripted-demo"
-      : "not-assessed";
+  let semanticVerification: EngineResult["trace"]["semanticVerification"] =
+    localPlan
+      ? hometown
+        ? "scripted-personality"
+        : knowledge
+          ? "scripted-knowledge"
+          : "scripted-help"
+      : input.mode === "demo"
+        ? "scripted-demo"
+        : "not-assessed";
   if (
-    !help &&
+    !localPlan &&
     input.mode === "live" &&
     (plans.length > 1 ||
       (selected.status === "answered" &&
@@ -733,12 +749,12 @@ export async function respond(
         text: p.sections.map((s) => s.text).join("\n\n"),
       })),
       calls,
-      inputTokens: help
+      inputTokens: localPlan
         ? 0
         : input.mode === "live" && (!usageKnown || !seenUsage)
           ? null
           : inputTokens,
-      outputTokens: help
+      outputTokens: localPlan
         ? 0
         : input.mode === "live" && (!usageKnown || !seenUsage)
           ? null
