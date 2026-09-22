@@ -1,0 +1,10 @@
+#!/bin/sh
+# Installed by `pnpm install` (see package.json "prepare"). Bypassing with
+# --no-verify is for false positives only; a real key gets rotated, not hidden.
+set -e
+node scripts/check-secrets.mjs --staged
+if command -v gitleaks >/dev/null 2>&1; then
+  gitleaks protect --staged --no-banner --redact
+else
+  echo "ℹ gitleaks not installed; only the built-in check ran. brew install gitleaks for full coverage."
+fi

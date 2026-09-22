@@ -4,6 +4,8 @@
   "packageManager": "pnpm@10.34.5",
   "scripts": {
     "preinstall": "node scripts/require-pnpm.cjs",
+    "prepare": "git config core.hooksPath .githooks || true",
+    "check:secrets": "node scripts/check-secrets.mjs --all",
     "dev": "next dev --hostname 127.0.0.1 --port 3042",
     "example:langchain": "tsx scripts/langchain-example.ts",
     "build": "next build",
