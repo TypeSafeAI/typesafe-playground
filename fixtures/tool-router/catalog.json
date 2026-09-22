@@ -1,0 +1,606 @@
+{
+  "version": "tool-router-catalog-v1",
+  "distractorPairs": [
+    ["search_inbox", "search_tickets"],
+    ["create_event", "create_reminder"],
+    ["send_sms", "send_push_notification"],
+    ["export_csv", "import_csv"],
+    ["format_code", "lint_code"],
+    ["fetch_url", "screenshot_page"]
+  ],
+  "tools": [
+    {
+      "name": "read_file",
+      "category": "files",
+      "snippet": "Read the full text of one file at a workspace path.",
+      "schema": {
+        "type": "object",
+        "properties": {
+          "path": { "type": "string", "description": "Workspace-relative path of the file to read." },
+          "encoding": { "type": "string", "enum": ["utf8", "latin1"], "default": "utf8", "description": "Text encoding used to decode the bytes." },
+          "maxBytes": { "type": "integer", "minimum": 1, "maximum": 1048576, "description": "Stop after this many bytes and report truncation." }
+        },
+        "required": ["path"]
+      }
+    },
+    {
+      "name": "write_file",
+      "category": "files",
+      "snippet": "Create or overwrite a file at a workspace path with the given text.",
+      "schema": {
+        "type": "object",
+        "properties": {
+          "path": { "type": "string", "description": "Workspace-relative path of the file to write." },
+          "content": { "type": "string", "description": "Complete new file contents." },
+          "createDirectories": { "type": "boolean", "default": false, "description": "Create missing parent directories first." },
+          "overwrite": { "type": "boolean", "default": false, "description": "Replace an existing file instead of failing." }
+        },
+        "required": ["path", "content"]
+      }
+    },
+    {
+      "name": "list_directory",
+      "category": "files",
+      "snippet": "List the entries of a directory, optionally recursively.",
+      "schema": {
+        "type": "object",
+        "properties": {
+          "path": { "type": "string", "description": "Workspace-relative directory to list." },
+          "recursive": { "type": "boolean", "default": false, "description": "Include entries of nested directories." },
+          "includeHidden": { "type": "boolean", "default": false, "description": "Include dot-prefixed entries." },
+          "maxEntries": { "type": "integer", "minimum": 1, "maximum": 5000, "default": 500, "description": "Upper bound on returned entries." }
+        },
+        "required": ["path"]
+      }
+    },
+    {
+      "name": "search_files",
+      "category": "files",
+      "snippet": "Find files whose contents match a text or regular-expression pattern.",
+      "schema": {
+        "type": "object",
+        "properties": {
+          "pattern": { "type": "string", "description": "Literal text or regular expression to look for inside files." },
+          "root": { "type": "string", "default": ".", "description": "Directory to search under." },
+          "glob": { "type": "string", "description": "Optional filename filter such as *.ts." },
+          "caseSensitive": { "type": "boolean", "default": false, "description": "Match letter case exactly." },
+          "maxResults": { "type": "integer", "minimum": 1, "maximum": 1000, "default": 100, "description": "Stop after this many matching lines." }
+        },
+        "required": ["pattern"]
+      }
+    },
+    {
+      "name": "move_file",
+      "category": "files",
+      "snippet": "Move or rename a file or directory to a new workspace path.",
+      "schema": {
+        "type": "object",
+        "properties": {
+          "from": { "type": "string", "description": "Current workspace-relative path." },
+          "to": { "type": "string", "description": "Destination workspace-relative path, including the new name." },
+          "overwrite": { "type": "boolean", "default": false, "description": "Replace an existing destination instead of failing." }
+        },
+        "required": ["from", "to"]
+      }
+    },
+    {
+      "name": "create_event",
+      "category": "calendar",
+      "snippet": "Add a calendar event with a title, start and end time, and optional attendees.",
+      "schema": {
+        "type": "object",
+        "properties": {
+          "title": { "type": "string", "description": "Event title shown on the calendar." },
+          "start": { "type": "string", "format": "date-time", "description": "Start time as an ISO 8601 timestamp." },
+          "end": { "type": "string", "format": "date-time", "description": "End time as an ISO 8601 timestamp; must be after start." },
+          "attendees": { "type": "array", "items": { "type": "string", "format": "email" }, "description": "Email addresses to invite." },
+          "location": { "type": "string", "description": "Room name, address, or meeting link." },
+          "description": { "type": "string", "description": "Agenda or notes shown in the invitation." }
+        },
+        "required": ["title", "start", "end"]
+      }
+    },
+    {
+      "name": "list_events",
+      "category": "calendar",
+      "snippet": "List calendar events between two times.",
+      "schema": {
+        "type": "object",
+        "properties": {
+          "from": { "type": "string", "format": "date-time", "description": "Earliest event start to include." },
+          "to": { "type": "string", "format": "date-time", "description": "Latest event start to include." },
+          "calendarId": { "type": "string", "default": "primary", "description": "Calendar to read; defaults to the user's primary calendar." },
+          "includeDeclined": { "type": "boolean", "default": false, "description": "Include events the user declined." }
+        },
+        "required": ["from", "to"]
+      }
+    },
+    {
+      "name": "reschedule_event",
+      "category": "calendar",
+      "snippet": "Change the start and end time of an existing calendar event.",
+      "schema": {
+        "type": "object",
+        "properties": {
+          "eventId": { "type": "string", "description": "Identifier of the event to move." },
+          "start": { "type": "string", "format": "date-time", "description": "New start time as an ISO 8601 timestamp." },
+          "end": { "type": "string", "format": "date-time", "description": "New end time; omit to keep the original duration." },
+          "notifyAttendees": { "type": "boolean", "default": true, "description": "Send updated invitations to attendees." }
+        },
+        "required": ["eventId", "start"]
+      }
+    },
+    {
+      "name": "cancel_event",
+      "category": "calendar",
+      "snippet": "Delete a calendar event and optionally notify its attendees.",
+      "schema": {
+        "type": "object",
+        "properties": {
+          "eventId": { "type": "string", "description": "Identifier of the event to cancel." },
+          "notifyAttendees": { "type": "boolean", "default": true, "description": "Send cancellation notices to attendees." },
+          "reason": { "type": "string", "description": "Optional message included in the cancellation notice." }
+        },
+        "required": ["eventId"]
+      }
+    },
+    {
+      "name": "find_free_slot",
+      "category": "calendar",
+      "snippet": "Find open time slots of a given length within a date range across attendees' calendars.",
+      "schema": {
+        "type": "object",
+        "properties": {
+          "durationMinutes": { "type": "integer", "minimum": 5, "maximum": 480, "description": "Length of the slot to find." },
+          "from": { "type": "string", "format": "date-time", "description": "Earliest acceptable start." },
+          "to": { "type": "string", "format": "date-time", "description": "Latest acceptable end." },
+          "attendees": { "type": "array", "items": { "type": "string", "format": "email" }, "description": "People whose calendars must all be free." },
+          "workingHoursOnly": { "type": "boolean", "default": true, "description": "Restrict results to 09:00-17:00 local time." }
+        },
+        "required": ["durationMinutes", "from", "to"]
+      }
+    },
+    {
+      "name": "send_email",
+      "category": "email",
+      "snippet": "Send an email with a subject, body, and optional attachments to recipients.",
+      "schema": {
+        "type": "object",
+        "properties": {
+          "to": { "type": "array", "items": { "type": "string", "format": "email" }, "minItems": 1, "description": "Primary recipient addresses." },
+          "cc": { "type": "array", "items": { "type": "string", "format": "email" }, "description": "Carbon-copy recipients." },
+          "subject": { "type": "string", "maxLength": 200, "description": "Subject line." },
+          "body": { "type": "string", "description": "Plain-text message body." },
+          "attachments": { "type": "array", "items": { "type": "string" }, "description": "Workspace paths of files to attach." }
+        },
+        "required": ["to", "subject", "body"]
+      }
+    },
+    {
+      "name": "search_inbox",
+      "category": "email",
+      "snippet": "Search received email messages by sender, subject, text, or date range.",
+      "schema": {
+        "type": "object",
+        "properties": {
+          "query": { "type": "string", "description": "Words to match in subject or body." },
+          "from": { "type": "string", "description": "Restrict to messages from this sender address or name." },
+          "after": { "type": "string", "format": "date", "description": "Only messages received on or after this date." },
+          "before": { "type": "string", "format": "date", "description": "Only messages received before this date." },
+          "unreadOnly": { "type": "boolean", "default": false, "description": "Return only unread messages." },
+          "limit": { "type": "integer", "minimum": 1, "maximum": 200, "default": 20, "description": "Maximum messages to return." }
+        }
+      }
+    },
+    {
+      "name": "draft_reply",
+      "category": "email",
+      "snippet": "Create an unsent reply draft to an existing email thread.",
+      "schema": {
+        "type": "object",
+        "properties": {
+          "threadId": { "type": "string", "description": "Identifier of the thread being answered." },
+          "body": { "type": "string", "description": "Plain-text reply body." },
+          "replyAll": { "type": "boolean", "default": false, "description": "Address every participant instead of only the last sender." }
+        },
+        "required": ["threadId", "body"]
+      }
+    },
+    {
+      "name": "archive_thread",
+      "category": "email",
+      "snippet": "Remove an email thread from the inbox without deleting it.",
+      "schema": {
+        "type": "object",
+        "properties": {
+          "threadId": { "type": "string", "description": "Identifier of the thread to archive." },
+          "markRead": { "type": "boolean", "default": true, "description": "Also mark every message in the thread as read." }
+        },
+        "required": ["threadId"]
+      }
+    },
+    {
+      "name": "add_label",
+      "category": "email",
+      "snippet": "Apply a named label or folder to an email thread.",
+      "schema": {
+        "type": "object",
+        "properties": {
+          "threadId": { "type": "string", "description": "Identifier of the thread to label." },
+          "label": { "type": "string", "description": "Label name; created if it does not exist." },
+          "removeFromInbox": { "type": "boolean", "default": false, "description": "Also archive the thread after labelling." }
+        },
+        "required": ["threadId", "label"]
+      }
+    },
+    {
+      "name": "fetch_url",
+      "category": "web",
+      "snippet": "Download a web page and return its readable text content.",
+      "schema": {
+        "type": "object",
+        "properties": {
+          "url": { "type": "string", "format": "uri", "description": "Absolute http or https URL to fetch." },
+          "maxChars": { "type": "integer", "minimum": 100, "maximum": 200000, "default": 20000, "description": "Truncate extracted text at this length." },
+          "includeLinks": { "type": "boolean", "default": false, "description": "Append the list of hyperlinks found on the page." }
+        },
+        "required": ["url"]
+      }
+    },
+    {
+      "name": "web_search",
+      "category": "web",
+      "snippet": "Search the public web and return result titles, links, and snippets.",
+      "schema": {
+        "type": "object",
+        "properties": {
+          "query": { "type": "string", "description": "Search terms." },
+          "count": { "type": "integer", "minimum": 1, "maximum": 50, "default": 10, "description": "Number of results to return." },
+          "recencyDays": { "type": "integer", "minimum": 1, "description": "Only results published within this many days." },
+          "site": { "type": "string", "description": "Restrict results to one domain." }
+        },
+        "required": ["query"]
+      }
+    },
+    {
+      "name": "extract_links",
+      "category": "web",
+      "snippet": "List every hyperlink on a web page, with anchor text.",
+      "schema": {
+        "type": "object",
+        "properties": {
+          "url": { "type": "string", "format": "uri", "description": "Page whose links should be listed." },
+          "sameDomainOnly": { "type": "boolean", "default": false, "description": "Drop links pointing to other domains." },
+          "maxLinks": { "type": "integer", "minimum": 1, "maximum": 2000, "default": 200, "description": "Upper bound on returned links." }
+        },
+        "required": ["url"]
+      }
+    },
+    {
+      "name": "screenshot_page",
+      "category": "web",
+      "snippet": "Render a web page in a headless browser and return a screenshot image.",
+      "schema": {
+        "type": "object",
+        "properties": {
+          "url": { "type": "string", "format": "uri", "description": "Page to render." },
+          "fullPage": { "type": "boolean", "default": false, "description": "Capture the whole scrollable page instead of the viewport." },
+          "width": { "type": "integer", "minimum": 320, "maximum": 3840, "default": 1280, "description": "Viewport width in pixels." },
+          "format": { "type": "string", "enum": ["png", "jpeg"], "default": "png", "description": "Image encoding." }
+        },
+        "required": ["url"]
+      }
+    },
+    {
+      "name": "check_link_status",
+      "category": "web",
+      "snippet": "Report the HTTP status of one or more URLs without downloading their bodies.",
+      "schema": {
+        "type": "object",
+        "properties": {
+          "urls": { "type": "array", "items": { "type": "string", "format": "uri" }, "minItems": 1, "maxItems": 100, "description": "Links to probe with HEAD requests." },
+          "followRedirects": { "type": "boolean", "default": true, "description": "Report the final status after redirects." },
+          "timeoutMs": { "type": "integer", "minimum": 100, "maximum": 30000, "default": 5000, "description": "Per-URL timeout." }
+        },
+        "required": ["urls"]
+      }
+    },
+    {
+      "name": "query_sql",
+      "category": "data",
+      "snippet": "Run a read-only SQL query against a named database and return rows.",
+      "schema": {
+        "type": "object",
+        "properties": {
+          "database": { "type": "string", "description": "Connection name from the configured list." },
+          "sql": { "type": "string", "description": "A single SELECT statement; writes are rejected." },
+          "parameters": { "type": "array", "items": {}, "description": "Positional bind parameters." },
+          "maxRows": { "type": "integer", "minimum": 1, "maximum": 10000, "default": 500, "description": "Row limit applied to the result." }
+        },
+        "required": ["database", "sql"]
+      }
+    },
+    {
+      "name": "describe_table",
+      "category": "data",
+      "snippet": "Show the columns, types, and keys of a database table.",
+      "schema": {
+        "type": "object",
+        "properties": {
+          "database": { "type": "string", "description": "Connection name from the configured list." },
+          "table": { "type": "string", "description": "Table name, optionally schema-qualified." },
+          "includeIndexes": { "type": "boolean", "default": true, "description": "Also list indexes and their columns." }
+        },
+        "required": ["database", "table"]
+      }
+    },
+    {
+      "name": "export_csv",
+      "category": "data",
+      "snippet": "Write the rows of a table or query result to a CSV file.",
+      "schema": {
+        "type": "object",
+        "properties": {
+          "database": { "type": "string", "description": "Connection name from the configured list." },
+          "source": { "type": "string", "description": "Table name or SELECT statement to export." },
+          "path": { "type": "string", "description": "Workspace path of the CSV file to create." },
+          "delimiter": { "type": "string", "maxLength": 1, "default": ",", "description": "Field separator character." },
+          "includeHeader": { "type": "boolean", "default": true, "description": "Write column names as the first row." }
+        },
+        "required": ["database", "source", "path"]
+      }
+    },
+    {
+      "name": "import_csv",
+      "category": "data",
+      "snippet": "Load the rows of a CSV file into a database table.",
+      "schema": {
+        "type": "object",
+        "properties": {
+          "database": { "type": "string", "description": "Connection name from the configured list." },
+          "path": { "type": "string", "description": "Workspace path of the CSV file to read." },
+          "table": { "type": "string", "description": "Destination table; must already exist." },
+          "delimiter": { "type": "string", "maxLength": 1, "default": ",", "description": "Field separator character." },
+          "hasHeader": { "type": "boolean", "default": true, "description": "Treat the first row as column names." },
+          "onConflict": { "type": "string", "enum": ["skip", "update", "fail"], "default": "fail", "description": "What to do when a primary key already exists." }
+        },
+        "required": ["database", "path", "table"]
+      }
+    },
+    {
+      "name": "run_aggregation",
+      "category": "data",
+      "snippet": "Compute a count, sum, or average over a table column with optional filters and grouping.",
+      "schema": {
+        "type": "object",
+        "properties": {
+          "database": { "type": "string", "description": "Connection name from the configured list." },
+          "table": { "type": "string", "description": "Table to aggregate." },
+          "operation": { "type": "string", "enum": ["count", "sum", "avg", "min", "max"], "description": "Aggregate function." },
+          "column": { "type": "string", "description": "Column to aggregate; ignored for count." },
+          "groupBy": { "type": "array", "items": { "type": "string" }, "description": "Columns to group results by." },
+          "where": { "type": "string", "description": "Optional SQL filter expression." }
+        },
+        "required": ["database", "table", "operation"]
+      }
+    },
+    {
+      "name": "run_tests",
+      "category": "code",
+      "snippet": "Run the project's automated test suite, optionally limited to a path or name pattern.",
+      "schema": {
+        "type": "object",
+        "properties": {
+          "path": { "type": "string", "description": "Directory or file to limit the run to." },
+          "namePattern": { "type": "string", "description": "Only run tests whose names match this pattern." },
+          "watch": { "type": "boolean", "default": false, "description": "Keep re-running on file changes." },
+          "coverage": { "type": "boolean", "default": false, "description": "Collect a coverage report." }
+        }
+      }
+    },
+    {
+      "name": "format_code",
+      "category": "code",
+      "snippet": "Rewrite source files to match the project's formatting rules.",
+      "schema": {
+        "type": "object",
+        "properties": {
+          "paths": { "type": "array", "items": { "type": "string" }, "minItems": 1, "description": "Files or directories to format." },
+          "check": { "type": "boolean", "default": false, "description": "Report differences without writing files." },
+          "configPath": { "type": "string", "description": "Formatter configuration file to use instead of the default." }
+        },
+        "required": ["paths"]
+      }
+    },
+    {
+      "name": "lint_code",
+      "category": "code",
+      "snippet": "Analyze source files for style and correctness problems without changing them.",
+      "schema": {
+        "type": "object",
+        "properties": {
+          "paths": { "type": "array", "items": { "type": "string" }, "minItems": 1, "description": "Files or directories to analyze." },
+          "fix": { "type": "boolean", "default": false, "description": "Apply safe automatic fixes for reported problems." },
+          "severity": { "type": "string", "enum": ["error", "warning", "info"], "default": "warning", "description": "Lowest severity to report." }
+        },
+        "required": ["paths"]
+      }
+    },
+    {
+      "name": "search_symbols",
+      "category": "code",
+      "snippet": "Find where a function, class, or variable is defined or referenced in the codebase.",
+      "schema": {
+        "type": "object",
+        "properties": {
+          "symbol": { "type": "string", "description": "Exact identifier to look up." },
+          "kind": { "type": "string", "enum": ["definition", "references", "both"], "default": "both", "description": "Whether to return definitions, references, or both." },
+          "root": { "type": "string", "default": ".", "description": "Directory to search under." }
+        },
+        "required": ["symbol"]
+      }
+    },
+    {
+      "name": "apply_patch",
+      "category": "code",
+      "snippet": "Apply a unified diff to files in the workspace.",
+      "schema": {
+        "type": "object",
+        "properties": {
+          "patch": { "type": "string", "description": "Unified diff text." },
+          "dryRun": { "type": "boolean", "default": false, "description": "Check that the patch applies without writing." },
+          "strip": { "type": "integer", "minimum": 0, "maximum": 5, "default": 1, "description": "Leading path components to strip." }
+        },
+        "required": ["patch"]
+      }
+    },
+    {
+      "name": "create_ticket",
+      "category": "tickets",
+      "snippet": "Open a new issue in the tracker with a title, description, and type.",
+      "schema": {
+        "type": "object",
+        "properties": {
+          "title": { "type": "string", "maxLength": 200, "description": "Short summary of the problem or request." },
+          "description": { "type": "string", "description": "Details, reproduction steps, or acceptance criteria." },
+          "type": { "type": "string", "enum": ["bug", "feature", "task"], "default": "task", "description": "Issue type." },
+          "priority": { "type": "string", "enum": ["low", "medium", "high", "urgent"], "default": "medium", "description": "Initial priority." },
+          "labels": { "type": "array", "items": { "type": "string" }, "description": "Labels to attach." }
+        },
+        "required": ["title"]
+      }
+    },
+    {
+      "name": "update_ticket_status",
+      "category": "tickets",
+      "snippet": "Move an existing ticket to a new workflow status.",
+      "schema": {
+        "type": "object",
+        "properties": {
+          "ticketId": { "type": "string", "description": "Identifier of the ticket." },
+          "status": { "type": "string", "enum": ["open", "in_progress", "blocked", "resolved", "closed"], "description": "Target status." },
+          "resolution": { "type": "string", "description": "Required note when moving to resolved or closed." }
+        },
+        "required": ["ticketId", "status"]
+      }
+    },
+    {
+      "name": "assign_ticket",
+      "category": "tickets",
+      "snippet": "Set or change the person responsible for a ticket.",
+      "schema": {
+        "type": "object",
+        "properties": {
+          "ticketId": { "type": "string", "description": "Identifier of the ticket." },
+          "assignee": { "type": "string", "description": "Username of the new owner; empty to unassign." },
+          "notify": { "type": "boolean", "default": true, "description": "Send the new owner a notification." }
+        },
+        "required": ["ticketId", "assignee"]
+      }
+    },
+    {
+      "name": "comment_on_ticket",
+      "category": "tickets",
+      "snippet": "Add a comment to an existing ticket.",
+      "schema": {
+        "type": "object",
+        "properties": {
+          "ticketId": { "type": "string", "description": "Identifier of the ticket." },
+          "body": { "type": "string", "description": "Comment text in Markdown." },
+          "internal": { "type": "boolean", "default": false, "description": "Hide the comment from external reporters." }
+        },
+        "required": ["ticketId", "body"]
+      }
+    },
+    {
+      "name": "search_tickets",
+      "category": "tickets",
+      "snippet": "Search issues in the tracker by text, status, assignee, or label.",
+      "schema": {
+        "type": "object",
+        "properties": {
+          "query": { "type": "string", "description": "Words to match in title or description." },
+          "status": { "type": "array", "items": { "type": "string" }, "description": "Only tickets in these statuses." },
+          "assignee": { "type": "string", "description": "Only tickets owned by this username." },
+          "labels": { "type": "array", "items": { "type": "string" }, "description": "Only tickets carrying all of these labels." },
+          "limit": { "type": "integer", "minimum": 1, "maximum": 200, "default": 25, "description": "Maximum tickets to return." }
+        }
+      }
+    },
+    {
+      "name": "send_sms",
+      "category": "notify",
+      "snippet": "Send a short text message to a phone number.",
+      "schema": {
+        "type": "object",
+        "properties": {
+          "to": { "type": "string", "pattern": "^\\+[1-9][0-9]{6,14}$", "description": "Recipient phone number in E.164 format." },
+          "message": { "type": "string", "maxLength": 480, "description": "Message text; longer texts are split into segments." },
+          "senderId": { "type": "string", "description": "Registered sender name or number to send from." }
+        },
+        "required": ["to", "message"]
+      }
+    },
+    {
+      "name": "post_chat_message",
+      "category": "notify",
+      "snippet": "Post a message to a team chat channel or thread.",
+      "schema": {
+        "type": "object",
+        "properties": {
+          "channel": { "type": "string", "description": "Channel name such as #announcements, or a channel id." },
+          "text": { "type": "string", "description": "Message text; supports basic Markdown." },
+          "threadId": { "type": "string", "description": "Reply within this thread instead of posting a new message." },
+          "mentionHere": { "type": "boolean", "default": false, "description": "Notify everyone currently active in the channel." }
+        },
+        "required": ["channel", "text"]
+      }
+    },
+    {
+      "name": "create_reminder",
+      "category": "notify",
+      "snippet": "Schedule a personal reminder that notifies the user at a chosen time.",
+      "schema": {
+        "type": "object",
+        "properties": {
+          "text": { "type": "string", "description": "What the reminder should say." },
+          "at": { "type": "string", "format": "date-time", "description": "When to fire, as an ISO 8601 timestamp." },
+          "repeat": { "type": "string", "enum": ["none", "daily", "weekly", "monthly"], "default": "none", "description": "Recurrence rule." },
+          "channel": { "type": "string", "enum": ["push", "email", "chat"], "default": "push", "description": "How the user is notified." }
+        },
+        "required": ["text", "at"]
+      }
+    },
+    {
+      "name": "send_push_notification",
+      "category": "notify",
+      "snippet": "Send a push notification to the mobile app of one user, a segment, or everyone.",
+      "schema": {
+        "type": "object",
+        "properties": {
+          "audience": { "type": "string", "description": "A user id, a named segment such as beta_testers, or all." },
+          "title": { "type": "string", "maxLength": 80, "description": "Notification headline." },
+          "body": { "type": "string", "maxLength": 240, "description": "Notification text." },
+          "deepLink": { "type": "string", "description": "In-app route opened when the notification is tapped." },
+          "sendAt": { "type": "string", "format": "date-time", "description": "Deliver later instead of immediately." }
+        },
+        "required": ["audience", "title", "body"]
+      }
+    },
+    {
+      "name": "schedule_digest",
+      "category": "notify",
+      "snippet": "Set up a recurring summary email of activity from selected sources.",
+      "schema": {
+        "type": "object",
+        "properties": {
+          "sources": { "type": "array", "items": { "type": "string", "enum": ["tickets", "calendar", "chat", "email"] }, "minItems": 1, "description": "Activity feeds to summarize." },
+          "cadence": { "type": "string", "enum": ["daily", "weekly"], "description": "How often the digest is sent." },
+          "sendHour": { "type": "integer", "minimum": 0, "maximum": 23, "default": 8, "description": "Local hour of day to send." },
+          "recipients": { "type": "array", "items": { "type": "string", "format": "email" }, "minItems": 1, "description": "Who receives the digest." }
+        },
+        "required": ["sources", "cadence", "recipients"]
+      }
+    }
+  ]
+}
