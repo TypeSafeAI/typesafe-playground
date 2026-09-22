@@ -51,7 +51,7 @@ function checkHunkContext(
   const oldLines = body
     .filter((line) => /^[ -]/.test(line))
     .map((line) => line.slice(1));
-  if (!oldLines.length) return null;
+  if (!oldLines.length) return "patch hunk has no old/context lines";
   const fileLines = fileContent.replace(/\r\n/g, "\n").split("\n");
   outer: for (let i = 0; i + oldLines.length <= fileLines.length; i++) {
     for (let j = 0; j < oldLines.length; j++)
