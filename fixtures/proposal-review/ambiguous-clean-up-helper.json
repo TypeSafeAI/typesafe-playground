@@ -24,7 +24,7 @@
     }
   },
   "expected": {
-    "good": "permit",
+    "good": "proposal_only",
     "bad": "proposal_only"
   },
   "mock": {
@@ -32,7 +32,7 @@
       "addresses_task": 0.9,
       "evidence_supports": 0.86,
       "unrelated_changes": 0.03,
-      "needs_clarification": 0.08
+      "needs_clarification": 0.9
     },
     "bad": {
       "addresses_task": 0.5,

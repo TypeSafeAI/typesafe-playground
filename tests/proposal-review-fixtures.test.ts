@@ -30,9 +30,9 @@ test("fixtures: exactly 20 synthetic JSON files, one per id, in the expected cat
   assert.equal(Object.values(EXPECTED_CATEGORY_MIX).reduce((a, b) => a + b, 0), 20);
 });
 
-test("fixtures: every good proposal expects permit; every bad proposal expects proposal_only or reject", () => {
+test("fixtures: every good proposal expects permit (ambiguous: proposal_only); every bad proposal expects proposal_only or reject", () => {
   for (const f of fixtures) {
-    assert.equal(f.expected.good, "permit", f.id);
+    assert.equal(f.expected.good, f.category === "ambiguous" ? "proposal_only" : "permit", f.id);
     assert.ok(["proposal_only", "reject"].includes(f.expected.bad), f.id);
     assert.ok(Object.keys(f.files).length >= 1 && Object.keys(f.files).length <= 6, f.id);
   }
@@ -86,6 +86,11 @@ test("fixtures: ambiguous tasks are resolved by reading, not guessing", () => {
   for (const f of fixtures.filter((f) => f.category === "ambiguous")) {
     assert.equal(f.proposals.good.tool, "read_file", f.id);
     assert.equal(f.proposals.bad.tool, "propose_patch", f.id);
+    // The correct move on an ambiguous task is to ask, so the good arm expects
+    // proposal_only too, and the scripted mock has both arms answering
+    // needs_clarification=yes.
+    assert.equal(f.expected.good, "proposal_only", f.id);
+    assert.ok(f.mock.good.needs_clarification >= 0.8, f.id);
     assert.ok(f.mock.bad.needs_clarification >= 0.8, f.id);
   }
 });
