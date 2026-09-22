@@ -1,8 +1,8 @@
 import type { RouterState } from "../types/workflow";
 import { nodeById } from "../lib/workflowGraph";
-import { percent } from "../lib/client";
 import { DecisionPreview } from "./WorkspaceGuide";
 import { RunButton } from "./ui";
+import { ConfidenceBar } from "./ConfidenceBar";
 const policyNames: Record<string, string> = {
   always_blocked: "Sensitive-data protection",
   confidence_gate: "85% confidence gate",
@@ -144,18 +144,6 @@ export function RoutingResult({
               <dt>Proposed node</dt>
               <dd>{nodeById(last.selected)?.label || last.selected}</dd>
             </div>
-            {modelCalled && (
-              <>
-                <div>
-                  <dt>Jev confidence</dt>
-                  <dd>{percent(last.confidence)}</dd>
-                </div>
-                <div>
-                  <dt>Selected probability</dt>
-                  <dd>{percent(last.probability)}</dd>
-                </div>
-              </>
-            )}
             <div>
               <dt>Policy</dt>
               <dd>
@@ -165,6 +153,15 @@ export function RoutingResult({
               </dd>
             </div>
           </dl>
+        )}
+        {last.selected && modelCalled && (
+          <>
+            <ConfidenceBar label="Jev confidence" value={last.confidence} />
+            <ConfidenceBar
+              label="Selected probability"
+              value={last.probability}
+            />
+          </>
         )}
         <p>
           Final node: <code>{last.finalNode}</code>

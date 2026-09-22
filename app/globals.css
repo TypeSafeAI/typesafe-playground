@@ -873,6 +873,12 @@ blockquote {
   font-size: 12px;
   overflow-wrap: anywhere;
 }
+.confidence-bar {
+  margin-top: 4px;
+}
+.confidence-bar .input-meta {
+  margin-bottom: 4px;
+}
 .probability-track {
   height: 5px;
   background: var(--line);

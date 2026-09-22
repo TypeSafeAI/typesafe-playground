@@ -13,7 +13,8 @@ import { verifyGraph } from "../lib/jev-chat/graph";
 import { verifySavedResult } from "../lib/jev-chat/persistence";
 import type { EngineResult } from "../lib/jev-chat/types";
 import { personalityLabels } from "../lib/jev-chat/personality";
-import { download, percent } from "../lib/client";
+import { download } from "../lib/client";
+import { ConfidenceBar } from "./ConfidenceBar";
 
 export function JevResponseDetails({
   result,
@@ -178,14 +179,6 @@ export function JevResponseDetails({
               </dd>
             </div>
             <div>
-              <dt>Intent probability</dt>
-              <dd>{percent(result.signal.probability)}</dd>
-            </div>
-            <div>
-              <dt>Distribution confidence</dt>
-              <dd>{percent(result.signal.confidence)}</dd>
-            </div>
-            <div>
               <dt>Reported tokens</dt>
               <dd>
                 {result.trace.inputTokens === null ||
@@ -199,6 +192,14 @@ export function JevResponseDetails({
               <dd>{Math.round(result.trace.elapsedMs)} ms</dd>
             </div>
           </dl>
+          <ConfidenceBar
+            label="Intent probability"
+            value={result.signal.probability}
+          />
+          <ConfidenceBar
+            label="Distribution confidence"
+            value={result.signal.confidence}
+          />
           <p>{result.trace.reason}</p>
           {result.story && (
             <p>
