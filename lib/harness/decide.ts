@@ -98,7 +98,7 @@ export function decide(
   if (jev.answers === null)
     return {
       verdict: "unavailable",
-      reason: `Jev review unavailable: ${jev.error ?? "no answers returned"}. Treated as proposal-only, never as safe.`,
+      reason: `Jev review unavailable: ${jev.error ?? "no answers returned"}. Verdict unavailable; never treated as safe.`,
     };
   const misses = unfavorable(jev.answers, threshold);
   if (misses.length)

@@ -48,7 +48,7 @@ test("decision table: null answers are unavailable, never permit", () => {
   const d = decide(ok, jev(null, "HTTP 502"));
   assert.equal(d.verdict, "unavailable");
   assert.match(d.reason, /HTTP 502/);
-  assert.match(d.reason, /never as safe/);
+  assert.match(d.reason, /never treated as safe/);
 });
 
 test("decision table: all four favorable above threshold permits", () => {
