@@ -38,7 +38,7 @@ Jev sees only `name` and `snippet` for each tool; full schemas are never in the 
 
 `top3` is the three tool options with the highest `probabilities` from the same choice answer, with Jev's `choice` kept first and `none` excluded. No `score` questions are sent.
 
-Reason: the choice answer already returns [the full probability distribution across every option](https://docs.typesafe.ai/primitives/choice), so a ranking costs zero extra questions. A [`score`](https://docs.typesafe.ai/primitives/score) question rates one item on a 2 to 10 level ordered scale and returns a weighted mean level; ranking 40 tools that way would mean 40 score questions per task (one per tool), and each would measure absolute fit in isolation rather than preference among the options. That is neither cheap nor the right shape. Caveat: probabilities near the floor of the distribution are a weak ordering signal, so read top-3 accuracy as "the expected tool got non-trivial mass", not as a calibrated second and third pick.
+Reason: the choice answer already returns [the full probability distribution across every option](https://docs.typesafe.ai/primitives/choice), so a ranking costs zero extra questions. A [`score`](https://docs.typesafe.ai/primitives/score) question rates one item on a 2 to 10 level ordered scale and returns a weighted mean level; ranking 40 tools that way would mean 40 score questions per task (one per tool), and each would measure absolute fit in isolation rather than preference among the options. That is neither cheap nor the right shape. Observed in the live run below: the provider reports probabilities at 0.01 granularity and concentrated all mass on one option for most tasks, so `top3` usually had a single entry. Caveat: probabilities near the floor of the distribution are a weak ordering signal, so read top-3 accuracy as "the expected tool got non-trivial mass", not as a calibrated second and third pick.
 
 ## Baseline
 
@@ -107,7 +107,55 @@ Mock transport (`lib/tool-router/mock.ts`) turns lexical overlap into a probabil
 
 ## Results: live
 
-Not yet run at this commit; see the following commit or `docs/tool-router-results.live.json`.
+One run on 2026-09-22 (started 08:41:52 UTC, finished 08:42:01 UTC) with model `jev-1.13.0` requested and `jev-1.13.0` reported by the provider on every response. 30 requests, 43,251 input and 10,869 output tokens, 0 unavailable. Source: `docs/tool-router-results.live.json`, run with `op run --env-file=.env.1password -- pnpm exec tsx scripts/tool-router-bench.ts --live --output docs/tool-router-results.live.json`.
+
+### Baseline (lexical BM25-lite over name + snippet)
+
+| Category | Tasks | Top-1 | Top-1 (acceptable) | Top-3 | None precision | None recall | Unavailable |
+| --- | --- | --- | --- | --- | --- | --- | --- |
+| calendar | 3 | 33.3% (1/3) | 33.3% (1/3) | 33.3% (1/3) | n/a | n/a | 0 |
+| code | 3 | 66.7% (2/3) | 66.7% (2/3) | 100.0% (3/3) | n/a | n/a | 0 |
+| data | 3 | 33.3% (1/3) | 33.3% (1/3) | 66.7% (2/3) | n/a | n/a | 0 |
+| email | 3 | 33.3% (1/3) | 33.3% (1/3) | 33.3% (1/3) | n/a | n/a | 0 |
+| files | 3 | 33.3% (1/3) | 33.3% (1/3) | 66.7% (2/3) | n/a | n/a | 0 |
+| notify | 4 | 75.0% (3/4) | 75.0% (3/4) | 75.0% (3/4) | n/a | n/a | 0 |
+| tickets | 3 | 0.0% (0/3) | 0.0% (0/3) | 66.7% (2/3) | n/a | n/a | 0 |
+| web | 3 | 0.0% (0/3) | 0.0% (0/3) | 33.3% (1/3) | n/a | n/a | 0 |
+| none | 5 | n/a | n/a | n/a | 100.0% (4/4) | 80.0% (4/5) | 0 |
+| **Total** | 30 | 36.0% (9/25) | 36.0% (9/25) | 60.0% (15/25) | 100.0% (4/4) | 80.0% (4/5) | 0 |
+
+### Jev (jev-1.13.0)
+
+| Category | Tasks | Top-1 | Top-1 (acceptable) | Top-3 | None precision | None recall | Unavailable | Mean Jev ms |
+| --- | --- | --- | --- | --- | --- | --- | --- | --- |
+| calendar | 3 | 100.0% (3/3) | 100.0% (3/3) | 100.0% (3/3) | n/a | n/a | 0 | 228 |
+| code | 3 | 100.0% (3/3) | 100.0% (3/3) | 100.0% (3/3) | n/a | n/a | 0 | 258 |
+| data | 3 | 100.0% (3/3) | 100.0% (3/3) | 100.0% (3/3) | n/a | n/a | 0 | 332 |
+| email | 3 | 100.0% (3/3) | 100.0% (3/3) | 100.0% (3/3) | n/a | n/a | 0 | 246 |
+| files | 3 | 100.0% (3/3) | 100.0% (3/3) | 100.0% (3/3) | n/a | n/a | 0 | 402 |
+| notify | 4 | 100.0% (4/4) | 100.0% (4/4) | 100.0% (4/4) | n/a | n/a | 0 | 235 |
+| tickets | 3 | 100.0% (3/3) | 100.0% (3/3) | 100.0% (3/3) | n/a | n/a | 0 | 453 |
+| web | 3 | 100.0% (3/3) | 100.0% (3/3) | 100.0% (3/3) | n/a | n/a | 0 | 191 |
+| none | 5 | n/a | n/a | n/a | 100.0% (5/5) | 100.0% (5/5) | 0 | 225 |
+| **Total** | 30 | 100.0% (25/25) | 100.0% (25/25) | 100.0% (25/25) | 100.0% (5/5) | 100.0% (5/5) | 0 | 280 |
+
+### Context bytes (mean per task)
+
+| Strategy | Bytes | Of all schemas |
+| --- | --- | --- |
+| All 40 full schemas | 19000 | 100.0% |
+| Snippets only (router input) | 4010 | 21.1% |
+| Snippets + baseline top-3 schemas | 5067 | 26.7% |
+| Snippets + baseline top-1 schema | 4419 | 23.3% |
+| Snippets + Jev top-3 schemas | 4511 | 23.7% |
+| Snippets + Jev top-1 schema | 4433 | 23.3% |
+
+Reading these tables:
+
+- Jev picked the expected tool on all 25 tool tasks and `none` on all 5 none tasks, including every distractor pair (`search_inbox` vs `search_tickets`, `create_event` vs `create_reminder`, `send_sms` vs `send_push_notification`, `export_csv` vs `import_csv`, `format_code` vs `lint_code`, `fetch_url` vs `screenshot_page`) and the prompt-injection-shaped task, which went to `none`. The baseline got 9 of 25 and answered `none` for 4 of 5. This is one run over 30 synthetic tasks with an easy, clean catalog; it shows that snippet-only routing works on this fixture, not a general accuracy figure.
+- **Top-3 is effectively top-1 here.** The provider reports probabilities at 0.01 granularity and put all mass on a single option for 23 of 30 tasks, so `top3` had one entry for 23 tasks, two for 3, three for 1, and none for the 3 `none` tasks whose distribution was `none: 1.0`. Top-3 accuracy therefore adds no information on this catalog, and "snippets + Jev top-3 schemas" is close to "snippets + Jev top-1 schema" for the same reason. A catalog with closer alternatives, or a task set written to be ambiguous, would be needed to evaluate a real second and third pick. Reported `confidence` ranged from 0.73 (t16, `run_aggregation` 0.74 vs `query_sql` 0.25, both acceptable) to 1.0, mean 0.97.
+- Context bytes: loading every schema costs 19,000 bytes per task; the router's own input (name + snippet for all 40 tools) is 4,010 bytes, and snippets plus the routed schema comes to 4,433 bytes on average, 23.3% of loading everything. The router's input is the dominant cost of that 23.3%, so the saving depends on schemas being much larger than snippets, which they are here by design (246 to 662 bytes vs 32 to 88 characters). The 43,251 input tokens across 30 requests (about 1,440 per request) are the price of sending all 41 options each time.
+- Mean latency was 280 ms wall-clock per task from this machine, including the playground's server transport and rate-limit bookkeeping; no request retried or timed out.
 
 ## Files
 
