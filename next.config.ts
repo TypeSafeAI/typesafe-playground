@@ -7,6 +7,8 @@ const config: NextConfig = {
     "playwright-core",
   ],
   outputFileTracingIncludes: {
+    "/api/proposal-review": ["./fixtures/proposal-review/*.json"],
+    "/proposal-review": ["./fixtures/proposal-review/*.json"],
     "/api/native-browser": [
       "./scripts/local-browser.py",
       "./lib/nativeBrowser/dom-runtime.js",

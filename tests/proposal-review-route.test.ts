@@ -116,7 +116,7 @@ test("route: live mode without a key is HTTP 200 with verdict unavailable, never
     assert.equal(receipt.jev.answers, null);
     assert.equal(receipt.jev.source, "jev");
     assert.match(receipt.jev.error, /TYPESAFE_API_KEY/);
-    assert.match(receipt.reason, /never as safe/);
+    assert.match(receipt.reason, /never treated as safe/);
     assert.equal(receipt.execution.status, "withheld");
   } finally {
     process.env.TYPESAFE_API_KEY = key;

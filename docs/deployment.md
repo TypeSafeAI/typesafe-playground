@@ -53,6 +53,38 @@ counter that resets on cold starts. They do not authenticate users or establish 
 global budget across IPs. Configure spending limits on your provider key for that.
 Local development does not pass through the Vercel Firewall.
 
+## Proposal review edge limit
+
+Before exposing `/api/proposal-review` publicly, add an enabled Vercel Firewall
+rule for that exact path: **30 requests per 60 seconds per IP**, using the
+`fixed_window` algorithm and `rate_limit` action when exceeded. The edge's `ip`
+key aggregates requests across serverless instances and API-key overrides; the
+application must not infer the client IP from caller-supplied headers. This
+path-level rule covers both mock and live POST requests.
+
+Run from the linked project directory:
+
+```sh
+vercel firewall rules list
+vercel firewall diff
+vercel firewall rules add 'Limit proposal review invocations' \
+  --condition '{"type":"path","op":"eq","value":"/api/proposal-review"}' \
+  --action rate_limit --rate-limit-requests 30 --rate-limit-window 60 \
+  --rate-limit-keys ip --yes
+vercel firewall diff
+# Publish only after confirming this is the sole pending change.
+vercel firewall publish --yes
+vercel firewall rules inspect 'Limit proposal review invocations'
+vercel firewall diff
+```
+
+Skip creation if the rule already exists; inspect its path, enabled state,
+algorithm, window, limit, key, and exceeded action instead. The final diff must
+show no pending changes. Record the rule ID and readback time in the release or
+PR evidence. Committing these instructions does not configure the remote
+firewall. The transport's per-key, per-instance limiter remains a separate local
+bound; neither limit grants permission or caps spending across all IPs.
+
 ## Browser-run routes on your own server
 
 `/api/local-browser`, `/api/native-browser`, `/api/pc-build` and `/api/clean-room`

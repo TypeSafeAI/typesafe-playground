@@ -97,6 +97,21 @@ test("decision table: missing or non-finite answers never permit", () => {
   assert.equal(decide(ok, jev(b)).verdict, "proposal_only");
 });
 
+test("decision table: out-of-range probabilities and confidence never permit", () => {
+  for (const id of REVIEW_QUESTION_IDS) {
+    for (const field of ["probability", "confidence"] as const) {
+      for (const value of [-0.01, 1.01, -2, 2]) {
+        const answers = favorable();
+        answers[id] = { ...answers[id], [field]: value };
+        const decision = decide(ok, jev(answers));
+        assert.equal(decision.verdict, "proposal_only", `${id}.${field}=${value}`);
+        assert.match(decision.reason, new RegExp(`${id}: no usable answer`));
+      }
+    }
+  }
+  assert.equal(decide(ok, jev(favorable(1))).verdict, "permit");
+});
+
 test("decision table is exhaustive over the four verdicts", () => {
   const seen = new Set([
     decide(bad, jev(favorable())).verdict,
