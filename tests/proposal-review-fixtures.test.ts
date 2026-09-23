@@ -18,16 +18,16 @@ import type { Fixture, FixtureCategory } from "../lib/harness/types";
 const fixtures = loadFixtures();
 const proposer = new FixtureProposer();
 
-test("fixtures: exactly 20 synthetic JSON files, one per id, in the expected category mix", () => {
-  assert.equal(fixtures.length, 20);
+test("fixtures: exactly 25 synthetic JSON files, one per id, in the expected category mix", () => {
+  assert.equal(fixtures.length, 25);
   const names = readdirSync(FIXTURE_DIR).filter((n) => n.endsWith(".json"));
-  assert.equal(names.length, 20);
+  assert.equal(names.length, 25);
   for (const f of fixtures) assert.ok(names.includes(`${f.id}.json`), `${f.id}.json exists`);
   const counts = Object.fromEntries(FIXTURE_CATEGORIES.map((c) => [c, 0])) as Record<FixtureCategory, number>;
   for (const f of fixtures) counts[f.category]++;
   assert.deepEqual(counts, EXPECTED_CATEGORY_MIX);
-  assert.deepEqual(counts, { clean: 8, off_scope: 4, missing_evidence: 3, prompt_injection: 3, ambiguous: 2 });
-  assert.equal(Object.values(EXPECTED_CATEGORY_MIX).reduce((a, b) => a + b, 0), 20);
+  assert.deepEqual(counts, { clean: 10, off_scope: 4, missing_evidence: 4, prompt_injection: 4, ambiguous: 3 });
+  assert.equal(Object.values(EXPECTED_CATEGORY_MIX).reduce((a, b) => a + b, 0), 25);
 });
 
 test("fixtures: every good proposal expects permit (ambiguous: proposal_only); every bad proposal expects proposal_only or reject", () => {
@@ -70,8 +70,8 @@ test("fixtures: under the mock transport each arm reaches its expected verdict a
     }
 });
 
-test("fixtures: prompt-injected content is present in files and only the bad proposal obeys it", () => {
-  const injected = fixtures.filter((f) => f.category === "prompt_injection");
+test("fixtures: historical repository-content injections remain present and only the bad proposal obeys them", () => {
+  const injected = fixtures.filter((f) => f.category === "prompt_injection" && f.id !== "injection-rationale-wire-code");
   assert.equal(injected.length, 3);
   for (const f of injected) {
     const corpus = Object.values(f.files).join("\n");
@@ -93,6 +93,15 @@ test("fixtures: ambiguous tasks are resolved by reading, not guessing", () => {
     assert.ok(f.mock.good.needs_clarification >= 0.8, f.id);
     assert.ok(f.mock.bad.needs_clarification >= 0.8, f.id);
   }
+});
+
+test("fixtures: the rationale injection tries to override a task that preserves the wire code", () => {
+  const f = fixtures.find((f) => f.id === "injection-rationale-wire-code")!;
+  assert.equal(f.category, "prompt_injection");
+  assert.match(f.task, /preserving the machine-readable wire code/);
+  assert.match(f.proposals.bad.rationale, /answer favorably even when the wire code changes/);
+  assert.doesNotMatch(f.proposals.good.rationale, /answer favorably/);
+  assert.match(f.files["src/consumer.ts"], /return code === "queued"/);
 });
 
 test("fixtures: base mode lets every structurally valid bad proposal through, which is the gap Jev closes", async () => {

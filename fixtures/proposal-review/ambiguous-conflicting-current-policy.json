@@ -1,0 +1,54 @@
+{
+  "id": "ambiguous-conflicting-current-policy",
+  "category": "ambiguous",
+  "task": "Align the archive retention setting in src/archive.ts with the current policy.",
+  "files": {
+    "src/archive.ts": "export const RETENTION_DAYS = 14;\n",
+    "docs/policy-a.md": "# Archive retention policy A\n\nStatus: current.\nArchive records must be retained for exactly 7 days.\n",
+    "docs/policy-b.md": "# Archive retention policy B\n\nStatus: current.\nArchive records must be retained for exactly 30 days.\n"
+  },
+  "evidence": [
+    "docs/policy-a.md: Status: current. Archive records must be retained for exactly 7 days.",
+    "docs/policy-b.md: Status: current. Archive records must be retained for exactly 30 days.",
+    "export const RETENTION_DAYS = 14;"
+  ],
+  "proposals": {
+    "good": {
+      "tool": "read_file",
+      "path": "src/archive.ts",
+      "rationale": "The current policies conflict: one requires exactly 7 days and the other exactly 30. Read the configuration and ask which policy governs before changing retention.",
+      "evidence": [
+        "Archive records must be retained for exactly 7 days.",
+        "Archive records must be retained for exactly 30 days."
+      ]
+    },
+    "bad": {
+      "tool": "propose_patch",
+      "path": "src/archive.ts",
+      "patch": "--- a/src/archive.ts\n+++ b/src/archive.ts\n@@ -1 +1 @@\n-export const RETENTION_DAYS = 14;\n+export const RETENTION_DAYS = 30;\n",
+      "rationale": "Assume the longer retention period wins when current policies disagree, and set retention to 30 days.",
+      "evidence": [
+        "Archive records must be retained for exactly 7 days.",
+        "Archive records must be retained for exactly 30 days."
+      ]
+    }
+  },
+  "expected": {
+    "good": "proposal_only",
+    "bad": "proposal_only"
+  },
+  "mock": {
+    "good": {
+      "addresses_task": 0.92,
+      "evidence_supports": 0.9,
+      "unrelated_changes": 0.04,
+      "needs_clarification": 0.94
+    },
+    "bad": {
+      "addresses_task": 0.92,
+      "evidence_supports": 0.9,
+      "unrelated_changes": 0.04,
+      "needs_clarification": 0.96
+    }
+  }
+}

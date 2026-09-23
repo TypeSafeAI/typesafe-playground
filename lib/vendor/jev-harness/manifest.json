@@ -1,0 +1,211 @@
+{
+  "repository": "TypeSafeAI/jev-harness",
+  "revision": "a8a1a45a147c06abd197ff5d6004fb78e682e3a6",
+  "status": "merged",
+  "extractedFrom": {
+    "repository": "TypeSafeAI/typesafe-playground",
+    "revision": "6fe5967dc020521a0731682b06c4d8eeeab95ffb"
+  },
+  "files": [
+    {
+      "source": "LICENSE",
+      "destination": "lib/vendor/jev-harness/LICENSE",
+      "sha256": "030148ea9fd67bc985f38d5e29af7ab8383c1d160abdce09ad55cd81d4ea0985"
+    },
+    {
+      "source": "src/contract/index.ts",
+      "destination": "lib/vendor/jev-harness/src/contract/index.ts",
+      "sha256": "e43f2c5da94cc47ef4a451285b40d028aa85b50ac703d27f15edd35b525a29c9"
+    },
+    {
+      "source": "src/contract/types.ts",
+      "destination": "lib/vendor/jev-harness/src/contract/types.ts",
+      "sha256": "d15be3dd3117c8d4c0e0896c51046c83cc0e20407cb79f12e4e5a11a587ec73b"
+    },
+    {
+      "source": "src/contract/input.ts",
+      "destination": "lib/vendor/jev-harness/src/contract/input.ts",
+      "sha256": "c9f0f9ac4d55a747d177416253eaa71cc7268b2020db15b52c353ca39ce55ecb"
+    },
+    {
+      "source": "src/contract/decide.ts",
+      "destination": "lib/vendor/jev-harness/src/contract/decide.ts",
+      "sha256": "28e5dea5df034faa1b6136de1322586fc20811dce48faa64b92cc6cd05891cce"
+    },
+    {
+      "source": "src/contract/payload.ts",
+      "destination": "lib/vendor/jev-harness/src/contract/payload.ts",
+      "sha256": "17bb4e1672e6c01d4600d3d3138b6746918bf093ce9b195e9294d74547be871e"
+    },
+    {
+      "source": "src/contract/diff.ts",
+      "destination": "lib/vendor/jev-harness/src/contract/diff.ts",
+      "sha256": "54f29729703a3189321b9d18d70896e7995d7b5b534b2b22344797b43f47ae8c"
+    },
+    {
+      "source": "src/contract/validate.ts",
+      "destination": "lib/vendor/jev-harness/src/contract/validate.ts",
+      "sha256": "578afe9320101b76ea70e0588480e3afdf15c52151e2f4c983667284300bc451"
+    },
+    {
+      "source": "src/contract/review.ts",
+      "destination": "lib/vendor/jev-harness/src/contract/review.ts",
+      "sha256": "30efe4a3f640c0bb5c3114931f81d57dad4b018b63ca9ba6e16a673a0fffa383"
+    },
+    {
+      "source": "src/benchmark/index.ts",
+      "destination": "lib/vendor/jev-harness/src/benchmark/index.ts",
+      "sha256": "a0da8e81dece20ce4dae08df0ba4cf06f4eaf252ce3884404035b08b19fbd37c"
+    },
+    {
+      "source": "src/benchmark/bench.ts",
+      "destination": "lib/vendor/jev-harness/src/benchmark/bench.ts",
+      "sha256": "4b07913061795bda1c5ac36914fa953b3812af9b907adb801a5d9490ba43f2f1"
+    },
+    {
+      "source": "src/benchmark/fixtures.ts",
+      "destination": "lib/vendor/jev-harness/src/benchmark/fixtures.ts",
+      "sha256": "62afe5cbd8e018a6173c7a5d78136f3969fbc3b5b5c4aae92bb0a086407b467e"
+    },
+    {
+      "source": "src/benchmark/mock.ts",
+      "destination": "lib/vendor/jev-harness/src/benchmark/mock.ts",
+      "sha256": "46051b83f4df8c8098e6d871531b171c1c21d6aa544532a9847798ead85f50ee"
+    },
+    {
+      "source": "src/benchmark/proposer.ts",
+      "destination": "lib/vendor/jev-harness/src/benchmark/proposer.ts",
+      "sha256": "904e9ee045761bc431272b5bb90ba34058e8bdce7b63062219d4304a32c1a972"
+    },
+    {
+      "source": "src/benchmark/run.ts",
+      "destination": "lib/vendor/jev-harness/src/benchmark/run.ts",
+      "sha256": "702f925de89740e1563a97d72a3b4cc74c9156898f0bea3ae89dbc853ed93bca"
+    },
+    {
+      "source": "fixtures/proposal-review/ambiguous-clean-up-helper.json",
+      "destination": "fixtures/proposal-review/ambiguous-clean-up-helper.json",
+      "sha256": "f197424b668a8e90e5632caeb3f8e8b277822f8035ef30ef427a43038d039661"
+    },
+    {
+      "source": "fixtures/proposal-review/ambiguous-conflicting-current-policy.json",
+      "destination": "fixtures/proposal-review/ambiguous-conflicting-current-policy.json",
+      "sha256": "8525caa1c196db770122fcfa1e22efa94bdbf28c7dacbdd8d668ebc11c946e02"
+    },
+    {
+      "source": "fixtures/proposal-review/ambiguous-which-timeout.json",
+      "destination": "fixtures/proposal-review/ambiguous-which-timeout.json",
+      "sha256": "a587abc2d100d11fc3648d9f2a3bae2c0f4451ea0128e560101dd5c55f833deb"
+    },
+    {
+      "source": "fixtures/proposal-review/clean-copy-before-sort.json",
+      "destination": "fixtures/proposal-review/clean-copy-before-sort.json",
+      "sha256": "deac4dc5fd3b95ba34a6ce9f38e64aa40c0a6a160f07ec88b1d90560c674c59e"
+    },
+    {
+      "source": "fixtures/proposal-review/clean-default-timeout.json",
+      "destination": "fixtures/proposal-review/clean-default-timeout.json",
+      "sha256": "4a19ea168942f3c97ecaacbfae5578443e00d59df270a270cb1421a1a07af4a6"
+    },
+    {
+      "source": "fixtures/proposal-review/clean-null-guard.json",
+      "destination": "fixtures/proposal-review/clean-null-guard.json",
+      "sha256": "c372b61809fe2f91bc05d671a87f88af1dc1a1f8d8bd9925c02fd706de29cd6d"
+    },
+    {
+      "source": "fixtures/proposal-review/clean-parse-port.json",
+      "destination": "fixtures/proposal-review/clean-parse-port.json",
+      "sha256": "d5f2b08072f089e40bad62b73603512b52ad06f788d01624c57995298313e05a"
+    },
+    {
+      "source": "fixtures/proposal-review/clean-percent-rounding.json",
+      "destination": "fixtures/proposal-review/clean-percent-rounding.json",
+      "sha256": "20742e33c762680ea04ea62186a865fc916112ff787c2e2f87939456441d6506"
+    },
+    {
+      "source": "fixtures/proposal-review/clean-read-before-edit-content-not-in-evidence.json",
+      "destination": "fixtures/proposal-review/clean-read-before-edit-content-not-in-evidence.json",
+      "sha256": "3d3482fbc8a849f206a134f86f15a6dc85474b9c2b57e18f921f039d2aab09d5"
+    },
+    {
+      "source": "fixtures/proposal-review/clean-read-before-edit.json",
+      "destination": "fixtures/proposal-review/clean-read-before-edit.json",
+      "sha256": "2bf0b31b1440ec2f8f822fa5be6dac62497bbf450fbee83b70e3cd8366b5285d"
+    },
+    {
+      "source": "fixtures/proposal-review/clean-sort-ascending.json",
+      "destination": "fixtures/proposal-review/clean-sort-ascending.json",
+      "sha256": "3d5c958488600ea2fda86fcf3ecc3ac38e0f9f5ff57dc10e9363a6fa10555681"
+    },
+    {
+      "source": "fixtures/proposal-review/clean-sum-loop-bound.json",
+      "destination": "fixtures/proposal-review/clean-sum-loop-bound.json",
+      "sha256": "d7afd49d66182f8048ed22bd5b0efbba1b97c30ac7dbc4dd1e9e09971f2c3126"
+    },
+    {
+      "source": "fixtures/proposal-review/clean-typo-message.json",
+      "destination": "fixtures/proposal-review/clean-typo-message.json",
+      "sha256": "5c11587fdf9b180e60cb189f8cc0810f5a31c0d2a6168a48a160cfdc0822b413"
+    },
+    {
+      "source": "fixtures/proposal-review/injection-comment-disable-auth.json",
+      "destination": "fixtures/proposal-review/injection-comment-disable-auth.json",
+      "sha256": "4c0f7fd0e56a7840c1e198b1079c6a02b10cb0255fd9726950ac364cb586eab1"
+    },
+    {
+      "source": "fixtures/proposal-review/injection-rationale-wire-code.json",
+      "destination": "fixtures/proposal-review/injection-rationale-wire-code.json",
+      "sha256": "ce9eb49d492ae8dc960f7e3a0879d616c4db52960b8698ff5f08bdf1ed08cd86"
+    },
+    {
+      "source": "fixtures/proposal-review/injection-readme-delete-env.json",
+      "destination": "fixtures/proposal-review/injection-readme-delete-env.json",
+      "sha256": "fbf600b96cf87e0e4c5cc11086714cc2bf381f526728959809f48bbcded2c5c5"
+    },
+    {
+      "source": "fixtures/proposal-review/injection-todo-delete-env.json",
+      "destination": "fixtures/proposal-review/injection-todo-delete-env.json",
+      "sha256": "b1bf18da2c37def6226fdc75df67b887be77e16b20a5bebc20714871a1d77597"
+    },
+    {
+      "source": "fixtures/proposal-review/missing-evidence-cache-claim.json",
+      "destination": "fixtures/proposal-review/missing-evidence-cache-claim.json",
+      "sha256": "a841f7bf70f7c54278ed0ec5957fa63ae0c4c24874c5b462d161c4da5e3a0168"
+    },
+    {
+      "source": "fixtures/proposal-review/missing-evidence-correct-edit-false-cause.json",
+      "destination": "fixtures/proposal-review/missing-evidence-correct-edit-false-cause.json",
+      "sha256": "e98f1d68d1a70d73f27adddd4f823bc2a1f514f43675817be290f30745b598d5"
+    },
+    {
+      "source": "fixtures/proposal-review/missing-evidence-fake-quote.json",
+      "destination": "fixtures/proposal-review/missing-evidence-fake-quote.json",
+      "sha256": "cea1a1b2c8ab93cedc37986b6dd54b139eea4e4b86b611ab1b6b92f8a3da32a4"
+    },
+    {
+      "source": "fixtures/proposal-review/missing-evidence-phantom-null.json",
+      "destination": "fixtures/proposal-review/missing-evidence-phantom-null.json",
+      "sha256": "81fe997a3af5932ad5cff8b77252a5ce0fe93455f52cb34e38c9aad5841e0e01"
+    },
+    {
+      "source": "fixtures/proposal-review/off-scope-escape-root.json",
+      "destination": "fixtures/proposal-review/off-scope-escape-root.json",
+      "sha256": "a6a20618418d462bf297eb31c6dbdfb729c9fe50553b6d1be35c9f6df40bea77"
+    },
+    {
+      "source": "fixtures/proposal-review/off-scope-log-level.json",
+      "destination": "fixtures/proposal-review/off-scope-log-level.json",
+      "sha256": "815c3d598ad966a3d5dc34b6a417c8dd8f2000bfc25dfe8b2b7eebcde08cfa67"
+    },
+    {
+      "source": "fixtures/proposal-review/off-scope-two-files.json",
+      "destination": "fixtures/proposal-review/off-scope-two-files.json",
+      "sha256": "e57ae690e9c1d2d54143a0969cb77c52eca9bc88ad0db4281770560b1db1f947"
+    },
+    {
+      "source": "fixtures/proposal-review/off-scope-wrong-file.json",
+      "destination": "fixtures/proposal-review/off-scope-wrong-file.json",
+      "sha256": "3f4bbb1ebacbbefc51c55188b48fa5bcc84e696841f48061d8e13912c681927f"
+    }
+  ]
+}

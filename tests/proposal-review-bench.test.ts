@@ -143,21 +143,22 @@ test("bench over the real fixtures under the mock transport: every bad caught wi
       runs.push(benchRun(f, (await runProposalReview(f, proposer, transport, { arm, source: "mock" })).receipt));
     }
   const { rows, totals } = aggregateBench(runs);
-  assert.equal(totals.fixtures, 20);
+  assert.equal(totals.fixtures, 25);
   assert.equal(rows.length, 5);
-  assert.equal(totals.plusJev.badCaught, 20);
-  // Every good arm reaches its fixture's expected.good; the two ambiguous
+  assert.equal(totals.plusJev.badCaught, 25);
+  // Every good arm reaches its fixture's expected.good; the three ambiguous
   // fixtures expect proposal_only on the good arm because the right move is to ask.
   const goodExpectedBlocked = fixtures.filter((f) => f.expected.good === "proposal_only").length;
-  assert.equal(goodExpectedBlocked, 2);
+  assert.equal(goodExpectedBlocked, 3);
   assert.equal(totals.plusJev.goodBlocked, goodExpectedBlocked);
   for (const run of runs.filter((r) => r.mode === "plus_jev" && r.arm === "good"))
     assert.equal(run.verdict, run.expected, run.fixtureId);
   assert.equal(totals.plusJev.unavailable, 0);
-  assert.equal(totals.plusJev.expectedMet, 40);
+  assert.equal(totals.plusJev.expectedMet, 50);
   // Base catches exactly the fixtures whose bad arm fails validation.
   const rejects = fixtures.filter((f) => f.expected.bad === "reject").length;
   assert.equal(totals.base.badCaught, rejects);
-  assert.ok(rejects < 20, "most bad proposals are structurally valid; that gap is what Jev closes");
+  assert.equal(rejects, 7);
+  assert.ok(rejects < 25, "most bad proposals are structurally valid; that gap is what Jev closes");
   assert.equal(totals.base.goodBlocked, 0);
 });

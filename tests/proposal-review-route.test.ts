@@ -11,7 +11,7 @@ const clean = fixtures.find((f) => f.category === "clean" && f.expected.bad === 
 const rejecting = fixtures.find((f) => f.expected.bad === "reject")!;
 const ORIGIN = "http://127.0.0.1:3042";
 
-function post(body: unknown, headers: Record<string, string> = {}) {
+function post(body: unknown, headers: Record<string, string> = {}, signal?: AbortSignal) {
   return POST(
     new Request(`${ORIGIN}/api/proposal-review`, {
       method: "POST",
@@ -22,6 +22,7 @@ function post(body: unknown, headers: Record<string, string> = {}) {
         ...headers,
       },
       body: typeof body === "string" ? body : JSON.stringify(body),
+      signal,
     }),
   );
 }
@@ -116,7 +117,7 @@ test("route: live mode without a key is HTTP 200 with verdict unavailable, never
     assert.equal(receipt.jev.answers, null);
     assert.equal(receipt.jev.source, "jev");
     assert.match(receipt.jev.error, /TYPESAFE_API_KEY/);
-    assert.match(receipt.reason, /never treated as safe/);
+    assert.match(receipt.reason, /never as safe/);
     assert.equal(receipt.execution.status, "withheld");
   } finally {
     process.env.TYPESAFE_API_KEY = key;
@@ -158,9 +159,14 @@ test("route: live mode forwards the rebuilt payload like /api/run and keeps the 
     assert.deepEqual(sent.state.files, clean.files);
     assert.deepEqual(sent.state.proposal.patch, clean.proposals.good.patch);
     assert.deepEqual(Object.keys(sent.questions).sort(), [...REVIEW_QUESTION_IDS].sort());
-    for (const id of REVIEW_QUESTION_IDS)
+    for (const id of REVIEW_QUESTION_IDS) {
       assert.equal(sent.questions[id].instructions, REVIEW_QUESTIONS[id].instructions);
-    assert.ok(!("arm" in sent.state) && !("expected" in sent.state) && !("mock" in sent.state));
+      assert.deepEqual(Object.keys(sent.questions[id]).sort(), ["instructions", "type"]);
+    }
+    assert.deepEqual(Object.keys(sent.state).sort(), ["evidence", "files", "note", "proposal", "task"]);
+    assert.deepEqual(Object.keys(sent).sort(), ["model", "questions", "state"]);
+    assert.ok(!JSON.stringify(sent).includes(secret), "key never enters the HTTP request body");
+    assert.deepEqual(sent, data.exchange.payload, "the inspector matches the actual post-validation HTTP body");
     assert.equal(data.receipt.verdict, "permit");
     assert.equal(data.receipt.jev.source, "jev");
     assert.equal(data.receipt.jev.model, JEV_MODEL);
@@ -189,6 +195,44 @@ test("route: an upstream provider error becomes verdict unavailable at HTTP 200 
     assert.equal(data._playgroundUsage.status, 429);
     assert.equal(data._playgroundUsage.attempted, true);
     assert.ok(data._playgroundUsage.retryAt);
+  } finally {
+    globalThis.fetch = original;
+    process.env.TYPESAFE_API_KEY = key;
+  }
+});
+
+test("route: a mocked HTTP response arriving after cancellation remains unavailable", async () => {
+  const original = globalThis.fetch;
+  const key = process.env.TYPESAFE_API_KEY;
+  process.env.TYPESAFE_API_KEY = "test-cancellation-only-secret-proposal-review";
+  const controller = new AbortController();
+  let markCalled!: () => void;
+  const called = new Promise<void>((resolve) => { markCalled = resolve; });
+  let respond!: (value: Response) => void;
+  const pending = new Promise<Response>((resolve) => { respond = resolve; });
+  globalThis.fetch = (async () => { markCalled(); return pending; }) as typeof fetch;
+  try {
+    const reviewing = post({ fixtureId: clean.id, arm: "good", mode: "live" }, {}, controller.signal);
+    await called;
+    controller.abort();
+    respond(Response.json({
+      model: JEV_MODEL,
+      answers: {
+        addresses_task: { type: "noul", noul: 0.95 },
+        evidence_supports: { type: "noul", noul: 0.95 },
+        unrelated_changes: { type: "noul", noul: 0.05 },
+        needs_clarification: { type: "noul", noul: 0.05 },
+      },
+    }));
+    const response = await reviewing;
+    assert.equal(response.status, 200);
+    const data = await response.json();
+    assert.equal(data.receipt.verdict, "unavailable");
+    assert.equal(data.receipt.jev.answers, null);
+    assert.match(data.receipt.jev.error, /cancelled/);
+    assert.equal(data.receipt.execution.status, "withheld");
+    assert.equal(data.receipt.execution.applied, false);
+    assert.equal(data._playgroundUsage.attempted, true);
   } finally {
     globalThis.fetch = original;
     process.env.TYPESAFE_API_KEY = key;

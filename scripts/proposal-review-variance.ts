@@ -12,7 +12,7 @@
  */
 import { readFileSync } from "node:fs";
 import { basename, resolve } from "node:path";
-import { FAVORABLE } from "../lib/harness/decide";
+import { decide } from "../lib/harness/decide";
 import { REVIEW_QUESTION_IDS, type Receipt, type ReviewQuestionId } from "../lib/harness/types";
 import type { ModeStats } from "../lib/harness/bench";
 
@@ -65,19 +65,6 @@ function loadRun(path: string, index: number): Run {
     plus.set(key, r);
   }
   return { label: `run ${index + 1}`, path, file, plus };
-}
-
-/** All four favorable and each confidence ≥ threshold: the decide.ts rule. */
-function permitsAt(receipt: Receipt, threshold: number): "permit" | "proposal_only" | "reject" | "unavailable" {
-  if (!receipt.validation.ok) return "reject";
-  if (!receipt.jev || receipt.jev.answers === null) return "unavailable";
-  for (const id of REVIEW_QUESTION_IDS) {
-    const a = receipt.jev.answers[id];
-    if (!a || !Number.isFinite(a.confidence)) return "proposal_only";
-    if (a.answer !== FAVORABLE[id]) return "proposal_only";
-    if (a.confidence < threshold) return "proposal_only";
-  }
-  return "permit";
 }
 
 function sampleStddev(values: number[], mean: number): number {
@@ -218,7 +205,7 @@ function main() {
     const badIds = new Set<string>();
     for (const run of runs)
       for (const r of run.plus.values()) {
-        if (permitsAt(r, threshold) !== "permit") continue;
+        if (decide(r.validation, r.jev, threshold).verdict !== "permit") continue;
         if (r.arm === "good") goodPermitted++;
         else {
           badPermitted++;

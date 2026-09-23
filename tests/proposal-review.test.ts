@@ -2,11 +2,11 @@ import { test } from "node:test";
 import assert from "node:assert/strict";
 import {
   decide,
-  decideBase,
   FAVORABLE,
   REVIEW_CONFIDENCE_THRESHOLD,
   unfavorable,
 } from "../lib/harness/decide";
+import { decideBase } from "../lib/harness/benchmark";
 import {
   REVIEW_QUESTION_IDS,
   type JevReview,
@@ -29,13 +29,12 @@ function favorable(confidence = 0.95): ReviewAnswers {
     ]),
   ) as ReviewAnswers;
 }
-const jev = (answers: ReviewAnswers | null, error: string | null = null): JevReview => ({
-  model: "test",
-  answers,
-  error,
-  latencyMs: 1,
-  source: "mock",
-});
+const jev = (answers: ReviewAnswers | null, error: string | null = null): JevReview => {
+  const metadata = { model: "test", latencyMs: 1, source: "mock" as const };
+  return answers && error === null
+    ? { ...metadata, answers, error: null }
+    : { ...metadata, answers: null, error: error ?? "No review answers." };
+};
 
 test("decision table: validation failure rejects before anything else", () => {
   assert.equal(decide(bad, jev(favorable())).verdict, "reject");
@@ -48,7 +47,7 @@ test("decision table: null answers are unavailable, never permit", () => {
   const d = decide(ok, jev(null, "HTTP 502"));
   assert.equal(d.verdict, "unavailable");
   assert.match(d.reason, /HTTP 502/);
-  assert.match(d.reason, /never treated as safe/);
+  assert.match(d.reason, /never as safe/);
 });
 
 test("decision table: all four favorable above threshold permits", () => {
@@ -239,7 +238,7 @@ test("review payload pins the versioned model and carries four noul questions", 
   assert.deepEqual(Object.keys(payload.questions).sort(), [...REVIEW_QUESTION_IDS].sort());
   for (const q of Object.values(payload.questions)) {
     assert.equal(q.type, "noul");
-    assert.ok(q.criteria && !Array.isArray(q.criteria) && "true" in q.criteria && "false" in q.criteria);
+    assert.deepEqual(Object.keys(q).sort(), ["instructions", "type"]);
   }
   const state = payload.state as Record<string, unknown>;
   assert.equal(state.task, synthetic.task);

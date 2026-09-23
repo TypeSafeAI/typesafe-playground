@@ -1,0 +1,58 @@
+{
+  "revision": "a8a1a45a147c06abd197ff5d6004fb78e682e3a6",
+  "status": "merged",
+  "sourceFilesByteIdentical": 40,
+  "originalFixtureFilesUnchanged": 20,
+  "traces": [
+    {
+      "path": ".next/server/app/proposal-review/page.js.nft.json",
+      "rawFixtureReferences": 50,
+      "uniqueFixtures": 25,
+      "byteHashesMatchManifest": true
+    },
+    {
+      "path": ".next/server/app/api/proposal-review/route.js.nft.json",
+      "rawFixtureReferences": 50,
+      "uniqueFixtures": 25,
+      "byteHashesMatchManifest": true
+    }
+  ],
+  "kind": "offline-shared-harness-consumer",
+  "date": "2026-09-23",
+  "finalMergedPinPending": false,
+  "liveProviderCalls": 0,
+  "checks": {
+    "pnpm test": {
+      "javascript": 39,
+      "typescript": 566,
+      "failed": 0
+    },
+    "pnpm typecheck": "passed",
+    "pnpm build": "passed; existing localBrowser dynamic tracing warning remains",
+    "python3 -m unittest discover -s tests -v": "26 passed",
+    "targeted production Playwright": "desktop/mobile proposal-review quality audits passed; both themes, guide, 320px viewport",
+    "historical variance report": "before/after output byte-identical; all nine threshold rows unchanged",
+    "production mocked API": {
+      "arms": 50,
+      "expectedVerdictsMatched": 50,
+      "allApplied": false,
+      "allProviderAttempted": false
+    },
+    "full Playwright suite": "not run locally; hosted gate remains required",
+    "cancellation regressions": "3 expected failures against the pre-guard candidate; all 3 pass with the merged source, including a mocked late HTTP response"
+  },
+  "mockBenchArtifact": "../proposal-review-runs/mock-shared-harness-2026-09-23.json",
+  "mockTotals": {
+    "baseBadCaught": "7/25",
+    "reviewBadCaught": "25/25",
+    "goodHeld": "3/25",
+    "expectedMet": "50/50"
+  },
+  "limitations": [
+    "No live provider calls or live calibration were run.",
+    "The full Playwright suite is a separate hosted check; the local production desktop/mobile proposal-review audits passed."
+  ],
+  "historicalArtifactFilesUnchanged": 5,
+  "manifestSha256": "e78cb902157bfcc39006b5d139a3db7359fb31819aac15d9c58e0fa9f7c61951",
+  "mockBenchArtifactSha256": "5085292810ada761617b88bddcb9ab74a16bf062cba5273d1ca86648e5a88058"
+}
