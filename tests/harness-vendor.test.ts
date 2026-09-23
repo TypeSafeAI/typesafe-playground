@@ -27,11 +27,13 @@ test("vendored harness has a complete pinned source manifest and unchanged bytes
   const manifest = JSON.parse(readFileSync(manifestPath, "utf8")) as {
     repository: string;
     revision: string;
+    status: string;
     extractedFrom: { repository: string; revision: string };
     files: Array<{ source: string; destination: string; sha256: string }>;
   };
   assert.equal(manifest.repository, "TypeSafeAI/jev-harness");
-  assert.match(manifest.revision, /^[a-f0-9]{40}$/);
+  assert.equal(manifest.revision, "a8a1a45a147c06abd197ff5d6004fb78e682e3a6");
+  assert.equal(manifest.status, "merged");
   assert.deepEqual(manifest.extractedFrom, {
     repository: "TypeSafeAI/typesafe-playground",
     revision: "6fe5967dc020521a0731682b06c4d8eeeab95ffb",
