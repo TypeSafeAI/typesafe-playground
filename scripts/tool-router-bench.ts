@@ -1,5 +1,6 @@
 import { mkdir, readFile, rename, unlink, writeFile } from "node:fs/promises";
 import { dirname, resolve } from "node:path";
+import { fileURLToPath } from "node:url";
 import { parseArgs } from "node:util";
 import type { RunPayload } from "../lib/api";
 import {
@@ -27,7 +28,10 @@ Routes every task in fixtures/tool-router/tasks.json with the lexical baseline a
 prints Markdown tables, and writes the full result JSON. Mock mode uses a deterministic lexical stand-in for Jev
 and measures only the harness. Live mode reads TYPESAFE_API_KEY from the environment; one request per task, no retries.`;
 
-const FIXTURES = resolve(__dirname, "../fixtures/tool-router");
+const FIXTURES = resolve(
+  dirname(fileURLToPath(import.meta.url)),
+  "../fixtures/tool-router",
+);
 const LIVE_TIMEOUT_MS = 50_000;
 
 async function readJson(path: string): Promise<unknown> {
@@ -61,21 +65,26 @@ function observe(
   observed: Observed,
 ): ToolRouterTransport {
   return async (payload: RunPayload, signal?: AbortSignal) => {
-    const raw = await base(payload, signal);
-    if (raw && typeof raw === "object") {
-      const r = raw as {
-        model?: unknown;
-        _playgroundUsage?: { inputTokens?: unknown; outputTokens?: unknown };
-      };
-      if (typeof r.model === "string") observed.models.add(r.model);
-      const input = r._playgroundUsage?.inputTokens;
-      const output = r._playgroundUsage?.outputTokens;
-      if (typeof input === "number" && typeof output === "number") {
-        observed.inputTokens += input;
-        observed.outputTokens += output;
-      } else observed.tokensKnown = false;
+    try {
+      const raw = await base(payload, signal);
+      if (raw && typeof raw === "object") {
+        const r = raw as {
+          model?: unknown;
+          _playgroundUsage?: { inputTokens?: unknown; outputTokens?: unknown };
+        };
+        if (typeof r.model === "string") observed.models.add(r.model);
+        const input = r._playgroundUsage?.inputTokens;
+        const output = r._playgroundUsage?.outputTokens;
+        if (typeof input === "number" && typeof output === "number") {
+          observed.inputTokens += input;
+          observed.outputTokens += output;
+        } else observed.tokensKnown = false;
+      }
+      return raw;
+    } catch (error) {
+      observed.tokensKnown = false;
+      throw error;
     }
-    return raw;
   };
 }
 

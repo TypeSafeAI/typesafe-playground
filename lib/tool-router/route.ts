@@ -222,6 +222,7 @@ export async function callTransport(
 const failure = (
   message: string,
   path: RoutePath,
+  stageCategory: string | null,
   requests: RunPayload[],
   latencyMs: number,
 ): RoutingResult => ({
@@ -232,7 +233,7 @@ const failure = (
   confidence: null,
   latencyMs,
   path,
-  stageCategory: null,
+  stageCategory,
   requests,
   unavailable: message,
 });
@@ -255,10 +256,10 @@ export async function routeTask(
   const model = options.model?.trim() || TOOL_ROUTER_MODEL;
   const timeoutMs = options.timeoutMs ?? DEFAULT_TIMEOUT_MS;
   const requests: RunPayload[] = [];
+  let stageCategory: string | null = null;
   const started = performance.now();
   const elapsed = () => Math.round(performance.now() - started);
   try {
-    let stageCategory: string | null = null;
     let stageConfidences: Record<string, number> = {};
     let candidates = tools;
     if (path === "two-stage") {
@@ -332,6 +333,7 @@ export async function routeTask(
         ? error.message
         : "Jev request failed.",
       path,
+      stageCategory,
       requests,
       elapsed(),
     );

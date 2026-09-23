@@ -333,6 +333,26 @@ test("catalogs over the option limit route in two stages", async () => {
   });
   assert.match(failed.unavailable ?? "", /stage one down/);
   assert.equal(failed.path, "two-stage");
+
+  const failedAfterCategory = await routeTask("nothing", big, {
+    transport: async (payload) => {
+      if ("category" in payload.questions)
+        return {
+          answers: {
+            category: {
+              type: "choice",
+              choice: "group_7",
+              probabilities: { group_7: 1 },
+            },
+          },
+        };
+      throw Error("stage two down");
+    },
+  });
+  assert.match(failedAfterCategory.unavailable ?? "", /stage two down/);
+  assert.equal(failedAfterCategory.path, "two-stage");
+  assert.equal(failedAfterCategory.stageCategory, "group_7");
+
   assert.throws(() => planRoute(synthetic(600, 300)), /categories/);
   assert.throws(() => planRoute(synthetic(600, 2)), /Category group_0/);
 });
