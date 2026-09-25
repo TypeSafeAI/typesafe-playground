@@ -18,7 +18,8 @@ test("all extraction calls appear once with reported tokens, visible cost and pr
     .click();
   const badge = page.getByRole("button", { name: "Open API usage dashboard" });
   await expect(badge).toContainText("4 calls");
-  await expect(badge).toContainText("400 tokens");
+  // Header total is input + output: 4 × (100 + 12). Cost stays input-only.
+  await expect(badge).toContainText("448 tokens");
   await expect(badge).toContainText("$0.000017");
   await expect(page.locator("tbody tr")).toHaveCount(4);
   await badge.click();
@@ -27,12 +28,18 @@ test("all extraction calls appear once with reported tokens, visible cost and pr
     dialog.getByRole("link", { name: "Source: TypeSafe public pricing" }),
   ).toHaveAttribute("href", "https://typesafe.ai/");
   await expect(dialog).toContainText("input tokens × $42 ÷ 1,000,000,000");
+  await expect(
+    dialog.locator(".usage-metrics > div", { hasText: "Input tokens" }),
+  ).toContainText("400");
+  await expect(
+    dialog.locator(".usage-metrics > div", { hasText: "Output tokens" }),
+  ).toContainText("48");
   await expect(dialog.locator("tbody tr")).toHaveCount(4);
   await page.getByRole("button", { name: "Close usage dashboard" }).click();
   await page.reload();
   await expect(badge).toContainText("4 calls");
   await page.goto("/reranker");
-  await expect(badge).toContainText("400 tokens");
+  await expect(badge).toContainText("448 tokens");
 });
 test("429 pauses live runs across pages and survives reload; a replacement key releases the block", async ({
   page,

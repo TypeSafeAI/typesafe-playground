@@ -14,6 +14,9 @@ export function UsageSummaryBadge({
   onClick: () => void;
 }) {
   const state = quotaState(usage);
+  const total = usage.tokens + usage.outputTokens;
+  // Unreported output is unknown, not zero, so the total is only a floor.
+  const floor = usage.unknownOutputCalls > 0;
   return (
     <button
       className={`usage-badge ${state}`}
@@ -30,7 +33,16 @@ export function UsageSummaryBadge({
       </span>
       {queueCount > 0 && <span>{queueCount} queued</span>}
       <small>
-        {usage.tokens.toLocaleString()} tokens
+        <span
+          title={`${usage.tokens.toLocaleString()} input + ${usage.outputTokens.toLocaleString()} output tokens${
+            floor
+              ? `. ${usage.unknownOutputCalls} ${usage.unknownOutputCalls === 1 ? "call" : "calls"} did not report output tokens, so this total is a minimum.`
+              : ""
+          }`}
+        >
+          {total.toLocaleString()}
+          {floor ? "+" : ""} tokens
+        </span>
         {usage.estimatedTokens > 0 ? " ≈" : ""}
         <span
           className="usage-cost"

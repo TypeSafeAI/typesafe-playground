@@ -122,7 +122,10 @@ test("LangChain counts actual provider calls, not policy stops or mock invocatio
 });
 test("session ledger separates reported, estimated and unknown tokens, counts once and gates immediately", () => {
   const context = usageContext(),
-    before = getUsage().requests;
+    before = getUsage().requests,
+    beforeTokens = getUsage().tokens,
+    beforeOutput = getUsage().outputTokens,
+    beforeUnknownOutput = getUsage().unknownOutputCalls;
   recordUsage(
     payload,
     {
@@ -166,6 +169,14 @@ test("session ledger separates reported, estimated and unknown tokens, counts on
     "microduck",
   );
   assert.equal(getUsage().requests, before + 3);
+  // Output totals count only reported tokens; unreported output stays unknown, not zero.
+  assert.equal(getUsage().outputTokens, beforeOutput + 10);
+  assert.equal(getUsage().unknownOutputCalls, beforeUnknownOutput + 2);
+  // Input total (and so the input-cost estimate) excludes output tokens.
+  assert.equal(
+    getUsage().tokens,
+    beforeTokens + 300 + getUsage().entries[1].inputTokens!,
+  );
   assert.equal(getUsage().entries[0].estimatedCost, null);
   assert.equal(getUsage().entries[1].tokenSource, "estimated");
   assert.equal(getUsage().entries[2].tokenSource, "reported");

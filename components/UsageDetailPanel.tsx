@@ -57,6 +57,18 @@ export function UsageDetailPanel({
           </small>
         </div>
         <div>
+          <span>Output tokens</span>
+          <strong>
+            {usage.outputTokens.toLocaleString()}
+            {usage.unknownOutputCalls > 0 ? "+" : ""}
+          </strong>
+          <small>
+            {usage.unknownOutputCalls > 0
+              ? `API-reported only · ${usage.unknownOutputCalls} ${usage.unknownOutputCalls === 1 ? "call" : "calls"} unreported`
+              : "API-reported · never estimated"}
+          </small>
+        </div>
+        <div>
           <span>Estimated input cost</span>
           <strong>{dollars(usage.cost)}</strong>
           <small>List price, not billed amount</small>
