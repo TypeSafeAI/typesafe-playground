@@ -1,6 +1,6 @@
 "use client";
 import { STATE_CAPITALS_REFERENCE } from "../lib/jev-chat/state-capitals";
-import { useState } from "react";
+import { useState, type SyntheticEvent } from "react";
 import {
   Check,
   Calculator,
@@ -14,6 +14,24 @@ import { verifySavedResult } from "../lib/jev-chat/persistence";
 import type { EngineResult } from "../lib/jev-chat/types";
 import { personalityLabels } from "../lib/jev-chat/personality";
 import { download, percent } from "../lib/client";
+
+// Disclosures on a long reply open below the transcript's visible edge.
+// Bring newly revealed content into view, moving only as far as needed.
+function reveal(el: Element | null) {
+  if (!el) return;
+  const reduce =
+    typeof window !== "undefined" &&
+    window.matchMedia?.("(prefers-reduced-motion: reduce)").matches;
+  el.scrollIntoView({
+    block: "nearest",
+    inline: "nearest",
+    behavior: reduce ? "auto" : "smooth",
+  });
+}
+// Only on open: closing a disclosure must not move the transcript.
+function revealOnOpen(event: SyntheticEvent<HTMLDetailsElement>) {
+  if (event.currentTarget.open) reveal(event.currentTarget);
+}
 
 export function JevResponseDetails({
   result,
@@ -51,7 +69,10 @@ export function JevResponseDetails({
         )}
       </div>
       {result.calculation && (
-        <details className="jc-source-details jc-calculation-details">
+        <details
+          className="jc-source-details jc-calculation-details"
+          onToggle={revealOnOpen}
+        >
           <summary>
             <Calculator size={13} /> Check the calculation
           </summary>
@@ -92,14 +113,16 @@ export function JevResponseDetails({
                 </button>
               </div>
               {calculationVerification && (
-                <p role="status">{calculationVerification}</p>
+                <p role="status" ref={reveal}>
+                  {calculationVerification}
+                </p>
               )}
             </div>
           </div>
         </details>
       )}
       {result.sources.length > 0 && (
-        <details className="jc-source-details">
+        <details className="jc-source-details" onToggle={revealOnOpen}>
           <summary>
             <FileText size={13} />
             View supporting passages
@@ -112,7 +135,7 @@ export function JevResponseDetails({
           ))}
         </details>
       )}
-      <details className="jc-composition-details">
+      <details className="jc-composition-details" onToggle={revealOnOpen}>
         <summary>
           <Fingerprint size={13} />
           How this response was composed
@@ -232,7 +255,7 @@ export function JevResponseDetails({
               "Model relevance checks are probabilistic and do not establish factual correctness."
             )}
           </p>
-          <details className="jc-candidate-details">
+          <details className="jc-candidate-details" onToggle={revealOnOpen}>
             <summary>
               {result.trace.candidates.length} response candidate
               {result.trace.candidates.length === 1 ? "" : "s"}
@@ -286,7 +309,11 @@ export function JevResponseDetails({
                 Export trace
               </button>
             </div>
-            {verification && <p role="status">{verification}</p>}
+            {verification && (
+              <p role="status" ref={reveal}>
+                {verification}
+              </p>
+            )}
           </div>
         </div>
       </details>
