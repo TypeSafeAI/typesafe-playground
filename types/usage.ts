@@ -31,9 +31,14 @@ export type UsageBlock = {
 export type UsageSnapshot = {
   entries: UsageEntry[];
   requests: number;
+  /** Input tokens only: reported, else estimated. Drives the input-cost estimate. */
   tokens: number;
+  /** API-reported output tokens. Never estimated. */
+  outputTokens: number;
   estimatedTokens: number;
   unknownCalls: number;
+  /** Counted calls whose output tokens were not reported, so output totals are a floor. */
+  unknownOutputCalls: number;
   cost: number;
   account: AccountUsage;
   block: UsageBlock | null;

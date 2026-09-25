@@ -17,8 +17,10 @@ const initial: UsageSnapshot = {
   entries: [],
   requests: 0,
   tokens: 0,
+  outputTokens: 0,
   estimatedTokens: 0,
   unknownCalls: 0,
+  unknownOutputCalls: 0,
   cost: 0,
   account: {
     available: false,
@@ -60,7 +62,13 @@ export function initializeUsage() {
         saved.estimatedTokens,
         saved.unknownCalls,
         saved.cost,
-      ].every((n) => typeof n === "number" && Number.isFinite(n) && n >= 0)
+      ].every((n) => typeof n === "number" && Number.isFinite(n) && n >= 0) &&
+      // Output totals were added later; older saved sessions omit them.
+      [saved.outputTokens, saved.unknownOutputCalls].every(
+        (n) =>
+          n === undefined ||
+          (typeof n === "number" && Number.isFinite(n) && n >= 0),
+      )
     ) {
       // Entries contain only scalar telemetry, never prompts or keys.
       const entries = saved.entries.filter(
@@ -172,10 +180,13 @@ export function logUsageEntry(entry: UsageEntry) {
     entries: [entry, ...snapshot.entries].slice(0, 200),
     requests: snapshot.requests + entry.requestCount,
     tokens: snapshot.tokens + (entry.inputTokens ?? 0),
+    outputTokens: snapshot.outputTokens + (entry.outputTokens ?? 0),
     estimatedTokens:
       snapshot.estimatedTokens +
       (entry.tokenSource === "estimated" ? (entry.inputTokens ?? 0) : 0),
     unknownCalls: snapshot.unknownCalls + (entry.inputTokens === null ? 1 : 0),
+    unknownOutputCalls:
+      snapshot.unknownOutputCalls + (entry.outputTokens === null ? 1 : 0),
     cost: snapshot.cost + (entry.estimatedCost ?? 0),
   };
   publish();
