@@ -15,11 +15,11 @@ export const metadata: Metadata = {
     siteName: "TypeSafe Playground",
     title: "TypeSafe Playground — small experiments, clear decisions",
     description: "Unofficial community Jev experiments: classification, routing, extraction, and inspectable decisions.",
-    images: [{ url: "/og.png", alt: "TypeSafe AI community playground — small experiments, clear decisions" }],
+    images: [{ url: "/opengraph-image", alt: "TypeSafe AI community playground — small experiments, clear decisions" }],
   },
   twitter: {
     card: "summary_large_image",
-    images: [{ url: "/og.png", alt: "TypeSafe AI community playground — small experiments, clear decisions" }],
+    images: [{ url: "/opengraph-image", alt: "TypeSafe AI community playground — small experiments, clear decisions" }],
   },
 };
 export default function RootLayout({

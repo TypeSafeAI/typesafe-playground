@@ -50,10 +50,9 @@ jobs:
         if: matrix.python == '3.13'
       - run: pnpm test:e2e
         if: matrix.python == '3.13'
-      # Traces and error contexts are the only record of a browser failure that
-      # does not reproduce on a developer machine, so keep them when a run fails.
+      # Preserve real sharing captures on success and failure diagnostics on failure.
       - uses: actions/upload-artifact@ea165f8d65b6e75b540449e92b4886f43607fa02 # v4.6.2
-        if: failure() && matrix.python == '3.13'
+        if: always() && matrix.python == '3.13'
         with:
           name: playwright-results
           path: test-results/
