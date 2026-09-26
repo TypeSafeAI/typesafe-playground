@@ -95,6 +95,7 @@ test("synthetic labels require marker boundaries and still allow explicit fixtur
     writeFileSync(join(root, "synthetic.txt"), "TYPESAFE_API_KEY=contest_" + "test_server_only_secret123456\n");
     result = runCheck(root, ["synthetic.txt"]);
     assert.equal(result.status, 1);
+    assert.match(result.stderr, /looks like a TypeSafe key assigned inline/);
   } finally {
     rmSync(root, { recursive: true, force: true });
   }
