@@ -40,7 +40,7 @@ test("oversized valid history survives reload, editing and cancelled replacement
   }));
   const original = JSON.stringify(chats);
   expect(original.length).toBeGreaterThan(MAX_CHAT_STORAGE);
-  await page.goto("/jev-chat");
+  await page.goto("/language/jev-chat");
   await expect(page.getByLabel("Message Jev")).toBeVisible();
   await page.evaluate(({ key, raw }) => localStorage.setItem(key, raw), {
     key: CHAT_STORAGE,

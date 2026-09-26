@@ -44,7 +44,7 @@ Checks above describe protocol/executor implementation verified with scripted re
 | Structural checks | DOM tests cover changed field, document, option, form context, occlusion and stable target outside unrelated updates; mutation-region counters avoid full rereads | Implemented and tested offline |
 | Pacing/cancellation | Repeated target waits, challenge early-stop, bounded waits; cancellation test observes SIGTERM while RPC remains pending; unacknowledged batches remain uncertain | Implemented and tested offline; no detection-bypass claim |
 | Metrics and targets | Staged v2 PC and profile: 12 actions / 7 decisions each. Actual model calls = 0 in scripted mode; tokens = null. Live attempt: HTTP 402 before first action | Target measurement incomplete |
-| App/docs | `/jev-browser-agent/native`, guide link, explicit synthetic/live context, copyable exact trace; tests for failure accounting, overflow and short-screen composer | Implemented and tested offline |
+| App/docs | `/agents/jev-browser-agent/native`, guide link, explicit synthetic/live context, copyable exact trace; tests for failure accounting, overflow and short-screen composer | Implemented and tested offline |
 | Delivery | Isolated `feat/native-jev-loop`; main remains unchanged by this task | Draft PR #19 pushed; initial 98300e5 CI passed; staged benchmark follow-up and live measurement pending |
 
 ## Verification receipts

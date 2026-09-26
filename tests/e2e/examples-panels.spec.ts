@@ -8,7 +8,7 @@ test("the examples rail collapses and restores alongside the results panel", asy
   page,
 }) => {
   await page.setViewportSize({ width: 1600, height: 950 });
-  await page.goto("/examples");
+  await page.goto("/language/examples");
   const layout = page.locator(".examples-layout");
   const rail = page.locator(".library-panel");
   const search = page.getByLabel("Search examples", { exact: true });
@@ -51,7 +51,7 @@ test("read-only JSON renders as a tree that folds, filters and copies", async ({
   test.skip(info.project.name === "mobile", "Clipboard grant is desktop-only.");
   await context.grantPermissions(["clipboard-read", "clipboard-write"]);
   await page.setViewportSize({ width: 1600, height: 950 });
-  await page.goto("/examples");
+  await page.goto("/language/examples");
   await page.getByText("Reply intent", { exact: true }).click();
   const view = page.locator(".json-view").first();
   await view.scrollIntoViewIfNeeded();

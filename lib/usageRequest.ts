@@ -6,6 +6,7 @@ import {
   usageContext,
 } from "./logUsageEntry";
 import type { ProviderUsage } from "../types/usage";
+import { workspaceIdFromPath } from "./routes";
 /** One instrumentation point for every browser-to-Jev transport. */
 export async function usageRequest(
   endpoint: string,
@@ -36,7 +37,7 @@ async function sendUsageRequest(
   const example =
     options.example ??
     (typeof window !== "undefined"
-      ? window.location.pathname.split("/").filter(Boolean)[0] || "examples"
+      ? workspaceIdFromPath(window.location.pathname)
       : "unknown");
   let response: Response;
   try {

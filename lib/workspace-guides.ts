@@ -5,7 +5,64 @@ export type WorkspaceGuide = {
   flow: [string, string, string];
 };
 export const workspaceGuides: Record<string, WorkspaceGuide> = {
-  "/jev-chat": {
+  "/arcade/snake": {
+    steps: [
+      [
+        "Pick a player",
+        "Scripted demo and Random baseline run locally. Live Jev uses the configured key, one request per move.",
+      ],
+      [
+        "Play a seed",
+        "The seed fixes apples, so every player faces the same board. Step one move at a time or press Play.",
+      ],
+      [
+        "Compare the score",
+        "The scoreboard puts the result beside the random baseline on the same seed. Open any move to see what each direction would have done.",
+      ],
+    ],
+    boundary:
+      "The game computes each direction's outcome and flood-fill room. Jev chooses one offered direction. Forced and fallback moves are labeled and never counted as Jev choices.",
+    flow: ["Board features", "Jev choice", "Next direction"],
+  },
+  "/arcade/breakout": {
+    steps: [
+      [
+        "Pick a player",
+        "Scripted demo and Random baseline run locally. Live Jev uses the configured key, one request per frame.",
+      ],
+      [
+        "Play a seed",
+        "The seed fixes each serve, so every player faces the same game. The dashed cell marks the predicted landing.",
+      ],
+      [
+        "Compare the score",
+        "Bricks cleared and lives kept sit beside the random baseline on the same seed.",
+      ],
+    ],
+    boundary:
+      "The game predicts where a falling ball lands. Jev chooses left, stay or right each frame. It is reactive control, not planning, and malformed answers hold the paddle still.",
+    flow: ["Ball and paddle", "Jev choice", "Paddle move"],
+  },
+  "/arcade/meteor-dodge": {
+    steps: [
+      [
+        "Pick a player",
+        "Scripted demo and Random baseline run locally. Live Jev uses the configured key, one request per row.",
+      ],
+      [
+        "Play a seed",
+        "The seed fixes every meteor, so every player faces the same field. The next row is highlighted.",
+      ],
+      [
+        "Compare the score",
+        "Rows survived sit beside the random baseline on the same seed. Open a move to see each lane's look-ahead.",
+      ],
+    ],
+    boundary:
+      "The game computes a nine-row look-ahead for each move. Jev chooses one offered move. The world keeps one survivable path, so a crash is a decision error.",
+    flow: ["Lanes ahead", "Jev choice", "Lane change"],
+  },
+  "/language/jev-chat": {
     steps: [
       [
         "Choose a topic",
@@ -28,7 +85,7 @@ export const workspaceGuides: Record<string, WorkspaceGuide> = {
     steps: [
       [
         "Choose a question",
-        "Browse the four workspace groups, or search by the task you want to explore.",
+        "Browse the five sections, open a section page, or search by the task you want to explore.",
       ],
       [
         "Open an example",
@@ -43,7 +100,7 @@ export const workspaceGuides: Record<string, WorkspaceGuide> = {
       "This is an independent community playground. Live model outputs, seeded demos, and solver checks are labeled separately; none proves general model quality.",
     flow: ["Pick a task", "Try an example", "Inspect evidence"],
   },
-  "/jev-browser-agent": {
+  "/agents/jev-browser-agent": {
     steps: [
       [
         "Set a goal",
@@ -62,7 +119,7 @@ export const workspaceGuides: Record<string, WorkspaceGuide> = {
       "PC research navigates real pages locally but never adds to a cart or purchases. Flight actions occur in a synthetic sandbox. Missing evidence remains a gap; any price-only fallback is labeled.",
     flow: ["Goal", "Observe & choose", "Checked evidence"],
   },
-  "/youtube-extract": {
+  "/language/youtube-extract": {
     steps: [
       [
         "Load captions",
@@ -81,7 +138,7 @@ export const workspaceGuides: Record<string, WorkspaceGuide> = {
       "Source-only extract, not a generated summary. Scores cannot prove that nothing important was omitted. Public caption retrieval may be blocked.",
     flow: ["Captions", "Jev scores", "Extract"],
   },
-  "/examples": {
+  "/language/examples": {
     steps: [
       [
         "Pick a question",
@@ -100,7 +157,7 @@ export const workspaceGuides: Record<string, WorkspaceGuide> = {
       "Runs use live Jev. Confidence is a model signal, not proof of correctness. Subjective examples have no universal answer key.",
     flow: ["Context", "Typed questions", "Answers"],
   },
-  "/conversation": {
+  "/language/conversation": {
     steps: [
       [
         "Set the conversation",
@@ -119,7 +176,7 @@ export const workspaceGuides: Record<string, WorkspaceGuide> = {
       "Live classification only. The lab does not write or send replies.",
     flow: ["Messages", "Reply policy", "Recipient"],
   },
-  "/extraction": {
+  "/language/extraction": {
     steps: [
       [
         "Start with a document",
@@ -138,7 +195,7 @@ export const workspaceGuides: Record<string, WorkspaceGuide> = {
       "Jev can choose only from source candidates or null. A provider error is a failed run, not a missing value.",
     flow: ["Document", "Candidates", "Source evidence"],
   },
-  "/gate": {
+  "/agents/gate": {
     steps: [
       [
         "Supply the evidence",
@@ -154,7 +211,7 @@ export const workspaceGuides: Record<string, WorkspaceGuide> = {
       "Live classification only. The lab does not write an answer or contact a reviewer.",
     flow: ["Question", "Evidence", "Review decision"],
   },
-  "/workflow": {
+  "/agents/workflow": {
     steps: [
       [
         "Choose a playbook",
@@ -173,7 +230,7 @@ export const workspaceGuides: Record<string, WorkspaceGuide> = {
       "Recommended actions only. No refunds, fines, bans, or messages are executed.",
     flow: ["Case", "Your rules", "Recommendation"],
   },
-  "/tool-router": {
+  "/agents/tool-router": {
     steps: [
       [
         "Choose a request",
@@ -192,7 +249,7 @@ export const workspaceGuides: Record<string, WorkspaceGuide> = {
       "Live Jev chooses a node; mock mode uses seeded choices. All agent and tool execution is simulated.",
     flow: ["Request", "Policy gate", "Permitted step"],
   },
-  "/langchain": {
+  "/agents/langchain": {
     steps: [
       [
         "Choose the request",
@@ -211,7 +268,7 @@ export const workspaceGuides: Record<string, WorkspaceGuide> = {
       "The LangChain tool is real. It returns a decision and never executes downstream actions.",
     flow: ["Tool input", "Policy gate", "Structured result"],
   },
-  "/pr-review": {
+  "/governance/pr-review": {
     steps: [
       [
         "Load a change",
@@ -230,7 +287,7 @@ export const workspaceGuides: Record<string, WorkspaceGuide> = {
       "Review recommendations only. This lab does not post reviews, run a second-stage model, or merge code.",
     flow: ["Diff", "Risk & policy", "Review queue"],
   },
-  "/proposal-review": {
+  "/governance/proposal-review": {
     steps: [
       [
         "Pick a fixture",
@@ -249,7 +306,7 @@ export const workspaceGuides: Record<string, WorkspaceGuide> = {
       "Verdicts are evidence, not authorization. Patches are recorded as pending and never applied; no proposed code runs; an unavailable review is never treated as safe.",
     flow: ["Proposal", "Four Jev answers", "Code verdict"],
   },
-  "/ast-governance": {
+  "/governance/ast-governance": {
     steps: [
       [
         "Describe the change",
@@ -268,7 +325,7 @@ export const workspaceGuides: Record<string, WorkspaceGuide> = {
       "The parser and test cache are prototypes. Cached test results are simulated; no tests or merges run.",
     flow: ["Changed symbols", "Affected callers", "Review decision"],
   },
-  "/smt-solver": {
+  "/governance/smt-solver": {
     steps: [
       ["Pick a puzzle", "Choose a scenario or write supported constraints."],
       [
@@ -284,7 +341,7 @@ export const workspaceGuides: Record<string, WorkspaceGuide> = {
       "Z3 performs a real solver check. A model prediction cannot override a definitive solver result.",
     flow: ["Constraints", "Jev + Z3", "Verified result"],
   },
-  "/reranker": {
+  "/language/reranker": {
     steps: [
       [
         "Set the query",
@@ -303,7 +360,7 @@ export const workspaceGuides: Record<string, WorkspaceGuide> = {
       "The baseline is lexical and mocked. Unscored results stay unknown; agreement is not proof of search quality.",
     flow: ["Candidates", "Relevance", "New order"],
   },
-  "/memes": {
+  "/language/memes": {
     steps: [
       [
         "Review the image text",
@@ -322,7 +379,7 @@ export const workspaceGuides: Record<string, WorkspaceGuide> = {
       "Jev receives reviewed text and descriptions, not image pixels. Humor and audience fit are subjective.",
     flow: ["Reviewed caption", "Audience context", "Interpretation"],
   },
-  "/chess": {
+  "/simulations/chess": {
     steps: [
       ["Set up a game", "Choose the mode, seed, and opponent depth."],
       [
@@ -338,7 +395,7 @@ export const workspaceGuides: Record<string, WorkspaceGuide> = {
       "Jev chooses one legal move without lookahead. This is a limitations demo, not a competitive chess engine.",
     flow: ["Position", "Legal moves", "One choice"],
   },
-  "/microduck": {
+  "/simulations/microduck": {
     steps: [
       [
         "Explore the arena",
@@ -357,7 +414,7 @@ export const workspaceGuides: Record<string, WorkspaceGuide> = {
       "Simulated hardware only. Each decision comes from seven allowed actions; no physical robot is connected.",
     flow: ["Sensors", "Allowed actions", "Robot movement"],
   },
-  "/doom": {
+  "/simulations/doom": {
     steps: [
       [
         "Enter the arena",
@@ -376,7 +433,7 @@ export const workspaceGuides: Record<string, WorkspaceGuide> = {
       "JevDoom is an original game with no Doom engine or assets. Jev sees structured state, not screenshots.",
     flow: ["Arena state", "Allowed actions", "One game tick"],
   },
-  "/clean-room": {
+  "/agents/clean-room": {
     steps: [
       [
         "Choose a demo",

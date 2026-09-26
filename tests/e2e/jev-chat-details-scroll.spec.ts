@@ -30,7 +30,7 @@ test.beforeEach(async ({ page }) => {
   await page.route("**/api/run", (r) =>
     r.fulfill({ status: 500, json: { error: "Unexpected provider call." } }),
   );
-  await page.goto("/jev-chat");
+  await page.goto("/language/jev-chat");
   await page.getByLabel("Chat mode").selectOption("demo");
   await page.getByLabel("Message Jev").fill("List all 50 state capitals");
   await page.getByLabel("Message Jev").press("Enter");

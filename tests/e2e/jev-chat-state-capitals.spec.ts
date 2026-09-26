@@ -16,7 +16,7 @@ for (const engine of ["compose", "baseline"]) {
           json: { error: "Unexpected provider call." },
         });
       });
-      await page.goto("/jev-chat");
+      await page.goto("/language/jev-chat");
       await page.getByLabel("Response engine").selectOption(engine);
       await page.getByLabel("Chat mode").selectOption(mode);
       if (engine === "compose")

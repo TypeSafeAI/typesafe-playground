@@ -1,6 +1,6 @@
 # Jev × LangChain integration
 
-Open `/langchain` to invoke a real `@langchain/core` structured tool. This is a runnable local integration example, not a published plugin package. It wraps the same fixed graph and policy gates as Tool Router and returns routing data; downstream tools never execute.
+Open `/agents/langchain` to invoke a real `@langchain/core` structured tool. This is a runnable local integration example, not a published plugin package. It wraps the same fixed graph and policy gates as Tool Router and returns routing data; downstream tools never execute.
 
 **Invoke LangChain tool** uses live Jev through the server-only TypeSafe API key. **Try mock invocation** invokes the same LangChain tool with seeded classifier responses. Both exercise LangChain schema validation. Neither requires an OpenAI or LangSmith key.
 

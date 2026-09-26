@@ -3,7 +3,7 @@ import sharp from "sharp";
 test("3D arena renders geometry, shoots, turns and resizes in fullscreen", async ({
   page,
 }) => {
-  await page.goto("/doom");
+  await page.goto("/simulations/doom");
   const canvas = page.locator(".doom-scene canvas");
   await expect(page.locator(".doom-scene")).toHaveAttribute(
     "data-status",
@@ -67,7 +67,7 @@ test("missing WebGL exposes a playable tactical fallback", async ({ page }) => {
       return (original as any).call(this, type, ...args);
     } as any;
   });
-  await page.goto("/doom");
+  await page.goto("/simulations/doom");
   await expect(page.locator(".doom-render-message")).toContainText(
     "3D graphics unavailable",
   );
@@ -82,7 +82,7 @@ test("missing WebGL exposes a playable tactical fallback", async ({ page }) => {
 test("JevDoom fullscreen fills the screen and captures a branded paused scene", async ({
   page,
 }) => {
-  await page.goto("/doom");
+  await page.goto("/simulations/doom");
   await expect(page.locator(".doom-scene")).toHaveAttribute(
     "data-status",
     "ready",
@@ -133,7 +133,7 @@ test("a complete human-controlled run reaches the sector-cleared screen", async 
       "utf8",
     ),
   );
-  await page.goto("/doom");
+  await page.goto("/simulations/doom");
   await expect(page.locator(".doom-scene")).toHaveAttribute(
     "data-status",
     "ready",
@@ -167,7 +167,7 @@ test("a complete human-controlled run reaches the sector-cleared screen", async 
 test("paused keyboard input cannot queue a shot into the next run", async ({
   page,
 }) => {
-  await page.goto("/doom");
+  await page.goto("/simulations/doom");
   await page.getByRole("application").focus();
   await page.keyboard.press("Space");
   await page.getByRole("button", { name: "Start arena", exact: true }).click();

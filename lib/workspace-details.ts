@@ -8,6 +8,36 @@ export type WorkspaceDetails = {
 };
 
 export const workspaceDetails: Record<string, WorkspaceDetails> = {
+  "/arcade/snake": {
+    input:
+      "A seed and a player: Live Jev, the scripted rule, the random baseline, or you on the keyboard.",
+    process:
+      "Before each move the game computes every legal direction's result: crash, eating the apple, distance to the apple, and how many cells stay reachable. Live Jev receives those facts as structured state and answers one choice question over the legal directions.",
+    output:
+      "The move played, who chose it, Jev's probability for each direction, and the apples eaten compared with the random baseline on the same seed. Runs stop at 200 moves or after 120 moves without an apple.",
+    experiment:
+      "Run the scripted demo on seed 1, then Live Jev on the same seed, and compare the apples and any fallbacks.",
+  },
+  "/arcade/breakout": {
+    input:
+      "A seed and a player: Live Jev, the scripted rule, the random baseline, or you on the keyboard.",
+    process:
+      "Each frame the game predicts where a falling ball will land and computes, for each paddle move, whether the paddle would cover it. Live Jev answers one choice question over the legal paddle moves.",
+    output:
+      "Bricks cleared, lives left, and each frame's choice with its probabilities, compared with the random baseline on the same seed. Runs stop at 240 frames or when the lives run out.",
+    experiment:
+      "Watch the random baseline lose its lives, then run Live Jev on the same seed and count the lives it keeps.",
+  },
+  "/arcade/meteor-dodge": {
+    input:
+      "A seed and a player: Live Jev, the scripted rule, the random baseline, or you on the keyboard.",
+    process:
+      "Each row the game computes, for each move, whether the ship would crash, how many visible rows stay survivable, and how many lanes remain open at the edge of view. Live Jev answers one choice question over the legal moves.",
+    output:
+      "Rows survived and each row's choice with its probabilities, compared with the random baseline on the same seed. Runs stop at 150 rows or on the first hit.",
+    experiment:
+      "Try a seed where the random baseline dies early, then see whether Live Jev survives all 150 rows.",
+  },
   "/": {
     input:
       "A task or question you want to explore. Search matches workspace names, descriptions, and groups.",
@@ -18,7 +48,7 @@ export const workspaceDetails: Record<string, WorkspaceDetails> = {
     experiment:
       "Search for robot, open MicroDuck, and compare its seeded controller with a live Jev run when you are ready.",
   },
-  "/examples": {
+  "/language/examples": {
     input:
       "An example's Text or JSON context and selected typed questions. A/B cases declare the single field that changes.",
     process:
@@ -28,7 +58,7 @@ export const workspaceDetails: Record<string, WorkspaceDetails> = {
     experiment:
       "Open an A/B example, inspect the changed field, then compare both answers. Reveal reference notes after making your own prediction.",
   },
-  "/conversation": {
+  "/language/conversation": {
     input:
       "A conversation transcript and experiment choice: select a reply recipient or compare how a changed detail affects the final message.",
     process:
@@ -38,7 +68,7 @@ export const workspaceDetails: Record<string, WorkspaceDetails> = {
     experiment:
       "Load the sample, pick a recipient, then raise the threshold and watch when the selection becomes uncertain.",
   },
-  "/youtube-extract": {
+  "/language/youtube-extract": {
     input:
       "A public YouTube URL whose video already has a caption track. English is preferred, manual tracks before automatic ones; the track's origin is shown.",
     process:
@@ -48,7 +78,7 @@ export const workspaceDetails: Record<string, WorkspaceDetails> = {
     experiment:
       "Extract a talk, then open the raw list and read the dropped passages: a high score cannot prove that nothing important was omitted.",
   },
-  "/extraction": {
+  "/language/extraction": {
     input:
       "Document text and the fields you select, such as date, counterparty, or amount. Use synthetic documents for experiments.",
     process:
@@ -58,7 +88,7 @@ export const workspaceDetails: Record<string, WorkspaceDetails> = {
     experiment:
       "Load the invoice, extract its fields, then remove the date from the source and compare the next result.",
   },
-  "/gate": {
+  "/agents/gate": {
     input:
       "An incoming question or chat dump, conversation history, and optional documentation that could support an answer.",
     process:
@@ -68,7 +98,7 @@ export const workspaceDetails: Record<string, WorkspaceDetails> = {
     experiment:
       "Run the sample with its supporting documentation, then remove that evidence and compare the handoff decision.",
   },
-  "/workflow": {
+  "/agents/workflow": {
     input:
       "A selected playbook, its rules, and the facts you add to the case conversation.",
     process:
@@ -78,7 +108,7 @@ export const workspaceDetails: Record<string, WorkspaceDetails> = {
     experiment:
       "Start a damaged-delivery case with one fact, then add the missing evidence and compare the recommendation.",
   },
-  "/tool-router": {
+  "/agents/tool-router": {
     input:
       "A request, a starting graph node, and the demo's policy. Available next nodes depend on the current position.",
     process:
@@ -88,7 +118,7 @@ export const workspaceDetails: Record<string, WorkspaceDetails> = {
     experiment:
       "Compare reading settings with modifying production. Follow the path until the approval checkpoint, then try a request for secrets.",
   },
-  "/langchain": {
+  "/agents/langchain": {
     input:
       "A user request and current graph node, passed to the real structured LangChain tool adapter.",
     process:
@@ -98,7 +128,7 @@ export const workspaceDetails: Record<string, WorkspaceDetails> = {
     experiment:
       "Invoke the mock with a read request, then a production change. Compare the returned route and approval requirement.",
   },
-  "/pr-review": {
+  "/governance/pr-review": {
     input:
       "A public PR URL or pasted diff, repository rules, and review thresholds. The mock demo supplies a synthetic change.",
     process:
@@ -108,7 +138,7 @@ export const workspaceDetails: Record<string, WorkspaceDetails> = {
     experiment:
       "Run the mock demo, filter the risky hunks, and move a threshold to see how the review queue changes.",
   },
-  "/proposal-review": {
+  "/governance/proposal-review": {
     input:
       "A synthetic fixture: a task, a few tiny files, evidence lines, and a scripted good or bad proposal. Mock mode needs no key; Live Jev needs a configured key.",
     process:
@@ -118,7 +148,7 @@ export const workspaceDetails: Record<string, WorkspaceDetails> = {
     experiment:
       "Review a clean fixture’s good proposal in Mock, switch to the bad arm, then open a prompt-injection fixture and read which question caught it.",
   },
-  "/ast-governance": {
+  "/governance/ast-governance": {
     input:
       "A proposed diff, symbol information, and repository policy. The supplied sample is a safe starting point.",
     process:
@@ -128,7 +158,7 @@ export const workspaceDetails: Record<string, WorkspaceDetails> = {
     experiment:
       "Run the mock demo, trace one affected caller, and inspect which findings come from fixed policy versus model classification.",
   },
-  "/smt-solver": {
+  "/governance/smt-solver": {
     input:
       "A preset puzzle or constraints written in the supported syntax. Variable types and assumptions define the exact problem.",
     process:
@@ -138,7 +168,7 @@ export const workspaceDetails: Record<string, WorkspaceDetails> = {
     experiment:
       "Choose Impossible bounds, inspect the contradictory constraints, and compare the model prediction with Z3's exact check.",
   },
-  "/reranker": {
+  "/language/reranker": {
     input:
       "A query, candidate snippets, their vector scores, and the top-K limit. The Blink dataset is synthetic.",
     process:
@@ -148,7 +178,7 @@ export const workspaceDetails: Record<string, WorkspaceDetails> = {
     experiment:
       "Load the Blink sample, compare both rankers, and inspect a snippet whose position changes substantially.",
   },
-  "/memes": {
+  "/language/memes": {
     input:
       "Reviewed OCR text, your description of the visual, and audience context. Public-image reading is a separate bounded preparation step.",
     process:
@@ -158,7 +188,7 @@ export const workspaceDetails: Record<string, WorkspaceDetails> = {
     experiment:
       "Keep the caption fixed and change the audience. Compare the interpretation without treating either run as a universal humor score.",
   },
-  "/chess": {
+  "/simulations/chess": {
     input:
       "A seeded game, the selected mode, opponent depth, and the current board position.",
     process:
@@ -168,7 +198,7 @@ export const workspaceDetails: Record<string, WorkspaceDetails> = {
     experiment:
       "Step through a game, pause at a marked blunder, and compare the chosen move with the local analysis.",
   },
-  "/microduck": {
+  "/simulations/microduck": {
     input:
       "A simulated arena, sensor state, controller selection, and tick budget. No physical hardware is connected.",
     process:
@@ -178,7 +208,7 @@ export const workspaceDetails: Record<string, WorkspaceDetails> = {
     experiment:
       "Run a short seeded baseline, inspect a collision, then compare a Jev run with the same starting conditions.",
   },
-  "/doom": {
+  "/simulations/doom": {
     input:
       "An original arena, controller mode, and structured game state. Human play uses keyboard or touch controls.",
     process:
@@ -188,7 +218,7 @@ export const workspaceDetails: Record<string, WorkspaceDetails> = {
     experiment:
       "Play a few steps, pause to inspect the state, then compare Jev and random controllers under the same setup.",
   },
-  "/clean-room": {
+  "/agents/clean-room": {
     input:
       "A local catalog, contacts, or support-ticket demo plus the rebuild context. Chromium observes the original target's interface and API behavior.",
     process:
@@ -198,7 +228,7 @@ export const workspaceDetails: Record<string, WorkspaceDetails> = {
     experiment:
       "Run the catalog demo, open the rebuilt app, search for Cloud, and compare the result with the recorded verification evidence.",
   },
-  "/jev-browser-agent": {
+  "/agents/jev-browser-agent": {
     summary:
       "Follow a local research run or a synthetic browser task, from observations to checked evidence.",
     input:

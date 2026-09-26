@@ -17,7 +17,7 @@ test("local conversation, guide, history, drafts, source notes, and responsive t
     calls++;
     return r.fulfill({ json: {} });
   });
-  await page.goto("/jev-chat");
+  await page.goto("/language/jev-chat");
   await page.getByLabel("Response engine").selectOption("baseline");
   await expect(
     page.getByRole("heading", { name: "Jev Chat", exact: true }),
@@ -138,7 +138,7 @@ test("live closed choices, uncertain fallback, failure retry and no silent demo"
       },
     });
   });
-  await page.goto("/jev-chat");
+  await page.goto("/language/jev-chat");
   await page.getByLabel("Response engine").selectOption("baseline");
   await page.getByLabel("Chat mode").selectOption("live");
   await page.getByLabel("Message Jev").fill("How does Jev work?");
@@ -182,7 +182,7 @@ test("stop and key changes discard delayed answers; failed messages remain edita
       })
       .catch(() => {});
   });
-  await page.goto("/jev-chat");
+  await page.goto("/language/jev-chat");
   await page.getByLabel("Response engine").selectOption("baseline");
   await page.getByLabel("Chat mode").selectOption("live");
   await page.getByLabel("Message Jev").fill("How does Jev work?");

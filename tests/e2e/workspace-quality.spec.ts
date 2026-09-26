@@ -3,7 +3,7 @@ import { test, expect } from "@playwright/test";
 test("workspace guide is keyboard accessible and returns focus when closed", async ({
   page,
 }) => {
-  await page.goto("/extraction");
+  await page.goto("/language/extraction");
   const help = page.getByRole("button", {
     name: "Workspace guide",
     exact: true,
@@ -42,7 +42,7 @@ test("router continues from the decision and distinguishes completion from a nex
       },
     });
   });
-  await page.goto("/tool-router");
+  await page.goto("/agents/tool-router");
   await expect(
     page.getByRole("heading", {
       name: "See the decision, then follow the path",
@@ -71,25 +71,25 @@ test("router continues from the decision and distinguishes completion from a nex
 
 const routes = [
   "/",
-  "/examples",
-  "/conversation",
-  "/extraction",
-  "/gate",
-  "/workflow",
-  "/tool-router",
-  "/langchain",
-  "/pr-review",
-  "/proposal-review",
-  "/ast-governance",
-  "/smt-solver",
-  "/reranker",
-  "/memes",
-  "/chess",
-  "/microduck",
-  "/doom",
-  "/clean-room",
-  "/youtube-extract",
-  "/jev-browser-agent",
+  "/language/examples",
+  "/language/conversation",
+  "/language/extraction",
+  "/agents/gate",
+  "/agents/workflow",
+  "/agents/tool-router",
+  "/agents/langchain",
+  "/governance/pr-review",
+  "/governance/proposal-review",
+  "/governance/ast-governance",
+  "/governance/smt-solver",
+  "/language/reranker",
+  "/language/memes",
+  "/simulations/chess",
+  "/simulations/microduck",
+  "/simulations/doom",
+  "/agents/clean-room",
+  "/language/youtube-extract",
+  "/agents/jev-browser-agent",
 ];
 for (const path of routes) {
   test(`quality audit ${path}: both themes, guide, and narrow viewport`, async ({
@@ -120,7 +120,7 @@ for (const path of routes) {
         await page
           .getByRole("button", {
             name:
-              path === "/jev-browser-agent"
+              path === "/agents/jev-browser-agent"
                 ? "Open browser guide"
                 : "Workspace guide",
             exact: true,
@@ -223,7 +223,7 @@ test("router can stop a request from the continuation control", async ({
       });
     // Leave the continuation pending until the user cancels it.
   });
-  await page.goto("/tool-router");
+  await page.goto("/agents/tool-router");
   await page
     .getByRole("button", { name: "Run Routing Step", exact: true })
     .click();
@@ -244,7 +244,7 @@ test("router can stop a request from the continuation control", async ({
 test("router keeps the useful simulated tool output visible after completion", async ({
   page,
 }) => {
-  await page.goto("/tool-router");
+  await page.goto("/agents/tool-router");
   await page
     .getByRole("button", { name: "Run mock scenario", exact: true })
     .click();
@@ -260,7 +260,7 @@ test("short landscape screens leave enough room to edit and scroll the source", 
   page,
 }) => {
   await page.setViewportSize({ width: 844, height: 390 });
-  await page.goto("/extraction");
+  await page.goto("/language/extraction");
   const source = page.locator(".source-panel .panel-content");
   expect((await source.boundingBox())!.height).toBeGreaterThan(180);
   await page
@@ -274,7 +274,7 @@ test("short landscape screens leave enough room to edit and scroll the source", 
 test("PR review starts with a clear task instead of empty result metrics", async ({
   page,
 }) => {
-  await page.goto("/pr-review");
+  await page.goto("/governance/pr-review");
   await expect(
     page.getByRole("heading", { name: "Inspect a diff to begin" }),
   ).toBeVisible();
@@ -290,7 +290,7 @@ test("workflow onboarding stays at the start of its scroll area", async ({
   page,
 }) => {
   await page.setViewportSize({ width: 1280, height: 720 });
-  await page.goto("/workflow");
+  await page.goto("/agents/workflow");
   // Allow the existing smooth scroll to settle before checking the initial view.
   await page.waitForTimeout(400);
   expect(await page.locator(".chat-log").evaluate((el) => el.scrollTop)).toBe(
@@ -304,7 +304,7 @@ test("workflow onboarding stays at the start of its scroll area", async ({
 test("workspace breakdown explains inputs, decisions, results and limits", async ({
   page,
 }) => {
-  await page.goto("/extraction");
+  await page.goto("/language/extraction");
   await page
     .getByRole("button", { name: "Workspace guide", exact: true })
     .click();
@@ -339,7 +339,7 @@ test("guide stays usable on narrow and short screens without running the model",
     { width: 844, height: 390 },
   ]) {
     await page.setViewportSize(viewport);
-    await page.goto("/extraction");
+    await page.goto("/language/extraction");
     const source = page.locator(".source-panel textarea");
     const initial = await source.inputValue();
     const trigger = page.getByRole("button", {

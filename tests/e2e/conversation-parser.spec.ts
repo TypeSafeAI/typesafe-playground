@@ -33,7 +33,7 @@ test("Discord stage notices are disclosed and do not prevent recipient selection
       },
     });
   });
-  await page.goto("/conversation");
+  await page.goto("/language/conversation");
   await page.getByLabel("Raw conversation").fill(transcript);
   await expect(page.getByRole("status")).toContainText(
     "Ignored 2 Discord stage notices.",
@@ -57,7 +57,7 @@ test("Discord stage notices are disclosed and do not prevent recipient selection
     path: test.info().outputPath("discord-stage-selection.png"),
     fullPage: true,
   });
-  await page.goto("/gate");
+  await page.goto("/agents/gate");
   await page.locator("#gate-transcript").fill(transcript);
   await expect(page.getByRole("status")).toContainText(
     "Ignored 2 Discord stage notices.",

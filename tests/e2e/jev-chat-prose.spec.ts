@@ -12,7 +12,7 @@ test("prose keeps source text literal, accessible, and identical to the verified
       json: { error: "No live calls in this test." },
     }),
   );
-  await page.goto("/jev-chat");
+  await page.goto("/language/jev-chat");
   await page.getByRole("button", { name: "Your notes", exact: true }).click();
   const notes = [
     "The sample label reads <img src=x onerror=alert(1)>; this is literal source text.",

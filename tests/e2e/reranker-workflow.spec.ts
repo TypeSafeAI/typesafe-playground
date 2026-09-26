@@ -27,7 +27,7 @@ for (const example of WORKFLOW_EXAMPLES.slice(1)) {
           },
         });
       });
-      await page.goto("/workflow");
+      await page.goto("/agents/workflow");
       await page.getByLabel("Example playbook").selectOption(example.id);
       await page
         .getByRole("button", { name: example.starters[0].label })
@@ -73,7 +73,7 @@ test("reranker compares supplied candidates, inspects evidence and invalidates s
       },
     });
   });
-  await page.goto("/reranker");
+  await page.goto("/language/reranker");
   await page.getByLabel("Top-K candidates", { exact: true }).fill("20");
   await page.getByRole("button", { name: "Compare both", exact: true }).click();
   await expect(
@@ -108,7 +108,7 @@ test("reranker failed classifications remain unscored", async ({ page }) => {
   await page.route("**/api/run", (r) =>
     r.fulfill({ status: 429, json: { error: "Rate limit reached" } }),
   );
-  await page.goto("/reranker");
+  await page.goto("/language/reranker");
   await page.getByLabel("Top-K candidates", { exact: true }).fill("20");
   await page.getByRole("button", { name: "Compare both", exact: true }).click();
   await expect(

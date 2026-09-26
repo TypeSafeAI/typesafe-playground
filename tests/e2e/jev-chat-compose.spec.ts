@@ -69,7 +69,7 @@ test("built-in help and repetition recovery work in live mode despite uncertain 
       },
     });
   });
-  await page.goto("/jev-chat");
+  await page.goto("/language/jev-chat");
   await page.getByLabel("Chat mode").selectOption("live");
   const send = async (text: string) => {
     await page.getByLabel("Message Jev").fill(text);
@@ -195,7 +195,7 @@ test("live creative constraints support exclusions, saved continuity and delegat
     );
     return route.fulfill({ json: { answers } });
   });
-  await page.goto("/jev-chat");
+  await page.goto("/language/jev-chat");
   await page.getByLabel("Chat mode").selectOption("live");
   await page.getByRole("button", { name: "Story studio", exact: true }).click();
   await page
@@ -279,7 +279,7 @@ test("story edits preserve the scene through saved history and update detail con
     calls++;
     return r.fulfill({ json: {} });
   });
-  await page.goto("/jev-chat");
+  await page.goto("/language/jev-chat");
   await page.getByRole("button", { name: "Story studio", exact: true }).click();
   await page
     .getByLabel("Message Jev")
@@ -402,7 +402,7 @@ test("live note answers use valid choices and can retain every selected passage"
     );
     return route.fulfill({ json: { answers } });
   });
-  await page.goto("/jev-chat");
+  await page.goto("/language/jev-chat");
   await page.getByLabel("Chat mode").selectOption("live");
   await page.getByRole("button", { name: "Your notes", exact: true }).click();
   await page.getByLabel("Source material").fill(paragraphs.join("\n\n"));
@@ -485,7 +485,7 @@ test("precise source excerpts retain full citations and survive saved history", 
     );
     return route.fulfill({ json: { answers } });
   });
-  await page.goto("/jev-chat");
+  await page.goto("/language/jev-chat");
   await page.getByLabel("Chat mode").selectOption("live");
   await page.getByLabel("Response detail").selectOption("concise");
   await page.getByRole("button", { name: "Your notes", exact: true }).click();
@@ -535,7 +535,7 @@ test("precise source excerpts retain full citations and survive saved history", 
 test("source calculations show replayable proof and survive saved history", async ({
   page,
 }) => {
-  await page.goto("/jev-chat");
+  await page.goto("/language/jev-chat");
   await page.getByRole("button", { name: "Your notes", exact: true }).click();
   await page
     .getByLabel("Source material")
@@ -592,7 +592,7 @@ test("composed capabilities, follow-up fiction, verified trace and saved history
     calls++;
     return r.fulfill({ json: {} });
   });
-  await page.goto("/jev-chat");
+  await page.goto("/language/jev-chat");
   await expect(page.getByLabel("Response engine")).toHaveValue("compose");
   await page.getByLabel("Message Jev").fill("what can you do?");
   await page.getByRole("button", { name: "Send message" }).click();
@@ -733,7 +733,7 @@ test("live composition batches intent and validates whole responses in a second 
       },
     });
   });
-  await page.goto("/jev-chat");
+  await page.goto("/language/jev-chat");
   await page.getByLabel("Chat mode").selectOption("live");
   await page.getByRole("button", { name: "Story studio", exact: true }).click();
   await page
@@ -794,7 +794,7 @@ test("a failed second stage leaves no assistant response and retry remains expli
       },
     });
   });
-  await page.goto("/jev-chat");
+  await page.goto("/language/jev-chat");
   await page.getByLabel("Chat mode").selectOption("live");
   await page.getByLabel("Message Jev").fill("Write a short story.");
   await page.getByRole("button", { name: "Send message" }).click();

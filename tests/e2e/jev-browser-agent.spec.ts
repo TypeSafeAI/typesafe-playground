@@ -15,7 +15,7 @@ test("the loop searches the sandbox end to end and verifies the result independe
   );
   const errors: string[] = [];
   page.on("pageerror", (e) => errors.push(e.message));
-  await page.goto("/jev-browser-agent");
+  await page.goto("/agents/jev-browser-agent");
   await page.getByLabel("Task preset", { exact: true }).selectOption("flight");
   await page.getByRole("button", { name: "Inspector", exact: true }).click();
   await expect(page.locator("h1")).toHaveText("Jev-powered browser agent");
@@ -64,7 +64,7 @@ test("a DONE claim without visible results is rejected by the verifier, not trus
   await page.route("**/api/text-helper", (route) =>
     mockModels(route, "always-done", calls),
   );
-  await page.goto("/jev-browser-agent");
+  await page.goto("/agents/jev-browser-agent");
   await page.getByLabel("Task preset", { exact: true }).selectOption("flight");
   await page.getByRole("button", { name: "Inspector", exact: true }).click();
   await expect(
@@ -107,7 +107,7 @@ test("observe only reads the element table without a model call", async ({
   await page.route("**/api/text-helper", (r) =>
     r.fulfill({ json: { configured: false, model: null } }),
   );
-  await page.goto("/jev-browser-agent");
+  await page.goto("/agents/jev-browser-agent");
   await page.getByLabel("Task preset", { exact: true }).selectOption("flight");
   await page.getByRole("button", { name: "Inspector", exact: true }).click();
   await expect(
@@ -162,7 +162,7 @@ test("a premature BLOCKED gets fresh feedback and can recover to a verified resu
       json: calls.length === 1 ? blocked : scriptedPolicy(payload, "solve"),
     });
   });
-  await page.goto("/jev-browser-agent");
+  await page.goto("/agents/jev-browser-agent");
   await page.getByLabel("Task preset", { exact: true }).selectOption("flight");
   await page.getByRole("button", { name: "Inspector", exact: true }).click();
   await expect(
@@ -204,7 +204,7 @@ test("repeated BLOCKED stops after one retry without executing an action", async
     calls++;
     return route.fulfill({ json: blocked });
   });
-  await page.goto("/jev-browser-agent");
+  await page.goto("/agents/jev-browser-agent");
   await page.getByLabel("Task preset", { exact: true }).selectOption("flight");
   await page.getByRole("button", { name: "Inspector", exact: true }).click();
   await expect(
@@ -246,7 +246,7 @@ test("a BLOCKED response for a changed page is discarded before counting retries
     }
     return route.fulfill({ json: blocked });
   });
-  await page.goto("/jev-browser-agent");
+  await page.goto("/agents/jev-browser-agent");
   await page.getByLabel("Task preset", { exact: true }).selectOption("flight");
   await page.getByRole("button", { name: "Inspector", exact: true }).click();
   await expect(
@@ -278,7 +278,7 @@ test("BLOCKED after completing the goal uses the independent verifier", async ({
       json: operation?.choice === "DONE" ? blocked : response,
     });
   });
-  await page.goto("/jev-browser-agent");
+  await page.goto("/agents/jev-browser-agent");
   await page.getByLabel("Task preset", { exact: true }).selectOption("flight");
   await page.getByRole("button", { name: "Inspector", exact: true }).click();
   await expect(
@@ -321,7 +321,7 @@ test("copy debug report includes both BLOCKED exchanges and measured evidence", 
       },
     }),
   );
-  await page.goto("/jev-browser-agent");
+  await page.goto("/agents/jev-browser-agent");
   await page.getByLabel("Task preset", { exact: true }).selectOption("flight");
   await page.getByRole("button", { name: "Inspector", exact: true }).click();
   const copy = page.getByRole("button", { name: "Copy debug report" });
@@ -371,7 +371,7 @@ test("clipboard denial leaves the full report selectable for manual copying", as
   await page.route("**/api/run", (route) =>
     route.fulfill({ status: 502, json: { error: "Provider unavailable" } }),
   );
-  await page.goto("/jev-browser-agent");
+  await page.goto("/agents/jev-browser-agent");
   await page.getByLabel("Task preset", { exact: true }).selectOption("flight");
   await page.getByRole("button", { name: "Inspector", exact: true }).click();
   await expect(
@@ -442,7 +442,7 @@ test("a Newegg goal runs PC research with PC diagnostics and no flight calls", a
       },
     });
   });
-  await page.goto("/jev-browser-agent");
+  await page.goto("/agents/jev-browser-agent");
   await page.getByLabel("Task preset", { exact: true }).selectOption("flight");
   await page.getByRole("button", { name: "Inspector", exact: true }).click();
   const goal =
@@ -476,7 +476,7 @@ test("an unsupported goal cannot be executed against the flight verifier", async
   await page.route("**/api/text-helper", (route) =>
     mockModels(route, "solve", []),
   );
-  await page.goto("/jev-browser-agent");
+  await page.goto("/agents/jev-browser-agent");
   await page.getByLabel("Task preset", { exact: true }).selectOption("flight");
   await page.getByRole("button", { name: "Inspector", exact: true }).click();
   await page.getByLabel("Goal", { exact: true }).fill("Book a hotel in Paris");
@@ -492,7 +492,7 @@ test("an unsupported goal cannot be executed against the flight verifier", async
 test("browser workspace keeps the local view and composer within the screen", async ({
   page,
 }) => {
-  await page.goto("/jev-browser-agent");
+  await page.goto("/agents/jev-browser-agent");
   await expect(page.getByLabel("Task preset", { exact: true })).toHaveValue(
     "newegg",
   );
@@ -569,7 +569,7 @@ test("PC billing fallback remains usable and skips a blocked provider on the nex
       },
     });
   });
-  await page.goto("/jev-browser-agent");
+  await page.goto("/agents/jev-browser-agent");
   await expect(page.getByLabel("How this browser agent works")).toBeVisible();
   await page.getByRole("button", { name: "Find PC parts" }).click();
   await page.getByRole("button", { name: "Review build", exact: true }).click();
@@ -587,7 +587,7 @@ test("a covered native select is rejected without changing its value", async ({
   page,
 }) => {
   await page.route("**/api/run", (route) => mockModels(route, "solve", []));
-  await page.goto("/jev-browser-agent");
+  await page.goto("/agents/jev-browser-agent");
   await page.getByLabel("Task preset", { exact: true }).selectOption("flight");
   await page.getByRole("button", { name: "Inspector", exact: true }).click();
   const frame = page.frameLocator("iframe.agent-sandbox");
@@ -627,7 +627,7 @@ test("WAIT is discarded when content height changes during the decision", async 
       json: { answers: { operation: { type: "choice", choice: "WAIT" } } },
     });
   });
-  await page.goto("/jev-browser-agent");
+  await page.goto("/agents/jev-browser-agent");
   await page.getByLabel("Task preset", { exact: true }).selectOption("flight");
   await page.getByRole("button", { name: "Inspector", exact: true }).click();
   await page.getByRole("button", { name: "One cycle" }).click();
@@ -640,7 +640,7 @@ test("SELECT keeps the chosen option index when values are duplicated", async ({
   page,
 }) => {
   await page.route("**/api/run", (route) => mockModels(route, "solve", []));
-  await page.goto("/jev-browser-agent");
+  await page.goto("/agents/jev-browser-agent");
   await page.getByLabel("Task preset", { exact: true }).selectOption("flight");
   await page.getByRole("button", { name: "Inspector", exact: true }).click();
   const select = page
@@ -667,7 +667,7 @@ test("short mobile viewports retain fields and pending autocomplete suggestions"
   await page.route("**/api/run", (route) => mockModels(route, "solve", []));
   for (const height of [620, 700]) {
     await page.setViewportSize({ width: 390, height });
-    await page.goto("/jev-browser-agent");
+    await page.goto("/agents/jev-browser-agent");
     await page
       .getByLabel("Task preset", { exact: true })
       .selectOption("flight");
@@ -698,7 +698,7 @@ test("enlarged welcome cards fit large screens without clipping", async ({
     [2560, 1440],
   ]) {
     await page.setViewportSize({ width, height });
-    await page.goto("/jev-browser-agent");
+    await page.goto("/agents/jev-browser-agent");
     await expect(page.locator(".pc-hero-row")).toBeVisible();
     const layout = await page.evaluate(() => {
       const view = document.querySelector(".local-browser-view")!;

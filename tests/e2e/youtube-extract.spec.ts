@@ -38,7 +38,7 @@ test("source-only extract, live metrics, local length changes, raw evidence and 
       },
     });
   });
-  await page.goto("/youtube-extract");
+  await page.goto("/language/youtube-extract");
   await page.getByLabel("YouTube URL").fill("https://youtu.be/abcdefghijk");
   await page.getByRole("button", { name: "Create extract · Live Jev" }).click();
   await expect(
@@ -101,7 +101,7 @@ test("caption failure makes no Jev calls; malformed scoring stays incomplete", a
     calls++;
     return r.fulfill({ json: { answers: {} } });
   });
-  await page.goto("/youtube-extract");
+  await page.goto("/language/youtube-extract");
   await page.getByLabel("YouTube URL").fill("https://youtu.be/abcdefghijk");
   await page.getByRole("button", { name: "Create extract · Live Jev" }).click();
   await expect(page.locator(".youtube-extract-lab [role=alert]")).toContainText(
@@ -143,7 +143,7 @@ test("stop prevents queued scoring and preserves unknown cost", async ({
       })
       .catch(() => {});
   });
-  await page.goto("/youtube-extract");
+  await page.goto("/language/youtube-extract");
   await page.getByLabel("YouTube URL").fill("https://youtu.be/abcdefghijk");
   await page.getByRole("button", { name: "Create extract · Live Jev" }).click();
   await expect(page.getByTestId("extract-calls")).toHaveText("1");
@@ -184,7 +184,7 @@ test("a key change cancels old scoring before its response can select text", asy
       })
       .catch(() => {});
   });
-  await page.goto("/youtube-extract");
+  await page.goto("/language/youtube-extract");
   await page.getByLabel("YouTube URL").fill("https://youtu.be/abcdefghijk");
   await page.getByRole("button", { name: "Create extract · Live Jev" }).click();
   await expect(page.getByTestId("extract-calls")).toHaveText("1");

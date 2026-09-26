@@ -17,17 +17,24 @@ import {
   Bird,
   House,
   MousePointerClick,
+  Worm,
+  BrickWall,
+  Rocket,
 } from "lucide-react";
+import { sectionPath } from "./routes";
 
 /** One catalog keeps the home screen, navigation and breadcrumbs in sync. */
 export const playgroundGroups = [
   {
     id: "language",
+    href: sectionPath("language"),
     label: "Language & data",
     description: "Turn unstructured context into a clear, grounded choice.",
+    headline: ["Messy context.", "Grounded choices."],
+    signal: ["Text or documents", "Fixed options", "Grounded answer"],
     examples: [
       {
-        href: "/examples",
+        href: "/language/examples",
         label: "Example builder",
         icon: Blocks,
         detail:
@@ -35,7 +42,7 @@ export const playgroundGroups = [
         flow: "Context → typed answer",
       },
       {
-        href: "/jev-chat",
+        href: "/language/jev-chat",
         label: "Jev Chat",
         icon: MessageSquare,
         detail:
@@ -43,7 +50,7 @@ export const playgroundGroups = [
         flow: "Question → composed response",
       },
       {
-        href: "/conversation",
+        href: "/language/conversation",
         label: "Conversation lab",
         icon: MessageSquare,
         detail:
@@ -51,7 +58,7 @@ export const playgroundGroups = [
         flow: "Messages → best reply target",
       },
       {
-        href: "/extraction",
+        href: "/language/extraction",
         label: "Document extraction",
         icon: FileScan,
         detail:
@@ -59,7 +66,7 @@ export const playgroundGroups = [
         flow: "Document → selected fields",
       },
       {
-        href: "/youtube-extract",
+        href: "/language/youtube-extract",
         label: "YouTube extract",
         icon: FileScan,
         detail:
@@ -67,7 +74,7 @@ export const playgroundGroups = [
         flow: "Video captions → chronological extract",
       },
       {
-        href: "/reranker",
+        href: "/language/reranker",
         label: "Vector reranker",
         icon: ArrowDownWideNarrow,
         detail:
@@ -75,7 +82,7 @@ export const playgroundGroups = [
         flow: "Search results → relevance order",
       },
       {
-        href: "/memes",
+        href: "/language/memes",
         label: "Meme lab",
         icon: Laugh,
         detail:
@@ -86,12 +93,15 @@ export const playgroundGroups = [
   },
   {
     id: "agents",
+    href: sectionPath("agents"),
     label: "Agents & workflows",
     description:
       "Choose the next step, with explicit policy and approval gates.",
+    headline: ["One next step.", "Policy stays in charge."],
+    signal: ["Goal and state", "Allowed actions", "Next step"],
     examples: [
       {
-        href: "/gate",
+        href: "/agents/gate",
         label: "Ask gate",
         icon: Inbox,
         detail:
@@ -99,7 +109,7 @@ export const playgroundGroups = [
         flow: "Request → reviewer",
       },
       {
-        href: "/workflow",
+        href: "/agents/workflow",
         label: "Workflow chat",
         icon: GitBranch,
         detail:
@@ -107,7 +117,7 @@ export const playgroundGroups = [
         flow: "Scenario → next action",
       },
       {
-        href: "/tool-router",
+        href: "/agents/tool-router",
         label: "Tool router",
         icon: Route,
         detail:
@@ -115,7 +125,7 @@ export const playgroundGroups = [
         flow: "Request → permitted tool",
       },
       {
-        href: "/langchain",
+        href: "/agents/langchain",
         label: "LangChain",
         icon: Plug,
         detail:
@@ -123,7 +133,7 @@ export const playgroundGroups = [
         flow: "Tool call → governed route",
       },
       {
-        href: "/clean-room",
+        href: "/agents/clean-room",
         label: "Clean-room rebuild",
         icon: Blocks,
         detail:
@@ -131,7 +141,7 @@ export const playgroundGroups = [
         flow: "Observed app → verified rebuild",
       },
       {
-        href: "/jev-browser-agent",
+        href: "/agents/jev-browser-agent",
         label: "Browser agent",
         icon: MousePointerClick,
         detail:
@@ -142,12 +152,15 @@ export const playgroundGroups = [
   },
   {
     id: "governance",
+    href: sectionPath("governance"),
     label: "Code & governance",
     description:
       "Surface risky changes and verify decisions against fixed rules.",
+    headline: ["Typed judgments.", "Code has the last word."],
+    signal: ["Change or constraint", "Typed questions", "Rule-checked verdict"],
     examples: [
       {
-        href: "/pr-review",
+        href: "/governance/pr-review",
         label: "PR review",
         icon: GitPullRequest,
         detail:
@@ -155,7 +168,7 @@ export const playgroundGroups = [
         flow: "Diff → review gate",
       },
       {
-        href: "/proposal-review",
+        href: "/governance/proposal-review",
         label: "Proposal review",
         icon: ClipboardCheck,
         detail:
@@ -163,7 +176,7 @@ export const playgroundGroups = [
         flow: "Proposal → code verdict",
       },
       {
-        href: "/ast-governance",
+        href: "/governance/ast-governance",
         label: "AST governance",
         icon: Network,
         detail:
@@ -171,7 +184,7 @@ export const playgroundGroups = [
         flow: "Symbols → change impact",
       },
       {
-        href: "/smt-solver",
+        href: "/governance/smt-solver",
         label: "SMT solver",
         icon: Scale,
         detail:
@@ -182,11 +195,14 @@ export const playgroundGroups = [
   },
   {
     id: "simulations",
+    href: sectionPath("simulations"),
     label: "Games & simulations",
     description: "Watch small decisions play out—and discover their limits.",
+    headline: ["Small decisions.", "Visible limits."],
+    signal: ["World state", "One action", "Play it out"],
     examples: [
       {
-        href: "/doom",
+        href: "/simulations/doom",
         label: "Jev plays Doom",
         icon: Gamepad2,
         detail:
@@ -194,7 +210,7 @@ export const playgroundGroups = [
         flow: "Arena state → one action",
       },
       {
-        href: "/microduck",
+        href: "/simulations/microduck",
         label: "MicroDuck arena",
         icon: Bird,
         detail:
@@ -202,12 +218,47 @@ export const playgroundGroups = [
         flow: "Robot sensors → movement",
       },
       {
-        href: "/chess",
+        href: "/simulations/chess",
         label: "Jev attempts chess",
         icon: Crown,
         detail:
           "See why choosing a legal move without lookahead falls short of a chess engine.",
         flow: "Legal moves → one choice",
+      },
+    ],
+  },
+  {
+    id: "arcade",
+    href: sectionPath("arcade"),
+    label: "Arcade",
+    description:
+      "Classic games Jev can actually play: one legal move at a time, scored against a random baseline.",
+    headline: ["Insert coin.", "Jev takes the controls."],
+    signal: ["Game state", "Legal moves", "Score vs. baseline"],
+    examples: [
+      {
+        href: "/arcade/snake",
+        label: "Snake",
+        icon: Worm,
+        detail:
+          "Steer toward the apple without hitting a wall or your own tail, one turn per decision.",
+        flow: "Board features → next direction",
+      },
+      {
+        href: "/arcade/breakout",
+        label: "Breakout",
+        icon: BrickWall,
+        detail:
+          "Keep the ball in play and clear bricks by moving the paddle left, right or holding still.",
+        flow: "Ball and paddle → paddle move",
+      },
+      {
+        href: "/arcade/meteor-dodge",
+        label: "Meteor dodge",
+        icon: Rocket,
+        detail:
+          "Fly a ship through five lanes of falling meteors and survive as long as possible.",
+        flow: "Lanes ahead → lane change",
       },
     ],
   },
@@ -244,7 +295,14 @@ export function flowEnds(flow: string): { input: string; output: string } {
   };
 }
 export const homePage = { href: "/", label: "Home", icon: House };
+export type PlaygroundGroup = (typeof playgroundGroups)[number];
 export const playgroundPages = [
   homePage,
   ...playgroundGroups.flatMap((group) => group.examples),
 ];
+/** The section a path belongs to: its own page, or any workspace inside it. */
+export function groupForPath(path: string): PlaygroundGroup | undefined {
+  return playgroundGroups.find(
+    (group) => path === group.href || path.startsWith(`${group.href}/`),
+  );
+}

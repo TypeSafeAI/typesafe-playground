@@ -17,17 +17,22 @@ import {
   Sparkles,
 } from "lucide-react";
 import {
+  groupForPath,
   homePage,
   playgroundGroups,
   playgroundPages as pages,
 } from "../lib/playground";
-const NARROW_RAIL_ROUTES = new Set(["/jev-chat"]);
+const NARROW_RAIL_ROUTES = new Set(["/language/jev-chat"]);
 export function Shell({ children }: { children: React.ReactNode }) {
   const path = usePathname();
   const sidebarRef = useRef<HTMLElement>(null);
   // Seeded from the route during the first render, not in an effect: the route
   // is known on the server too, so this matches on hydration and the rail never
   // paints at full width and then animates down.
+  const section = groupForPath(path);
+  const workspace = section?.examples.find(
+    (example) => path === example.href || path.startsWith(`${example.href}/`),
+  );
   const [collapsed, setCollapsed] = useState(() =>
     NARROW_RAIL_ROUTES.has(path),
   );
@@ -195,9 +200,16 @@ export function Shell({ children }: { children: React.ReactNode }) {
               role="group"
               aria-labelledby={`nav-${group.id}`}
             >
-              <div className="nav-label" id={`nav-${group.id}`}>
+              <Link
+                href={group.href}
+                prefetch={false}
+                className={`nav-label nav-section-link${path === group.href ? " active" : ""}`}
+                id={`nav-${group.id}`}
+                aria-current={path === group.href ? "page" : undefined}
+                title={`${group.label} section`}
+              >
                 {group.label}
-              </div>
+              </Link>
               {group.examples.map(({ href, label, icon: Icon }) => (
                 <Link
                   key={href}
@@ -247,9 +259,25 @@ export function Shell({ children }: { children: React.ReactNode }) {
             </button>
             <span>Playground</span>
             <span>/</span>
-            <strong>
-              {pages.find((page) => page.href === path)?.label ?? "Workspace"}
-            </strong>
+            {section && workspace ? (
+              <>
+                <Link
+                  href={section.href}
+                  prefetch={false}
+                  className="breadcrumb-section"
+                >
+                  {section.label}
+                </Link>
+                <span>/</span>
+                <strong>{workspace.label}</strong>
+              </>
+            ) : (
+              <strong>
+                {section?.label ??
+                  pages.find((page) => page.href === path)?.label ??
+                  "Workspace"}
+              </strong>
+            )}
           </div>
           <div className="header-actions">
             <UsageDashboard />

@@ -18,7 +18,7 @@ for (const [name, device] of [
         test.setTimeout(120000);
         let jobId: string | undefined;
         try {
-          await page.goto("/clean-room");
+          await page.goto("/agents/clean-room");
           await page.getByRole("button", { name: title, exact: true }).click();
           await expect(page.getByLabel("Rebuild context")).not.toBeEmpty();
           const started = page.waitForResponse(

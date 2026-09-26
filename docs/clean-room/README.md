@@ -1,6 +1,6 @@
 # Clean-room rebuild
 
-Open `/clean-room` on localhost for three prefilled, runnable demos:
+Open `/agents/clean-room` on localhost for three prefilled, runnable demos:
 
 | Demo | Behavior checked against the original |
 | --- | --- |

@@ -1,6 +1,6 @@
 # SMT solver lab
 
-Open `/smt-solver`, paste constraints, choose a type, and click **Run Check**. Jev makes a closed-set prediction; a real [Z3 solver](https://github.com/Z3Prover/z3/tree/master/src/api/js) then verifies the complete constraint set on the server. No key is required for Z3. Jev uses the existing server-only `TYPESAFE_API_KEY` setup.
+Open `/governance/smt-solver`, paste constraints, choose a type, and click **Run Check**. Jev makes a closed-set prediction; a real [Z3 solver](https://github.com/Z3Prover/z3/tree/master/src/api/js) then verifies the complete constraint set on the server. No key is required for Z3. Jev uses the existing server-only `TYPESAFE_API_KEY` setup.
 
 ```text
 x > 5

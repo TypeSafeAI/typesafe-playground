@@ -1,6 +1,6 @@
 # AST-aware governance
 
-Open `/ast-governance` to trace a proposed change through a supplied symbol index. **Analyze changes** runs local parsing and deterministic checks. **Classify with Jev** submits focused, closed-set questions for ambiguous findings. **Run mock demo** performs the full walkthrough with labeled mock predictions and no API call.
+Open `/governance/ast-governance` to trace a proposed change through a supplied symbol index. **Analyze changes** runs local parsing and deterministic checks. **Classify with Jev** submits focused, closed-set questions for ambiguous findings. **Run mock demo** performs the full walkthrough with labeled mock predictions and no API call.
 
 The demo adds `organizationId` to `createUser`, updates the registration caller, leaves the invitation caller unchanged, touches authentication code, and changes no tests. Its recommendation is `needs_review`: owner review, caller compatibility, and test evidence remain unresolved.
 

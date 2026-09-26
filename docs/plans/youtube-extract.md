@@ -15,7 +15,7 @@ Objective: URL to timestamp-linked, source-only extract using existing captions,
 | Connectors and assembly | Empty connector rule resolves the brief's conflict with invented transition words: whitespace only, original transitions retained. Unit/browser tests assert exact source-only output. |
 | Metrics | Processed/total and kept counts, mean relevance, attempted calls, running reported-input cost estimate, elapsed time; pending/failed usage stays unknown. |
 | Human source verification | Kept and raw chunk lists link to source timestamps, include original text, scores and kept/dropped reasons; caveat explicitly requires human comparison of omitted passages. |
-| Working page and discovery | `/youtube-extract`, home/sidebar catalog, social metadata, workspace guide and README link. |
+| Working page and discovery | `/language/youtube-extract`, home/sidebar catalog, social metadata, workspace guide and README link. |
 | Lifecycle and storage | Stop, key-change and unmount cancellation; URL/length drafts isolated from keys and results. Browser tests cover cancellation, stale key responses, drafts and errors. |
 | UI access | Keyboard slider; desktop, 390×844 and 320×568 overflow checks in both themes; inspected desktop/mobile dark controls and narrow light results. Raw list scrolls independently. |
 
