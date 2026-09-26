@@ -1,0 +1,16 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="1280" height="640" viewBox="0 0 1280 640" role="img" aria-labelledby="title desc">
+<title id="title">TypeSafe Playground — unofficial TypeSafeAI community</title>
+<desc id="desc">Small experiments. Clear decisions. Editorial project card, not a product screenshot.</desc>
+<rect width="1280" height="640" fill="#080e16"/>
+<rect x="0" y="0" width="1280" height="8" fill="#f0a5ca"/>
+<g font-family="DejaVu Sans, sans-serif">
+<text x="64" y="76" font-size="20" letter-spacing="2" fill="#a3e7d7">TYPESAFEAI / UNOFFICIAL COMMUNITY</text>
+<text x="1216" y="76" text-anchor="end" font-size="19" fill="#8796aa">02 / 08</text>
+<text x="60" y="196" font-size="65" font-weight="700" fill="#f5f7fb">TypeSafe Playground</text>
+<text x="64" y="270" font-size="34" fill="#f0a5ca">Small experiments. Clear decisions.</text>
+<text x="64" y="339" font-size="18" letter-spacing="1" fill="#acb8c9">PLAYGROUND · CLASSIFICATION · STRUCTURED OUTPUT</text>
+<rect x="64" y="404" width="356" height="104" rx="12" fill="#101924" stroke="#34404f"/><text x="86" y="438" font-size="16" fill="#95a3b5">01</text><text x="86" y="479" font-size="23" fill="#e9edf4">Give context</text><rect x="450" y="404" width="356" height="104" rx="12" fill="#101924" stroke="#34404f"/><text x="472" y="438" font-size="16" fill="#95a3b5">02</text><text x="472" y="479" font-size="23" fill="#e9edf4">Define choices</text><rect x="836" y="404" width="356" height="104" rx="12" fill="#101924" stroke="#34404f"/><text x="858" y="438" font-size="16" fill="#95a3b5">03</text><text x="858" y="479" font-size="23" fill="#e9edf4">Inspect evidence</text>
+<line x1="64" y1="553" x2="1216" y2="553" stroke="#34404f"/>
+<text x="64" y="599" font-size="23" fill="#f5f7fb">github.com/TypeSafeAI/typesafe-playground</text>
+<text x="1216" y="599" text-anchor="end" font-size="18" fill="#a3e7d7">Community-built. Not official.</text>
+</g></svg>
