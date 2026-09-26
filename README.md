@@ -126,6 +126,8 @@ The [SMT solver lab](docs/smt-solver.md) is different: Z3 really checks the supp
 
 The [Tool Router](docs/tool-router.md) restricts each step to allowed outgoing options, applies fixed policy, asks for clarification on uncertainty, and uses explicit mock approvals where configured. **All downstream agents and tools in that workspace are simulated.** A model choice is not authorization to execute an action.
 
+The [tool router benchmark](docs/tool-router-bench.md) is a separate command-line experiment: Jev picks a tool from 40 one-line snippets in one closed-set Choice question (plus `none`), measured against a lexical baseline over synthetic tasks, with the context bytes saved by loading only the chosen tools' schemas. Picks are routing evidence, not authorization; nothing executes.
+
 The [LangChain adapter](docs/langchain.md) uses a real `@langchain/core` tool, validates inputs, and returns structured, policy-gated output. It does not execute downstream actions and is not a published plugin. Run the local example without live credits:
 
 ```sh
