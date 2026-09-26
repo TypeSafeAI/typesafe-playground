@@ -1,0 +1,36 @@
+# gitleaks configuration. Default rules plus two project-specific ones.
+#   gitleaks git .              history        gitleaks protect --staged     pre-commit
+# gitleaks uses Go RE2 (no lookaheads). Placeholders like <your-key>, $ENV, and
+# op://… never match: '<', '$', and ':' fall outside the value character class,
+# which is why the committed .env.1password (1Password references) is safe here.
+title = "typesafe-playground"
+
+[extend]
+useDefault = true
+
+[[rules]]
+id = "typesafe-api-key-assignment"
+description = "A TypeSafe API key assigned inline instead of read from the environment"
+regex = '''(?i)TYPESAFE_API_KEY\s*[:=]\s*["']?([A-Za-z0-9_\-\.]{16,})'''
+keywords = ["typesafe_api_key"]
+[rules.allowlist]
+regexTarget = "secret"
+regexes = ['''(?i)(^|[^A-Za-z0-9_])(test|synthetic|example|placeholder|dummy|fake|unused|sample|your-?key|changeme|redacted|xxx)([^A-Za-z0-9_]|$)''']
+
+[[rules]]
+id = "generic-bearer-header"
+description = "A literal bearer token in an Authorization header"
+regex = '''(?i)authorization["']?\s*[:=]\s*["']?bearer\s+([A-Za-z0-9_\-\.=]{20,})'''
+keywords = ["bearer"]
+[rules.allowlist]
+regexTarget = "secret"
+regexes = ['''(?i)(^|[^A-Za-z0-9_])(test|synthetic|example|placeholder|dummy|fake|unused|sample|your-?key|changeme|redacted|xxx)([^A-Za-z0-9_]|$)''']
+
+[allowlist]
+description = "Lockfiles, media, and fonts are not secrets"
+paths = [
+  '''^pnpm-lock\.yaml$''',
+  '''^public/.*''',
+  '''^docs/screenshots/.*''',
+  '''.*\.(png|jpg|jpeg|webp|gif|svg|woff2?)$''',
+]

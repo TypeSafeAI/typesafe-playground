@@ -16,7 +16,10 @@ pnpm typecheck
 pnpm build
 pnpm exec playwright install chromium
 pnpm test:e2e
+pnpm check:secrets   # what the pre-commit hook and CI run
 ```
+
+`pnpm install` also installs a pre-commit hook (`.githooks/`) that blocks staged `.env` files and well-known key shapes. If it fires on a false positive, rewrite the text so it is unambiguous; if it fires on a real key, rotate the key. See [SECURITY.md](SECURITY.md).
 
 Browser tests mock Jev and do not need API credits. CI uses the production build; after building, `E2E_PRODUCTION=1 E2E_PORT=3002 pnpm test:e2e` reproduces that server mode. Do not describe lint as a required existing script: there is no root lint script at this revision.
 
