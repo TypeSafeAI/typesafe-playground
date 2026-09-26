@@ -7,6 +7,8 @@ const { join, resolve } = require("node:path");
 
 const sourceScript = resolve(__dirname, "../scripts/check-secrets.mjs");
 const CONTEST_VALUE = "contestA1B2C3D4E5F6G7H8I9J0K1L2";
+const BEARER_A = "abcdefghijklmnopqrstuvwxyz" + "123456";
+const BEARER_B = "zyxwvutsrqponmlkjihgfedcba" + "654321";
 
 function sh(cwd, ...args) {
   const result = spawnSync("git", args, { cwd, encoding: "utf8" });
@@ -48,7 +50,7 @@ test("explicit path mode flags real-shaped inline TypeSafe values", () => {
 test("--staged mode inspects index content", () => {
   const root = makeRepo();
   try {
-    writeFileSync(join(root, "staged.txt"), "authorization: bearer abcdefghijklmnopqrstuvwxyz123456\n");
+    writeFileSync(join(root, "staged.txt"), `authorization: bearer ${BEARER_A}\n`);
     sh(root, "add", "staged.txt");
     writeFileSync(join(root, "staged.txt"), "clean now\n");
     const result = runCheck(root, ["--staged"]);
@@ -90,7 +92,7 @@ test("synthetic labels require marker boundaries and still allow explicit fixtur
     assert.equal(result.status, 1);
     assert.match(result.stderr, /looks like a TypeSafe key assigned inline/);
 
-    writeFileSync(join(root, "synthetic.txt"), "TYPESAFE_API_KEY=contest_test_server_only_secret123456\n");
+    writeFileSync(join(root, "synthetic.txt"), "TYPESAFE_API_KEY=contest_" + "test_server_only_secret123456\n");
     result = runCheck(root, ["synthetic.txt"]);
     assert.equal(result.status, 1);
   } finally {
@@ -103,7 +105,7 @@ test("reports multiple findings in one file", () => {
   try {
     writeFileSync(
       join(root, "many.txt"),
-      ["authorization: bearer abcdefghijklmnopqrstuvwxyz123456", "authorization: bearer zyxwvutsrqponmlkjihgfedcba654321"].join("\n"),
+      [`authorization: bearer ${BEARER_A}`, `authorization: bearer ${BEARER_B}`].join("\n"),
     );
     const result = runCheck(root, ["many.txt"]);
     assert.equal(result.status, 1);

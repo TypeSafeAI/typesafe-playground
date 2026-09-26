@@ -14,7 +14,7 @@ description = "A TypeSafe API key assigned inline instead of read from the envir
 regex = '''(?i)TYPESAFE_API_KEY\s*[:=]\s*["']?([A-Za-z0-9_\-\.]{16,})'''
 keywords = ["typesafe_api_key"]
 [rules.allowlist]
-regexTarget = "match"
+regexTarget = "secret"
 regexes = ['''(?i)(^|[^A-Za-z0-9_])(test|synthetic|example|placeholder|dummy|fake|unused|sample|your-?key|changeme|redacted|xxx)([^A-Za-z0-9_]|$)''']
 
 [[rules]]
@@ -23,7 +23,7 @@ description = "A literal bearer token in an Authorization header"
 regex = '''(?i)authorization["']?\s*[:=]\s*["']?bearer\s+([A-Za-z0-9_\-\.=]{20,})'''
 keywords = ["bearer"]
 [rules.allowlist]
-regexTarget = "match"
+regexTarget = "secret"
 regexes = ['''(?i)(^|[^A-Za-z0-9_])(test|synthetic|example|placeholder|dummy|fake|unused|sample|your-?key|changeme|redacted|xxx)([^A-Za-z0-9_]|$)''']
 
 [allowlist]
