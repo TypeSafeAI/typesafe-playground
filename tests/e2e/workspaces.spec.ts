@@ -22,23 +22,23 @@ test("all workspaces fit the viewport and navigate without runtime errors", asyn
   page.on("pageerror", (e) => errors.push(e.message));
   for (const path of [
     "/",
-    "/examples",
-    "/conversation",
-    "/gate",
-    "/chess",
-    "/workflow",
-    "/extraction",
-    "/memes",
-    "/microduck",
-    "/pr-review",
-    "/proposal-review",
-    "/ast-governance",
-    "/smt-solver",
-    "/tool-router",
-    "/langchain",
-    "/jev-browser-agent",
-    "/reranker",
-    "/doom",
+    "/language/examples",
+    "/language/conversation",
+    "/agents/gate",
+    "/simulations/chess",
+    "/agents/workflow",
+    "/language/extraction",
+    "/language/memes",
+    "/simulations/microduck",
+    "/governance/pr-review",
+    "/governance/proposal-review",
+    "/governance/ast-governance",
+    "/governance/smt-solver",
+    "/agents/tool-router",
+    "/agents/langchain",
+    "/agents/jev-browser-agent",
+    "/language/reranker",
+    "/simulations/doom",
   ]) {
     await page.goto(path);
     await expect(page.locator("h1")).toBeVisible();
@@ -76,7 +76,7 @@ test("extraction sends closed sets and renders exact evidence", async ({
       },
     });
   });
-  await page.goto("/extraction");
+  await page.goto("/language/extraction");
   await page
     .getByRole("button", { name: "Run extraction", exact: true })
     .click();
@@ -128,7 +128,7 @@ test("meme test displays classifications and preserves a clear failure state", a
       },
     });
   });
-  await page.goto("/memes");
+  await page.goto("/language/memes");
   await page
     .getByRole("button", {
       name: "Test meme",
@@ -169,7 +169,7 @@ test("workflow renders supported policy action without executing it", async ({
       },
     }),
   );
-  await page.goto("/workflow");
+  await page.goto("/agents/workflow");
   await page
     .getByRole("button", { name: /Delivery damage is confirmed/ })
     .click();
@@ -201,7 +201,7 @@ test("conversation chooses winner and recomputes threshold without API calls", a
       },
     });
   });
-  await page.goto("/conversation");
+  await page.goto("/language/conversation");
   await page.getByRole("button", { name: "Pick a recipient" }).click();
   await expect(page.locator(".winner-card")).toContainText("Tyler");
   await expect(page.locator(".winner-card .message-preview")).toHaveText(
@@ -216,7 +216,7 @@ test("conversation chooses winner and recomputes threshold without API calls", a
   expect(calls).toBe(3);
 });
 test("example edits persist across refresh", async ({ page }) => {
-  await page.goto("/examples");
+  await page.goto("/language/examples");
   await expect(page.locator(".connection")).toContainText("Jev connected");
   await page.locator("#example-state").fill("My saved example");
   await expect
@@ -248,23 +248,23 @@ for (const [width, height] of [
       await page.setViewportSize({ width, height });
       for (const route of [
         "/",
-        "/examples",
-        "/conversation",
-        "/gate",
-        "/chess",
-        "/workflow",
-        "/extraction",
-        "/memes",
-        "/microduck",
-        "/pr-review",
-        "/proposal-review",
-        "/ast-governance",
-        "/smt-solver",
-        "/tool-router",
-        "/langchain",
-        "/jev-browser-agent",
-        "/reranker",
-        "/doom",
+        "/language/examples",
+        "/language/conversation",
+        "/agents/gate",
+        "/simulations/chess",
+        "/agents/workflow",
+        "/language/extraction",
+        "/language/memes",
+        "/simulations/microduck",
+        "/governance/pr-review",
+        "/governance/proposal-review",
+        "/governance/ast-governance",
+        "/governance/smt-solver",
+        "/agents/tool-router",
+        "/agents/langchain",
+        "/agents/jev-browser-agent",
+        "/language/reranker",
+        "/simulations/doom",
       ]) {
         await page.goto(route);
         await expect(page.locator("h1")).toBeVisible();
@@ -274,7 +274,7 @@ for (const [width, height] of [
           ),
           `${route} at ${width}x${height}`,
         ).toBe(true);
-        if (route === "/examples" && width > 650 && height < 600) {
+        if (route === "/language/examples" && width > 650 && height < 600) {
           expect(
             (await page.locator(".example-list").boundingBox())!.height,
           ).toBeGreaterThan(60);
@@ -282,37 +282,37 @@ for (const [width, height] of [
         if (route === "/") continue;
         const action = page.getByRole("button", {
           name:
-            route === "/examples"
+            route === "/language/examples"
               ? "Run example"
-              : route === "/conversation"
+              : route === "/language/conversation"
                 ? "Pick a recipient"
-                : route === "/gate"
+                : route === "/agents/gate"
                   ? "Run triage"
-                  : route === "/chess"
+                  : route === "/simulations/chess"
                     ? "One move"
-                    : route === "/workflow"
+                    : route === "/agents/workflow"
                       ? "Send message"
-                      : route === "/extraction"
+                      : route === "/language/extraction"
                         ? "Run extraction"
-                        : route === "/microduck"
+                        : route === "/simulations/microduck"
                           ? "Step"
-                          : route === "/pr-review"
+                          : route === "/governance/pr-review"
                             ? "Review PR"
-                            : route === "/proposal-review"
+                            : route === "/governance/proposal-review"
                               ? "Review proposal"
-                            : route === "/ast-governance"
+                            : route === "/governance/ast-governance"
                               ? "Analyze changes"
-                              : route === "/smt-solver"
+                              : route === "/governance/smt-solver"
                                 ? "Run Check"
-                                : route === "/tool-router"
+                                : route === "/agents/tool-router"
                                   ? "Run Routing Step"
-                                  : route === "/langchain"
+                                  : route === "/agents/langchain"
                                     ? "Invoke LangChain tool"
-                                    : route === "/jev-browser-agent"
+                                    : route === "/agents/jev-browser-agent"
                                       ? "Find PC parts"
-                                      : route === "/reranker"
+                                      : route === "/language/reranker"
                                         ? "Compare both"
-                                        : route === "/doom"
+                                        : route === "/simulations/doom"
                                           ? "Start arena"
                                           : "Test meme",
           exact: true,
@@ -330,7 +330,7 @@ for (const [width, height] of [
 test("meta meme, image URL OCR review, and GitHub link are usable", async ({
   page,
 }) => {
-  await page.goto("/memes");
+  await page.goto("/language/memes");
   await expect(
     page.getByRole("link", { name: "View TypeSafe AI Playground on GitHub" }),
   ).toHaveAttribute(
@@ -392,7 +392,7 @@ test("meta meme, image URL OCR review, and GitHub link are usable", async ({
 test("question JSON stays synchronized and protects concurrent edits", async ({
   page,
 }) => {
-  await page.goto("/examples");
+  await page.goto("/language/examples");
   await page.locator(".question-edit").first().locator("summary").click();
   await page
     .locator(".question-edit")
@@ -423,7 +423,7 @@ test("question JSON stays synchronized and protects concurrent edits", async ({
 test("unreadable meme text does not report a successful extraction", async ({
   page,
 }) => {
-  await page.goto("/memes");
+  await page.goto("/language/memes");
   const image = await (await page.request.get("/memes/meta-meme.png")).body();
   await page.route("**/api/meme-image", (route) =>
     route.fulfill({ contentType: "image/png", body: image }),
@@ -451,7 +451,7 @@ test("unreadable meme text does not report a successful extraction", async ({
 test("examples expose question selection, validation, and reversible reset", async ({
   page,
 }) => {
-  await page.goto("/examples");
+  await page.goto("/language/examples");
   const original = await page.locator("#example-state").inputValue();
   await page.locator("#example-state").fill("A changed draft");
   await expect(page.getByText("Edited draft", { exact: true })).toBeVisible();
@@ -481,7 +481,7 @@ test("examples expose question selection, validation, and reversible reset", asy
 test("example filters recover from empty results and preview the A/B change", async ({
   page,
 }) => {
-  await page.goto("/examples");
+  await page.goto("/language/examples");
   const browse = page.getByRole("button", {
     name: "Browse examples",
     exact: true,
@@ -525,7 +525,7 @@ test("results rail toggles from its bottom edge and with the keyboard", async ({
     "Full-height rail is a desktop layout.",
   );
   await page.setViewportSize({ width: 1440, height: 900 });
-  await page.goto("/examples");
+  await page.goto("/language/examples");
   const rail = page.getByRole("button", {
     name: "Expand results",
     exact: true,
@@ -557,7 +557,7 @@ test("PR review demo preserves evidence, filters risks, and recalculates thresho
     calls++;
     return r.abort();
   });
-  await page.goto("/pr-review");
+  await page.goto("/governance/pr-review");
   await page
     .getByRole("button", { name: "Run mock demo", exact: true })
     .click();
@@ -611,7 +611,7 @@ test("PR review sends only closed decisions and rejects invented model labels", 
     );
     await route.fulfill({ json: { answers } });
   });
-  await page.goto("/pr-review");
+  await page.goto("/governance/pr-review");
   await page
     .getByRole("button", { name: "Run mock demo", exact: true })
     .click();
@@ -684,7 +684,7 @@ test("pasting a PR link needs just one review action", async ({ page }) => {
     );
     await route.fulfill({ json: { answers } });
   });
-  await page.goto("/pr-review");
+  await page.goto("/governance/pr-review");
   await page
     .getByLabel("PR URL or diff")
     .fill("https://github.com/example/repo/pull/42");
@@ -700,7 +700,7 @@ test("pasting a PR link needs just one review action", async ({ page }) => {
 test("AST governance traces callers, preserves policy gates, and simulates cache reuse", async ({
   page,
 }) => {
-  await page.goto("/ast-governance");
+  await page.goto("/governance/ast-governance");
   let requests = 0;
   await page.route("**/api/run", async (route) => {
     requests++;
@@ -779,7 +779,7 @@ test("SMT uses real Z3, rejects invalid syntax, and defers to exact results on d
       },
     }),
   );
-  await page.goto("/smt-solver");
+  await page.goto("/governance/smt-solver");
   await page.getByRole("button", { name: "Run Check", exact: true }).click();
   await expect(page.locator(".compact-verdict h2")).toHaveText("unsatisfiable");
   await expect(page.getByText("Agreement: No", { exact: true })).toBeVisible();
@@ -821,7 +821,7 @@ test("SMT decomposes independent groups and records measured benchmark rows", as
       },
     });
   });
-  await page.goto("/smt-solver");
+  await page.goto("/governance/smt-solver");
   await page
     .getByRole("button", { name: "Team availability", exact: true })
     .click();
@@ -854,23 +854,23 @@ test("every workspace has a distinct branded OG and matching Twitter preview", a
   const images = new Set<string>();
   for (const path of [
     "/",
-    "/examples",
-    "/conversation",
-    "/gate",
-    "/chess",
-    "/workflow",
-    "/extraction",
-    "/memes",
-    "/microduck",
-    "/pr-review",
-    "/proposal-review",
-    "/ast-governance",
-    "/smt-solver",
-    "/tool-router",
-    "/langchain",
-    "/jev-browser-agent",
-    "/reranker",
-    "/doom",
+    "/language/examples",
+    "/language/conversation",
+    "/agents/gate",
+    "/simulations/chess",
+    "/agents/workflow",
+    "/language/extraction",
+    "/language/memes",
+    "/simulations/microduck",
+    "/governance/pr-review",
+    "/governance/proposal-review",
+    "/governance/ast-governance",
+    "/governance/smt-solver",
+    "/agents/tool-router",
+    "/agents/langchain",
+    "/agents/jev-browser-agent",
+    "/language/reranker",
+    "/simulations/doom",
   ]) {
     await page.goto(path);
     const og = await page
@@ -904,7 +904,7 @@ test("tool router shows approval and blocks sensitive requests without a Jev cal
     requests++;
     await r.abort();
   });
-  await page.goto("/tool-router");
+  await page.goto("/agents/tool-router");
   await page.getByLabel("Demo scenario").selectOption("1");
   await page.getByRole("button", { name: "Run mock scenario" }).click();
   await expect(page.locator(".compact-verdict h2")).toHaveText(
@@ -958,7 +958,7 @@ test("tool router limits live choices to outgoing allowed nodes and falls back o
       },
     });
   });
-  await page.goto("/tool-router");
+  await page.goto("/agents/tool-router");
   await page
     .getByRole("button", { name: "Run Routing Step", exact: true })
     .click();
@@ -984,7 +984,7 @@ test("tool router limits live choices to outgoing allowed nodes and falls back o
 test("LangChain demo invokes the real structured tool and surfaces approval without execution", async ({
   page,
 }) => {
-  await page.goto("/langchain");
+  await page.goto("/agents/langchain");
   await page.getByRole("button", { name: "Try mock invocation" }).click();
   await expect(page.locator(".compact-verdict h2")).toHaveText(
     "Read configuration",
@@ -1018,7 +1018,7 @@ test("LangChain demo invokes the real structured tool and surfaces approval with
 test("PR decision trace links model signals and policy gates back to exact evidence", async ({
   page,
 }) => {
-  await page.goto("/pr-review");
+  await page.goto("/governance/pr-review");
   await page.getByRole("button", { name: "Run mock demo" }).click();
   await expect(
     page.getByRole("heading", { name: "Why this decision" }),
@@ -1073,7 +1073,7 @@ test("ask gate cites its evidence and hands weak matches to a human", async ({
       },
     });
   });
-  await page.goto("/gate");
+  await page.goto("/agents/gate");
   await page.getByRole("button", { name: "Run triage", exact: true }).click();
   await expect(page.locator(".gate-verdict")).toHaveAttribute(
     "data-outcome",
@@ -1123,7 +1123,7 @@ test("batch mode gates each question and counts the avoidable ones", async ({
       },
     });
   });
-  await page.goto("/gate");
+  await page.goto("/agents/gate");
   await page.getByLabel("Mode", { exact: true }).selectOption("batch");
   await page.getByRole("button", { name: "Run triage", exact: true }).click();
   await expect(page.locator("tbody tr")).toHaveCount(6);
@@ -1175,7 +1175,7 @@ test("microduck drives from the closed action set and stops when it cannot", asy
       },
     });
   });
-  await page.goto("/microduck");
+  await page.goto("/simulations/microduck");
   await page.getByRole("button", { name: "Step", exact: true }).click();
   await expect(page.locator(".telemetry")).toContainText("Turn left");
   await expect(page.locator(".telemetry")).toContainText("74.0%");
@@ -1264,7 +1264,7 @@ test("chess sends only legal moves and marks the blunders it plays", async ({
       },
     });
   });
-  await page.goto("/chess");
+  await page.goto("/simulations/chess");
   await expect(
     page.getByText("This is the wrong tool for this job"),
   ).toBeVisible();
@@ -1329,7 +1329,7 @@ test("chess re-marks blunders locally when the threshold moves", async ({
       },
     });
   });
-  await page.goto("/chess");
+  await page.goto("/simulations/chess");
   await page.getByLabel("Mode", { exact: true }).selectOption("jev_random");
   await page.getByRole("button", { name: "One move", exact: true }).click();
   await expect(page.locator(".chess-verdict")).toBeVisible();

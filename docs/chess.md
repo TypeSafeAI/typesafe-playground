@@ -1,6 +1,6 @@
 # Jev attempts chess
 
-Open `/chess` to watch a System One decision model play a game that needs search. This workspace exists to show a limit, not to recommend an approach: Jev's own guidance puts chess-like planning outside what a fast classifier should be asked to do, and this page wires it up to a real board so the shape of that limit is visible rather than asserted.
+Open `/simulations/chess` to watch a System One decision model play a game that needs search. This workspace exists to show a limit, not to recommend an approach: Jev's own guidance puts chess-like planning outside what a fast classifier should be asked to do, and this page wires it up to a real board so the shape of that limit is visible rather than asserted.
 
 **Play out** runs the game one request per move until it ends. **One move** plays a single ply. **New game** resets to the starting position.
 

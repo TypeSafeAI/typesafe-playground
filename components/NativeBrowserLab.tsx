@@ -203,7 +203,7 @@ export function NativeBrowserLab() {
   return (
     <div className="native-browser-studio">
       <header className="native-toolbar">
-        <Link href="/jev-browser-agent" aria-label="Back to browser research">
+        <Link href="/agents/jev-browser-agent" aria-label="Back to browser research">
           <ArrowLeft size={18} />
         </Link>
         <strong>

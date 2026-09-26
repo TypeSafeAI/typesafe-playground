@@ -56,30 +56,35 @@ The server environment key is not sent to the browser. Never prefix it with `NEX
 
 ## Choose a workspace
 
-The home page groups the prototypes into Language & data, Agents & workflows, Code & governance, and Games & simulations. Search or filter the cards, or use the grouped sidebar.
+The playground has five sections, each with its own page: Language & data (`/language`), Agents & workflows (`/agents`), Code & governance (`/governance`), Games & simulations (`/simulations`), and the Arcade (`/arcade`). Every workspace lives under its section, such as `/language/jev-chat`. The home page searches and filters all of them, and the sidebar's section labels open each section page.
+
+Older flat links such as `/jev-chat` or `/chess` redirect permanently to their new home, query strings included. The route map in `lib/routes.ts` feeds the navigation and those redirects, so they cannot drift apart.
 
 | Workspace | What to explore |
 | --- | --- |
-| **Example builder** `/examples` | Editable typed questions, a shared example catalog, and declared A/B input changes. |
-| **Conversation lab** `/conversation` | Parse conversations, rank possible reply recipients, and compare full-context versus isolated-message judgments. |
-| **Ask gate** `/gate` | Check official TypeSafe documentation first, then earlier messages, then route to a human, retaining supporting citations. |
-| **Jev Chat** `/jev-chat` | Explore Jev-driven scripted composition with selectable personalities, cited source passages, fictional scenes, saved threads, and verifiable response graphs. See the [chat guide](docs/jev-chat.md). |
-| **Workflow chat** `/workflow` | Apply editable case rules and request missing facts before recommending an action. |
-| **Document extraction** `/extraction` | Find source candidates locally, then ask Jev to choose candidates or `null`. |
-| **YouTube extract** `/youtube-extract` | Select original caption passages with Jev relevance scores, live usage metrics, and timestamp-linked source verification. See [contract and limits](docs/youtube-extract.md). |
-| **PR review** `/pr-review` | Classify public PR/diff hunks and inspect policy-gated review queues. |
-| **Proposal review** `/proposal-review` | Let an agent propose one patch, ask Jev four yes/no questions, and let a fixed decision table decide. Receipts, mock and live; nothing is applied. Uses a pinned shared community harness with 25 scripted fixtures. See [the harness guide](docs/proposal-review.md). |
-| **AST governance** `/ast-governance` | Explore changed symbols, callers, deterministic policy, and ambiguous findings. |
-| **SMT solver** `/smt-solver` | Compare Jev classifications with real server-side Z3 checks and decomposition. |
-| **Tool router** `/tool-router` | Inspect closed-set routing with simulated tools, policy blocks, and mock approval gates. |
-| **LangChain** `/langchain` | Invoke a real LangChain tool adapter with mocked or live Jev predictions. |
-| **Vector reranker** `/reranker` | Compare vector order, batched Jev relevance, and a labeled lexical mock baseline. |
-| **Clean-room rebuild** `/clean-room` | Run three complete local rebuild demos, or use the CLI with live Jev classification and deterministic code generation. Export the app and verification evidence. |
-| **Browser agent** `/jev-browser-agent` | Research a Newegg PC build in a local browser-use session with Jev closed choices, or run the synthetic flight demo. No text-generation model required. |
-| **Jev plays Doom** `/doom` | Try an original browser shooter with human, Jev, and seeded random control. |
-| **Meme lab** `/memes` | Classify reviewed captions and visual descriptions for tone, audience fit, and possible confusion. |
-| **MicroDuck arena** `/microduck` | Compare bounded robot actions in a local 3D simulation. |
-| **Jev attempts chess** `/chess` | Observe the limitations of legal-move selection without lookahead. |
+| **Example builder** `/language/examples` | Editable typed questions, a shared example catalog, and declared A/B input changes. |
+| **Conversation lab** `/language/conversation` | Parse conversations, rank possible reply recipients, and compare full-context versus isolated-message judgments. |
+| **Ask gate** `/agents/gate` | Check official TypeSafe documentation first, then earlier messages, then route to a human, retaining supporting citations. |
+| **Jev Chat** `/language/jev-chat` | Explore Jev-driven scripted composition with selectable personalities, cited source passages, fictional scenes, saved threads, and verifiable response graphs. See the [chat guide](docs/jev-chat.md). |
+| **Workflow chat** `/agents/workflow` | Apply editable case rules and request missing facts before recommending an action. |
+| **Document extraction** `/language/extraction` | Find source candidates locally, then ask Jev to choose candidates or `null`. |
+| **YouTube extract** `/language/youtube-extract` | Select original caption passages with Jev relevance scores, live usage metrics, and timestamp-linked source verification. See [contract and limits](docs/youtube-extract.md). |
+| **PR review** `/governance/pr-review` | Classify public PR/diff hunks and inspect policy-gated review queues. |
+| **Proposal review** `/governance/proposal-review` | Let an agent propose one patch, ask Jev four yes/no questions, and let a fixed decision table decide. Receipts, mock and live; nothing is applied. Uses a pinned shared community harness with 25 scripted fixtures. See [the harness guide](docs/proposal-review.md). |
+| **AST governance** `/governance/ast-governance` | Explore changed symbols, callers, deterministic policy, and ambiguous findings. |
+| **SMT solver** `/governance/smt-solver` | Compare Jev classifications with real server-side Z3 checks and decomposition. |
+| **Tool router** `/agents/tool-router` | Inspect closed-set routing with simulated tools, policy blocks, and mock approval gates. |
+| **LangChain** `/agents/langchain` | Invoke a real LangChain tool adapter with mocked or live Jev predictions. |
+| **Vector reranker** `/language/reranker` | Compare vector order, batched Jev relevance, and a labeled lexical mock baseline. |
+| **Clean-room rebuild** `/agents/clean-room` | Run three complete local rebuild demos, or use the CLI with live Jev classification and deterministic code generation. Export the app and verification evidence. |
+| **Browser agent** `/agents/jev-browser-agent` | Research a Newegg PC build in a local browser-use session with Jev closed choices, or run the synthetic flight demo. No text-generation model required. |
+| **Jev plays Doom** `/simulations/doom` | Try an original browser shooter with human, Jev, and seeded random control. |
+| **Meme lab** `/language/memes` | Classify reviewed captions and visual descriptions for tone, audience fit, and possible confusion. |
+| **MicroDuck arena** `/simulations/microduck` | Compare bounded robot actions in a local 3D simulation. |
+| **Jev attempts chess** `/simulations/chess` | Observe the limitations of legal-move selection without lookahead. |
+| **Snake** `/arcade/snake` | Watch Jev steer a snake one cell per request, scored against a random baseline on the same seed. See [the Arcade guide](docs/arcade.md). |
+| **Breakout** `/arcade/breakout` | Watch Jev move a paddle under a predicted landing column to keep the ball in play. |
+| **Meteor dodge** `/arcade/meteor-dodge` | Watch Jev change lanes through falling meteors using a code-computed look-ahead. |
 
 ### Examples, drafts, and A/B comparisons
 
@@ -132,7 +137,7 @@ The [reranker](docs/reranker.md) compares supplied vector order, Jev relevance, 
 
 ### Browser agent
 
-The [native command workspace](docs/native-browser.md) at `/jev-browser-agent/native` adds delta-only page updates, batched field actions, exact local text values, and per-action usage reports. It includes two synthetic browser benchmarks and live Newegg navigation. Jev makes every policy decision; provider failures pause execution. Live token targets remain unverified while the configured provider key returns HTTP 402.
+The [native command workspace](docs/native-browser.md) at `/agents/jev-browser-agent/native` adds delta-only page updates, batched field actions, exact local text values, and per-action usage reports. It includes two synthetic browser benchmarks and live Newegg navigation. Jev makes every policy decision; provider failures pause execution. Live token targets remain unverified while the configured provider key returns HTTP 402.
 
 The [browser agent](docs/jev-browser-agent.md) fills the workspace with a browser, a goal composer at the bottom, and diagnostics in Inspector. The default Newegg task uses a local, isolated [browser-use](https://github.com/browser-use/browser-use) session, and Jev selects parts from a closed candidate set; nothing is purchased. The optional flight sandbox ports [browser-use/jev-ultrafast](https://github.com/browser-use/jev-ultrafast): each request chooses an operation and compatible targets from an indexed element table, actions are checked for freshness before they run, and an independent verifier decides whether the goal was met.
 
@@ -149,6 +154,8 @@ The server image loader bounds image size and redirects, blocks private/reserved
 **JevDoom** is an original Three.js/WebGL mini-game, not the Doom engine, and uses no Doom assets. Human, Jev, and seeded-random modes share a deterministic maze and action contract. W/S move, A/D strafe, Q/E turn, Space fires, F opens doors, and R uses items; touch controls and a tactical-map fallback are available. Fullscreen and screenshot mode change the presentation, not the model's authority.
 
 The browser sends structured observations rather than rendered pixels. Model choices are limited to the configured action set. A turn toward a visible enemy uses its signed bearing to stop precisely on target; Jev still chooses whether to turn or shoot. Action freshness checks, bounded calls, cancellation, invalid-answer idling, and error pauses prevent an old or unusable response from becoming a new action. Chaos mode withholds a sensor for inspection without assuming confidence must decrease. Timing includes network latency; classification throughput is not the same as game actions per second. No generated code is executed.
+
+**The Arcade** holds games Jev can play successfully because each move is a small, well-evidenced choice. Before every move, code computes what each legal action would do, such as a crash, the distance to the apple, or a short look-ahead. Jev chooses one action from the offered set. Every game is seeded, so the random baseline and the scripted demo face the identical world. A malformed answer plays a safe fallback that is labeled and never counted as a Jev choice. Live runs are capped per game and send at most one request a second. See [the Arcade guide](docs/arcade.md) for the contract and measured results.
 
 **MicroDuck** is a local deterministic robot arena, not a connection to physical hardware. Inspect sensors, cargo, docks, and bounded seven-action control, and compare with a seeded random baseline. **Chess** intentionally exposes a limitation: choosing one legal move without lookahead is not a competitive chess engine; minimax-based comparison can mark mistakes. Keep simulated outcomes separate from claims about model capability.
 
@@ -209,4 +216,4 @@ The intended GitHub About description and discovery topics are recorded in [repo
 
 ### Clean-room rebuild pipeline
 
-Open `/clean-room` for three prefilled, functional demos: catalog search, contacts CRUD, and support tickets. Each observes a real local target, reconstructs its UI and endpoint bindings, and independently compares browser behavior. Demo Jev choices are explicitly simulated; custom targets use live Jev. Both use the same local, deterministic code generator. No external generation model or extra credentials are required. `pnpm clean-room --demo catalog --serve` runs the same pipeline from the terminal. See [setup, artifacts, cost tracking, and limits](docs/clean-room/README.md).
+Open `/agents/clean-room` for three prefilled, functional demos: catalog search, contacts CRUD, and support tickets. Each observes a real local target, reconstructs its UI and endpoint bindings, and independently compares browser behavior. Demo Jev choices are explicitly simulated; custom targets use live Jev. Both use the same local, deterministic code generator. No external generation model or extra credentials are required. `pnpm clean-room --demo catalog --serve` runs the same pipeline from the terminal. See [setup, artifacts, cost tracking, and limits](docs/clean-room/README.md).

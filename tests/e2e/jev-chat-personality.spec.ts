@@ -14,7 +14,7 @@ test("personality changes future replies, survives reload, and carries into a ne
       json: { error: "Unexpected live request." },
     });
   });
-  await page.goto("/jev-chat");
+  await page.goto("/language/jev-chat");
   const personality = page.getByRole("combobox", { name: "Chat personality" });
   await expect(personality).toHaveValue("default");
   await page.getByLabel("Response detail").focus();

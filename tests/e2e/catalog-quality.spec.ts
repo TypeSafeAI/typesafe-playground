@@ -42,7 +42,7 @@ for (const pack of catalog.packs) {
       );
       await route.fulfill({ json: { answers } });
     });
-    await page.goto("/examples");
+    await page.goto("/language/examples");
     for (const example of pack.examples) {
       const browse = page.getByRole("button", {
         name: "Browse examples",

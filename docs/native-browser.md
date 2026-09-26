@@ -1,6 +1,6 @@
 # Native Jev browser commands
 
-Open `/jev-browser-agent/native` on localhost. Jev chooses commands for an isolated browser-use session; no text-generation model or alternate policy runs when Jev fails. The existing Newegg parts-research workflow remains separate. Its price-based fallback is not part of the native command loop.
+Open `/agents/jev-browser-agent/native` on localhost. Jev chooses commands for an isolated browser-use session; no text-generation model or alternate policy runs when Jev fails. The existing Newegg parts-research workflow remains separate. Its price-based fallback is not part of the native command loop.
 
 ## Run locally
 

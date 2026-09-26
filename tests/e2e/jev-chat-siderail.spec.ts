@@ -8,7 +8,7 @@ test("the shell siderail navigates out of the chat studio", async ({
   page,
 }) => {
   await page.setViewportSize({ width: 1440, height: 900 });
-  await page.goto("/jev-chat");
+  await page.goto("/language/jev-chat");
   const rail = page.locator("aside.sidebar");
   await expect(rail).toBeVisible();
   // Assert the state before measuring: the grid width animates, so a bare
@@ -35,7 +35,7 @@ test("narrow screens reach the same navigation through the menu", async ({
   page,
 }) => {
   await page.setViewportSize({ width: 390, height: 844 });
-  await page.goto("/jev-chat");
+  await page.goto("/language/jev-chat");
   await expect(page.locator("aside.sidebar")).toBeHidden();
   await page.locator(".mobile-menu").click();
   const rail = page.locator("aside.sidebar");
@@ -47,19 +47,19 @@ test("collapsing on the chat route persists to other workspaces", async ({
   page,
 }) => {
   await page.setViewportSize({ width: 1440, height: 900 });
-  await page.goto("/gate");
+  await page.goto("/agents/gate");
   // A fresh visitor with no stored preference starts expanded.
   await expect(page.locator(".dashboard-shell")).not.toHaveClass(
     /nav-collapsed/,
   );
   const expanded = await expandedWidth(page);
-  await page.goto("/jev-chat");
+  await page.goto("/language/jev-chat");
   await expect(page.locator(".dashboard-shell")).toHaveClass(/nav-collapsed/);
   expect(
     await page.evaluate(() => localStorage.getItem("typesafe-nav-collapsed")),
   ).toBe("true");
   // The point of persisting: the choice carries to other workspaces...
-  await page.goto("/gate");
+  await page.goto("/agents/gate");
   await expect(page.locator(".dashboard-shell")).toHaveClass(/nav-collapsed/);
   // ...and survives a reload rather than living only in memory.
   await page.reload();

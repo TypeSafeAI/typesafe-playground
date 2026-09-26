@@ -1,6 +1,6 @@
 # PR Review lab
 
-Open `/pr-review`, paste a public GitHub PR URL or unified diff, and click **Review PR**. A URL loads the PR title, description, changed-file inventory, and patches automatically. **Preview changes** lets you inspect them before making a Jev request. Optional metadata, repository rules, and thresholds live in disclosures.
+Open `/governance/pr-review`, paste a public GitHub PR URL or unified diff, and click **Review PR**. A URL loads the PR title, description, changed-file inventory, and patches automatically. **Preview changes** lets you inspect them before making a Jev request. Optional metadata, repository rules, and thresholds live in disclosures.
 
 **Run mock demo** loads a fixture that changes an auth function, adds a required bypass parameter, and updates no tests. Mock results are explicitly labeled and make no API calls. **Review PR** replaces those fixtures with live classifications using the existing server-only `TYPESAFE_API_KEY` in `.env.local` or deployment settings.
 

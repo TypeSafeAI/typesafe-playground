@@ -1,6 +1,6 @@
 # Jev-powered browser agent
 
-Open `/jev-browser-agent`. The browser occupies the workspace, the goal stays in the bottom composer, and Inspector contains results, diagnostics, and copy/export controls. No text-generation model is required for either browser preset.
+Open `/agents/jev-browser-agent`. The browser occupies the workspace, the goal stays in the bottom composer, and Inspector contains results, diagnostics, and copy/export controls. No text-generation model is required for either browser preset.
 
 ## Local Newegg research
 

@@ -1,6 +1,6 @@
 # Jev Chat
 
-Open `/jev-chat` for a chat workspace using Jev and scripted language composition. **Compose** is the default engine for new conversations. **Baseline** retains the original whole-reply selector for comparison. This is experimental software: neither scripted demo results nor hash verification establish live model quality or parity with leading LLMs.
+Open `/language/jev-chat` for a chat workspace using Jev and scripted language composition. **Compose** is the default engine for new conversations. **Baseline** retains the original whole-reply selector for comparison. This is experimental software: neither scripted demo results nor hash verification establish live model quality or parity with leading LLMs.
 
 ## Conversation experience
 

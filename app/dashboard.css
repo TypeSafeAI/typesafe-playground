@@ -1213,3 +1213,119 @@ body {
     transition: none;
   }
 }
+/* Section pages reuse the home layout; these rules cover what only they add. */
+.home-section-link {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  margin-top: 8px;
+  color: var(--accent);
+  font-size: 11px;
+  text-decoration: none;
+}
+.home-section-link:hover,
+.home-section-link:focus-visible {
+  text-decoration: underline;
+}
+.section-page .section-workspaces {
+  padding-top: 28px;
+}
+.section-others {
+  margin-top: 34px;
+}
+.section-others .home-eyebrow {
+  margin-bottom: 10px;
+}
+.section-others .home-filters {
+  gap: 8px;
+}
+.section-others .home-filters a {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  min-height: 36px;
+  padding: 8px 12px;
+  border: 1px solid var(--line);
+  border-radius: 6px;
+  background: var(--panel);
+  color: var(--ink);
+  font-size: 11px;
+  font-weight: 500;
+  text-decoration: none;
+  transition:
+    border-color 0.15s,
+    background 0.15s;
+}
+.section-others .home-filters a:hover {
+  border-color: color-mix(in srgb, var(--accent) 40%, var(--line));
+  background: var(--accent-soft);
+}
+.section-others .home-filters a:focus-visible {
+  outline: 2px solid var(--accent);
+  outline-offset: 2px;
+}
+.section-others-count {
+  color: var(--muted);
+  font:
+    10px/1 ui-monospace,
+    monospace;
+}
+/* Group labels link to their section page but keep the label's quiet look. */
+.dashboard-shell .sidebar nav a.nav-section-link {
+  display: block;
+  width: auto;
+  min-height: 0;
+  margin: 15px 0 5px;
+  padding: 2px 10px;
+  border: 0;
+  border-radius: 4px;
+  background: none;
+  box-shadow: none;
+  color: var(--muted);
+  font-size: 10px;
+  font-weight: 600;
+  letter-spacing: 0.055em;
+  text-transform: uppercase;
+  text-decoration: none;
+}
+.dashboard-shell .sidebar nav a.nav-section-link:hover {
+  color: var(--ink);
+  background: none;
+  text-decoration: underline;
+  text-underline-offset: 3px;
+}
+.dashboard-shell .sidebar nav a.nav-section-link.active {
+  color: var(--accent);
+  background: none;
+  border: 0;
+  box-shadow: none;
+}
+.dashboard-shell .sidebar nav a.nav-section-link:focus-visible {
+  outline: 2px solid var(--accent);
+  outline-offset: 1px;
+}
+.dashboard-shell.nav-collapsed .sidebar nav a.nav-section-link {
+  display: none;
+}
+@media (max-width: 760px) {
+  .dashboard-shell.nav-mobile-open .sidebar nav a.nav-section-link {
+    display: block;
+    min-height: 0;
+  }
+}
+.workspace-breadcrumb .breadcrumb-section {
+  color: inherit;
+  text-decoration: none;
+}
+.workspace-breadcrumb .breadcrumb-section:hover,
+.workspace-breadcrumb .breadcrumb-section:focus-visible {
+  color: var(--ink);
+  text-decoration: underline;
+  text-underline-offset: 3px;
+}
+@media (max-width: 1050px) {
+  /* Narrow headers show only the current page, as before sections existed. */
+  .workspace-breadcrumb .breadcrumb-section {
+    display: none;
+  }
+}

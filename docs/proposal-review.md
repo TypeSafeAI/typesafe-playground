@@ -1,6 +1,6 @@
 # Proposal review harness
 
-Open `/proposal-review`, pick a synthetic fixture, choose the **good** or **bad** proposal, and click **Review proposal**. Code validates the proposal, Jev answers four yes/no questions about it in one request, and a fixed decision table turns those answers into a verdict. Every run leaves a receipt.
+Open `/governance/proposal-review`, pick a synthetic fixture, choose the **good** or **bad** proposal, and click **Review proposal**. Code validates the proposal, Jev answers four yes/no questions about it in one request, and a fixed decision table turns those answers into a verdict. Every run leaves a receipt.
 
 **Mock** (default) returns the fixture's scripted probabilities and makes no request; it demonstrates the decision table, not Jev. **Live Jev** sends the same synthetic fixture to the pinned model and is enabled only when a server `TYPESAFE_API_KEY` or a personal key from the header is configured. Mock, Live Jev, and Unavailable results are labeled and styled distinctly.
 

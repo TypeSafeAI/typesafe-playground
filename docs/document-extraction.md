@@ -1,6 +1,6 @@
 # Document extraction
 
-Open `/extraction` in the Next.js playground. Paste document text, select fields,
+Open `/language/extraction` in the Next.js playground. Paste document text, select fields,
 and choose **Run extraction**. The included invoice has an issue date, due date,
 vendor, subtotal, tax, and final amount so the ranking is visible.
 

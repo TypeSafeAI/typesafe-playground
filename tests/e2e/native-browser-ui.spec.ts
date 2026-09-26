@@ -3,7 +3,7 @@ import { test, expect } from "@playwright/test";
 test("native workspace retains source labels and fits short, wide and narrow screens", async ({
   page,
 }) => {
-  await page.goto("/jev-browser-agent/native");
+  await page.goto("/agents/jev-browser-agent/native");
   for (const [width, height] of [
     [1920, 1080],
     [1280, 720],
@@ -29,7 +29,7 @@ test("native workspace retains source labels and fits short, wide and narrow scr
 test("native workspace labels synthetic benchmarks and keeps a custom Newegg goal separate", async ({
   page,
 }) => {
-  await page.goto("/jev-browser-agent/native");
+  await page.goto("/agents/jev-browser-agent/native");
   await expect(
     page.getByRole("heading", { name: "One goal. Fewer round trips." }),
   ).toBeVisible();
@@ -113,7 +113,7 @@ test("provider failure remains failed with unknown tokens and an exportable repo
       });
     else await route.fulfill({ json: { report, phase: "Stopped" } });
   });
-  await page.goto("/jev-browser-agent/native");
+  await page.goto("/agents/jev-browser-agent/native");
   await page.getByRole("button", { name: "Run with Jev" }).click();
   await expect(
     page.getByText("TypeSafe HTTP 402", { exact: true }),

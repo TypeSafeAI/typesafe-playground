@@ -1,9 +1,10 @@
 "use client";
 import Link from "next/link";
 import { WorkspaceGuide } from "./WorkspaceGuide";
-import { useState, type CSSProperties } from "react";
+import { useState } from "react";
 import { ArrowRight, Search, X } from "lucide-react";
-import { bentoSpans, flowEnds, playgroundGroups } from "../lib/playground";
+import { playgroundGroups } from "../lib/playground";
+import { WorkspaceCardGrid } from "./WorkspaceCardGrid";
 
 export function PlaygroundHome() {
   const [query, setQuery] = useState("");
@@ -97,7 +98,6 @@ export function PlaygroundHome() {
       </p>
       <div className="home-sections">
         {groups.map((group) => {
-          const spans = bentoSpans(group.examples.length);
           return (
             <section
               key={group.id}
@@ -110,56 +110,16 @@ export function PlaygroundHome() {
                   <span>{group.examples.length}</span>
                 </h2>
                 <p>{group.description}</p>
+                <Link
+                  href={group.href}
+                  prefetch={false}
+                  className="home-section-link"
+                  aria-label={`Open the ${group.label} section`}
+                >
+                  View section <ArrowRight size={14} aria-hidden="true" />
+                </Link>
               </div>
-              <div className="home-card-grid">
-                {group.examples.map(
-                  ({ href, label, detail, flow, icon: Icon }, index) => {
-                    const { input, output } = flowEnds(flow);
-                    const span = spans[index] ?? 2;
-                    return (
-                      <Link
-                        href={href}
-                        prefetch={false}
-                        key={href}
-                        className="home-example-card"
-                        data-span={span}
-                        style={{ "--bento-span": span } as CSSProperties}
-                        aria-label={`Open ${label}`}
-                      >
-                        <div className="home-card-top">
-                          <Icon
-                            size={20}
-                            strokeWidth={1.6}
-                            aria-hidden="true"
-                          />
-                          <span className="home-card-ord" aria-hidden="true">
-                            {String(index + 1).padStart(2, "0")}
-                          </span>
-                          <ArrowRight
-                            size={16}
-                            className="home-card-arrow"
-                            aria-hidden="true"
-                          />
-                        </div>
-                        <h3>{label}</h3>
-                        <p>{detail}</p>
-                        <dl className="home-card-flow">
-                          <div>
-                            <dt>in</dt>
-                            <dd>{input}</dd>
-                          </div>
-                          {output && (
-                            <div>
-                              <dt>out</dt>
-                              <dd>{output}</dd>
-                            </div>
-                          )}
-                        </dl>
-                      </Link>
-                    );
-                  },
-                )}
-              </div>
+              <WorkspaceCardGrid examples={group.examples} />
             </section>
           );
         })}
@@ -180,7 +140,7 @@ export function PlaygroundHome() {
       </div>
       <footer className="home-note">
         <span>Built around choices, not generated answers.</span>
-        <Link href="/examples" prefetch={false}>
+        <Link href="/language/examples" prefetch={false}>
           Build your own experiment <ArrowRight size={14} aria-hidden="true" />
         </Link>
       </footer>

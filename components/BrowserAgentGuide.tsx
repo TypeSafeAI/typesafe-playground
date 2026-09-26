@@ -136,7 +136,7 @@ export function BrowserAgentGuide() {
       <section aria-labelledby="guide-native">
         <h3 id="guide-native">Native browser commands</h3>
         <p>
-          <a href="/jev-browser-agent/native">Open the native Jev workspace</a>{" "}
+          <a href="/agents/jev-browser-agent/native">Open the native Jev workspace</a>{" "}
           to run batched form actions, inspect delta updates, and measure tokens
           per action. Synthetic benchmarks and live Newegg navigation are
           labeled separately.

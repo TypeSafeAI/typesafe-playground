@@ -41,7 +41,7 @@ test("official docs are checked before chat and expose a source-linked reply", a
       },
     });
   });
-  await page.goto("/gate");
+  await page.goto("/agents/gate");
   await page.getByRole("button", { name: "Run triage", exact: true }).click();
   await expect(page.locator(".gate-verdict")).toHaveAttribute(
     "data-outcome",
@@ -99,7 +99,7 @@ test("an unsupported docs match falls through to community; retrieval failure ma
       },
     });
   });
-  await page.goto("/gate");
+  await page.goto("/agents/gate");
   await page.getByRole("button", { name: "Run triage", exact: true }).click();
   await expect(page.locator(".gate-verdict")).toHaveAttribute(
     "data-outcome",

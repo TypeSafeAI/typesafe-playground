@@ -1,0 +1,398 @@
+/* Arcade games: brand tokens only, so both themes follow automatically. */
+.arcade-lab .callout {
+  flex: none;
+}
+.arcade-lab .panel {
+  min-width: 0;
+}
+.dashboard-shell .arcade-lab > .split {
+  flex: none;
+  height: auto;
+  align-items: start;
+}
+.arcade-split {
+  grid-template-columns: minmax(0, 1fr) minmax(280px, 0.7fr);
+}
+.arcade-split-lower {
+  grid-template-columns: minmax(0, 1.3fr) minmax(0, 1fr);
+}
+.arcade-side {
+  display: grid;
+  gap: 16px;
+  min-width: 0;
+}
+
+/* Board */
+.arcade-stage {
+  position: relative;
+  margin: 0 auto;
+  border-radius: 8px;
+  outline: none;
+}
+.arcade-stage:focus-visible {
+  box-shadow: 0 0 0 2px var(--accent);
+}
+.arcade-board {
+  /* Fit the board's own shape inside both the panel width and a height that
+     leaves the controls on screen, so tall and square boards frame tightly. */
+  --board-max-height: min(46vh, 430px);
+  display: block;
+  aspect-ratio: var(--board-ratio, 1);
+  width: min(100%, calc(var(--board-max-height) * (var(--board-ratio, 1))));
+  height: auto;
+  margin: 0 auto;
+  border: 1px solid var(--frame);
+  border-radius: 8px;
+  box-shadow: 3px 3px 0 var(--frame);
+}
+.arcade-field {
+  fill: var(--soft);
+}
+.arcade-dot {
+  fill: var(--line);
+}
+.arcade-snake {
+  fill: color-mix(in srgb, var(--accent) 55%, var(--panel));
+}
+.arcade-snake-head {
+  fill: var(--accent);
+}
+.arcade-apple {
+  fill: var(--brand-pink);
+  stroke: var(--frame);
+  stroke-width: 0.6;
+}
+.arcade-crash {
+  fill: none;
+  stroke: var(--error);
+  stroke-width: 1.4;
+}
+.arcade-brick {
+  fill: var(--accent);
+  stroke: var(--frame);
+  stroke-width: 0.4;
+}
+.arcade-brick.row-2 {
+  fill: var(--brand-pink);
+}
+.arcade-brick.row-3 {
+  fill: var(--brand-sky);
+}
+.arcade-paddle {
+  fill: var(--ink);
+}
+.arcade-ball {
+  fill: var(--accent);
+  stroke: var(--frame);
+  stroke-width: 0.6;
+}
+.arcade-landing {
+  fill: var(--accent-soft);
+  stroke: var(--accent);
+  stroke-width: 0.5;
+  stroke-dasharray: 1.5 1.5;
+}
+.arcade-lane {
+  stroke: var(--line);
+  stroke-width: 0.4;
+  stroke-dasharray: 2 2;
+}
+.arcade-meteor {
+  fill: var(--muted);
+  stroke: var(--frame);
+  stroke-width: 0.5;
+}
+.arcade-meteor.next {
+  fill: var(--brand-pink);
+}
+.arcade-ship {
+  fill: var(--accent);
+  stroke: var(--frame);
+  stroke-width: 0.6;
+}
+.arcade-ship.hit {
+  fill: var(--error);
+}
+.arcade-over {
+  position: absolute;
+  left: 50%;
+  top: 50%;
+  transform: translate(-50%, -50%);
+  display: grid;
+  justify-items: center;
+  gap: 4px;
+  padding: 14px 18px;
+  background: var(--panel);
+  border: 1px solid var(--frame);
+  border-radius: 6px;
+  box-shadow: 3px 3px 0 var(--frame);
+  text-align: center;
+  font-size: 12px;
+  max-width: 80%;
+}
+.arcade-over svg {
+  color: var(--accent);
+}
+.arcade-over strong {
+  font-size: 16px;
+}
+.arcade-hint {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 6px;
+  margin: 10px 0 0;
+  font-size: 11px;
+}
+.arcade-controls {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 8px;
+  padding: 12px 16px;
+  border-bottom: 1px solid var(--line);
+}
+.arcade-controls .button.quiet {
+  margin-left: auto;
+}
+.arcade-notice {
+  margin: 0 16px 12px;
+  font-size: 12px;
+  color: var(--muted);
+}
+
+/* Scoreboard */
+.arcade-score-main {
+  display: flex;
+  align-items: baseline;
+  justify-content: space-between;
+  gap: 12px;
+  padding-bottom: 12px;
+  border-bottom: 1px solid var(--line);
+}
+.arcade-score-main span {
+  font-size: 11px;
+  color: var(--muted);
+  text-transform: uppercase;
+  letter-spacing: 0.08em;
+}
+.arcade-score-main strong {
+  font-size: 40px;
+  line-height: 1;
+  font-weight: 600;
+  letter-spacing: -0.04em;
+  color: var(--accent);
+  font-variant-numeric: tabular-nums;
+}
+.arcade-compare,
+.arcade-stats {
+  display: grid;
+  gap: 6px;
+  margin: 12px 0 0;
+}
+.arcade-compare > div,
+.arcade-stats > div {
+  display: flex;
+  justify-content: space-between;
+  gap: 12px;
+  font-size: 12px;
+}
+.arcade-compare dt,
+.arcade-stats dt {
+  color: var(--muted);
+}
+.arcade-compare dd,
+.arcade-stats dd {
+  margin: 0;
+  font-family: var(--font-mono);
+  font-variant-numeric: tabular-nums;
+}
+.arcade-stats {
+  padding-top: 12px;
+  border-top: 1px solid var(--line);
+}
+.arcade-verdict {
+  margin: 12px 0 0;
+  padding: 8px 10px;
+  border-radius: 6px;
+  font-size: 12px;
+  line-height: 1.5;
+  background: var(--soft);
+  border: 1px solid var(--line);
+}
+.arcade-verdict[data-verdict="beat"] {
+  border-color: color-mix(in srgb, var(--success) 50%, var(--line));
+  color: var(--success);
+}
+.arcade-verdict[data-verdict="trailed"] {
+  border-color: color-mix(in srgb, var(--error) 50%, var(--line));
+  color: var(--error);
+}
+.arcade-seed {
+  display: flex;
+  gap: 8px;
+}
+.arcade-seed input {
+  flex: 1;
+  min-width: 0;
+}
+
+/* Decision detail */
+.arcade-decision-head {
+  display: flex;
+  justify-content: space-between;
+  flex-wrap: wrap;
+  gap: 12px;
+  margin-bottom: 12px;
+}
+.arcade-decision-head > div:first-child {
+  display: grid;
+  gap: 4px;
+}
+.arcade-decision-head strong {
+  font-size: 18px;
+}
+.arcade-decision-stats {
+  display: flex;
+  gap: 18px;
+}
+.arcade-decision-stats > div {
+  display: grid;
+  gap: 2px;
+  font-size: 11px;
+  color: var(--muted);
+}
+.arcade-decision-stats strong {
+  font-size: 14px;
+  color: var(--ink);
+  font-family: var(--font-mono);
+}
+.arcade-fallback-note {
+  margin: 0 0 10px;
+  font-size: 12px;
+  color: var(--error);
+}
+.arcade-table-wrap {
+  overflow-x: auto;
+}
+.arcade-outcomes {
+  width: 100%;
+  border-collapse: collapse;
+  font-size: 11px;
+}
+.arcade-outcomes caption {
+  text-align: left;
+  color: var(--muted);
+  font-size: 11px;
+  padding-bottom: 6px;
+}
+.arcade-outcomes th,
+.arcade-outcomes td {
+  text-align: left;
+  padding: 6px 8px;
+  border-bottom: 1px solid var(--line);
+  white-space: nowrap;
+}
+.arcade-outcomes thead th {
+  color: var(--muted);
+  font-weight: 500;
+  text-transform: capitalize;
+}
+.arcade-outcomes td {
+  font-family: var(--font-mono);
+}
+.arcade-outcomes tr[data-chosen="yes"] {
+  background: var(--accent-soft);
+}
+.arcade-outcomes tr[data-chosen="yes"] th {
+  color: var(--accent);
+}
+.arcade-prob {
+  display: inline-block;
+  width: 44px;
+  height: 6px;
+  margin-right: 6px;
+  vertical-align: middle;
+  border-radius: 3px;
+  background: var(--soft);
+  overflow: hidden;
+}
+.arcade-prob span {
+  display: block;
+  height: 100%;
+  background: var(--accent);
+}
+
+/* Sources and log */
+.arcade-source {
+  display: inline-block;
+  width: fit-content;
+  padding: 2px 6px;
+  border-radius: 4px;
+  font-size: 10px;
+  border: 1px solid var(--line);
+  color: var(--muted);
+  background: var(--soft);
+}
+.arcade-source.source-jev {
+  color: var(--accent);
+  border-color: color-mix(in srgb, var(--accent) 35%, var(--line));
+  background: var(--accent-soft);
+}
+.arcade-source.source-fallback {
+  color: var(--error);
+  border-color: color-mix(in srgb, var(--error) 40%, var(--line));
+}
+.arcade-log {
+  list-style: none;
+  margin: 0;
+  padding: 0;
+  display: grid;
+  gap: 2px;
+  max-height: 320px;
+  overflow-y: auto;
+}
+.arcade-log button {
+  display: grid;
+  grid-template-columns: 36px minmax(0, 1fr) auto 44px;
+  align-items: center;
+  gap: 8px;
+  width: 100%;
+  min-height: 32px;
+  padding: 4px 8px;
+  border: 1px solid transparent;
+  border-radius: 5px;
+  background: none;
+  color: var(--ink);
+  font-size: 12px;
+  text-align: left;
+  cursor: pointer;
+}
+.arcade-log button:hover {
+  background: var(--soft);
+}
+.arcade-log button[aria-pressed="true"] {
+  border-color: color-mix(in srgb, var(--accent) 35%, var(--line));
+  background: var(--accent-soft);
+}
+.arcade-log-tick,
+.arcade-log-conf {
+  color: var(--muted);
+  font-family: var(--font-mono);
+  font-size: 11px;
+}
+.arcade-log-conf {
+  text-align: right;
+}
+
+@media (max-width: 950px) {
+  .arcade-split,
+  .arcade-split-lower {
+    grid-template-columns: minmax(0, 1fr);
+  }
+}
+@media (prefers-reduced-motion: reduce) {
+  .arcade-log {
+    scroll-behavior: auto;
+  }
+}

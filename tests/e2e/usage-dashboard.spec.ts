@@ -12,7 +12,7 @@ test("all extraction calls appear once with reported tokens, visible cost and pr
       },
     });
   });
-  await page.goto("/extraction");
+  await page.goto("/language/extraction");
   await page
     .getByRole("button", { name: "Run extraction", exact: true })
     .click();
@@ -38,7 +38,7 @@ test("all extraction calls appear once with reported tokens, visible cost and pr
   await page.getByRole("button", { name: "Close usage dashboard" }).click();
   await page.reload();
   await expect(badge).toContainText("4 calls");
-  await page.goto("/reranker");
+  await page.goto("/language/reranker");
   await expect(badge).toContainText("448 tokens");
 });
 test("429 pauses live runs across pages and survives reload; a replacement key releases the block", async ({
@@ -59,7 +59,7 @@ test("429 pauses live runs across pages and survives reload; a replacement key r
       },
     }),
   );
-  await page.goto("/extraction");
+  await page.goto("/language/extraction");
   await page
     .getByRole("button", { name: "Run extraction", exact: true })
     .click();
@@ -69,7 +69,7 @@ test("429 pauses live runs across pages and survives reload; a replacement key r
   await expect(
     page.getByRole("button", { name: "Run extraction", exact: true }),
   ).toBeDisabled();
-  await page.goto("/reranker");
+  await page.goto("/language/reranker");
   await expect(
     page.getByRole("button", { name: "Rerank with Jev", exact: true }),
   ).toBeDisabled();
@@ -105,7 +105,7 @@ test("429 pauses live runs across pages and survives reload; a replacement key r
 test("navigation collapse persists and mobile drawer closes on navigation and Escape", async ({
   page,
 }, info) => {
-  await page.goto("/extraction");
+  await page.goto("/language/extraction");
   if (info.project.name === "desktop") {
     await page
       .getByRole("button", { name: "Collapse sidebar", exact: true })
@@ -164,7 +164,7 @@ test("mock invocations never transmit saved keys or count toward usage", async (
       json: { error: "Synthetic mock response" },
     });
   });
-  await page.goto("/langchain");
+  await page.goto("/agents/langchain");
   await page
     .getByRole("button", { name: "API key settings", exact: true })
     .click();

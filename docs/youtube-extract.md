@@ -1,6 +1,6 @@
 # YouTube extract
 
-Open `/youtube-extract`, paste a public YouTube URL, and select **Create extract · Live Jev**. The app retrieves an existing caption track and asks Jev to score each natural chunk. It never calls a text-generation, transcription, or translation model.
+Open `/language/youtube-extract`, paste a public YouTube URL, and select **Create extract · Live Jev**. The app retrieves an existing caption track and asks Jev to score each natural chunk. It never calls a text-generation, transcription, or translation model.
 
 ## Retrieval and limits
 

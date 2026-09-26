@@ -19,7 +19,7 @@ test("personal key is masked, persists, overrides all transports, and can be rem
       json: { error: "Test provider unavailable" },
     });
   });
-  await page.goto("/doom");
+  await page.goto("/simulations/doom");
   await page
     .getByRole("button", { name: "API key settings", exact: true })
     .click();
@@ -39,12 +39,12 @@ test("personal key is masked, persists, overrides all transports, and can be rem
   await page.getByRole("radio", { name: "Jev control", exact: true }).click();
   await page.getByRole("button", { name: "Start arena", exact: true }).click();
   await expect.poll(() => headers.length, { timeout: 15000 }).toBe(1);
-  await page.goto("/extraction");
+  await page.goto("/language/extraction");
   await page
     .getByRole("button", { name: "Run extraction", exact: true })
     .click();
   await expect.poll(() => headers.length).toBeGreaterThan(1);
-  await page.goto("/langchain");
+  await page.goto("/agents/langchain");
   await page
     .getByRole("button", { name: "Invoke LangChain tool", exact: true })
     .click();
@@ -60,7 +60,7 @@ test("personal key is masked, persists, overrides all transports, and can be rem
     .click();
   await expect(page.getByLabel("API key", { exact: true })).toHaveValue("");
   await page.getByRole("button", { name: "Close API key settings" }).click();
-  await page.goto("/doom");
+  await page.goto("/simulations/doom");
   await page.getByRole("radio", { name: "Jev control", exact: true }).click();
   const count = headers.length;
   await page.getByRole("button", { name: "Start arena", exact: true }).click();

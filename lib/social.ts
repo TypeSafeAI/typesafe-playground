@@ -1,7 +1,7 @@
 import type { Metadata } from "next";
 export const SOCIAL_PAGES = {
   "jev-chat": {
-    path: "/jev-chat",
+    path: "/language/jev-chat",
     title: "Jev Chat",
     description:
       "Conversation, by choice. Jev decisions, scripted composition, source passages, and verifiable response graphs.",
@@ -10,7 +10,7 @@ export const SOCIAL_PAGES = {
     result: "Question → supported reply",
   },
   "clean-room": {
-    path: "/clean-room",
+    path: "/agents/clean-room",
     title: "Clean-room rebuild",
     description: "Observed screens. Rebuilt apps. Independent proof.",
     category: "AGENTIC REBUILD",
@@ -22,7 +22,7 @@ export const SOCIAL_PAGES = {
     result: "Target → working rebuild",
   },
   doom: {
-    path: "/doom",
+    path: "/simulations/doom",
     title: "JevDoom",
     description: "Ten actions. One tiny decision at a time.",
     category: "REACTIVE GAME CONTROL",
@@ -34,7 +34,7 @@ export const SOCIAL_PAGES = {
     result: "Game state → next action",
   },
   reranker: {
-    path: "/reranker",
+    path: "/language/reranker",
     title: "Vector reranker",
     description: "Good matches. Better order.",
     category: "RETRIEVAL & RELEVANCE",
@@ -46,7 +46,7 @@ export const SOCIAL_PAGES = {
     result: "Shortlist → better order",
   },
   "tool-router": {
-    path: "/tool-router",
+    path: "/agents/tool-router",
     title: "Jev tool router",
     description: "Choose the next step. Keep policy in control.",
     category: "GRAPH-BASED ROUTING",
@@ -54,7 +54,7 @@ export const SOCIAL_PAGES = {
     result: "Request → safe next step",
   },
   langchain: {
-    path: "/langchain",
+    path: "/agents/langchain",
     title: "Jev × LangChain",
     description: "A small classifier. A useful tool.",
     category: "TYPESCRIPT INTEGRATION",
@@ -75,11 +75,96 @@ export const SOCIAL_PAGES = {
       "Agents & workflows",
       "Code & governance",
       "Games & simulations",
+      "Arcade",
     ],
     result: "One small model. Many clear choices.",
   },
+  language: {
+    path: "/language",
+    title: "Language & data",
+    description: "Messy context. Grounded choices.",
+    category: "SECTION",
+    steps: [
+      "Bring text or documents",
+      "Offer fixed options",
+      "Get a grounded answer",
+    ],
+    result: "Context → grounded choice",
+  },
+  agents: {
+    path: "/agents",
+    title: "Agents & workflows",
+    description: "One next step. Policy stays in charge.",
+    category: "SECTION",
+    steps: [
+      "Describe the goal and state",
+      "Offer allowed actions",
+      "Take the next step",
+    ],
+    result: "Goal → governed next step",
+  },
+  governance: {
+    path: "/governance",
+    title: "Code & governance",
+    description: "Typed judgments. Code has the last word.",
+    category: "SECTION",
+    steps: [
+      "Bring a change or constraint",
+      "Ask typed questions",
+      "Let rules decide",
+    ],
+    result: "Change → rule-checked verdict",
+  },
+  simulations: {
+    path: "/simulations",
+    title: "Games & simulations",
+    description: "Small decisions. Visible limits.",
+    category: "SECTION",
+    steps: ["Read the world state", "Choose one action", "Play it out"],
+    result: "State → one action",
+  },
+  arcade: {
+    path: "/arcade",
+    title: "Jev Arcade",
+    description: "Insert coin. Jev takes the controls.",
+    category: "SECTION",
+    steps: [
+      "Read the game state",
+      "Choose a legal move",
+      "Score it against chance",
+    ],
+    result: "Game state → scored move",
+  },
+  snake: {
+    path: "/arcade/snake",
+    title: "Jev plays Snake",
+    description: "Four directions. One apple at a time.",
+    category: "ARCADE",
+    steps: ["Read the board", "Choose a direction", "Beat the random baseline"],
+    result: "Board → next direction",
+  },
+  breakout: {
+    path: "/arcade/breakout",
+    title: "Jev plays Breakout",
+    description: "Three paddle moves. Keep the ball alive.",
+    category: "ARCADE",
+    steps: ["Track the ball", "Move the paddle", "Clear the bricks"],
+    result: "Ball → paddle move",
+  },
+  "meteor-dodge": {
+    path: "/arcade/meteor-dodge",
+    title: "Jev plays Meteor dodge",
+    description: "Five lanes. Nothing but falling rock.",
+    category: "ARCADE",
+    steps: [
+      "Scan the lanes ahead",
+      "Change lanes or hold",
+      "Survive the field",
+    ],
+    result: "Lanes → lane change",
+  },
   examples: {
-    path: "/examples",
+    path: "/language/examples",
     title: "Example builder",
     description: "Small experiments. Clear decisions.",
     category: "EXPLORE JEV",
@@ -87,7 +172,7 @@ export const SOCIAL_PAGES = {
     result: "Ideas → clear outcomes",
   },
   conversation: {
-    path: "/conversation",
+    path: "/language/conversation",
     title: "Conversation lab",
     description: "Find the message worth answering.",
     category: "CONVERSATION ROUTING",
@@ -99,7 +184,7 @@ export const SOCIAL_PAGES = {
     result: "Context → recipient",
   },
   workflow: {
-    path: "/workflow",
+    path: "/agents/workflow",
     title: "Workflow chat",
     description: "Turn your process into a clear next step.",
     category: "POLICY & PROCESS",
@@ -111,7 +196,7 @@ export const SOCIAL_PAGES = {
     result: "Scenario → action",
   },
   "youtube-extract": {
-    path: "/youtube-extract",
+    path: "/language/youtube-extract",
     title: "YouTube extract",
     description: "Original words. Selected passages. Source-linked evidence.",
     category: "EXTRACTIVE TEXT",
@@ -123,7 +208,7 @@ export const SOCIAL_PAGES = {
     result: "Captions → chronological extract",
   },
   extraction: {
-    path: "/extraction",
+    path: "/language/extraction",
     title: "Document extraction",
     description: "From raw text to grounded answers.",
     category: "CLOSED-SET EXTRACTION",
@@ -131,7 +216,7 @@ export const SOCIAL_PAGES = {
     result: "Document → structured data",
   },
   memes: {
-    path: "/memes",
+    path: "/language/memes",
     title: "Meme lab",
     description: "Read the joke. Test the reaction.",
     category: "MEME CLASSIFICATION",
@@ -139,7 +224,7 @@ export const SOCIAL_PAGES = {
     result: "Meme → prediction",
   },
   "pr-review": {
-    path: "/pr-review",
+    path: "/governance/pr-review",
     title: "PR review",
     description: "Focus review on the changes that matter.",
     category: "CLASSIFY & ROUTE",
@@ -151,7 +236,7 @@ export const SOCIAL_PAGES = {
     result: "Diff → review decision",
   },
   "proposal-review": {
-    path: "/proposal-review",
+    path: "/governance/proposal-review",
     title: "Proposal review",
     description: "One proposal. Four questions. Code decides.",
     category: "AGENT REVIEW GATE",
@@ -163,7 +248,7 @@ export const SOCIAL_PAGES = {
     result: "Proposal → verdict + receipt",
   },
   "ast-governance": {
-    path: "/ast-governance",
+    path: "/governance/ast-governance",
     title: "AST-aware governance",
     description: "Understand the change. Trace the impact.",
     category: "CODE & POLICY",
@@ -171,7 +256,7 @@ export const SOCIAL_PAGES = {
     result: "Change → informed review",
   },
   gate: {
-    path: "/gate",
+    path: "/agents/gate",
     title: "Ask gate",
     description: "Ask Jev, or ask a human?",
     category: "QUESTION TRIAGE",
@@ -179,7 +264,7 @@ export const SOCIAL_PAGES = {
     result: "Question → routed or answered",
   },
   microduck: {
-    path: "/microduck",
+    path: "/simulations/microduck",
     title: "MicroDuck arena",
     description: "Nine sensors in. One action out.",
     category: "EMBODIED DECISIONS",
@@ -187,7 +272,7 @@ export const SOCIAL_PAGES = {
     result: "Sensors → next move",
   },
   chess: {
-    path: "/chess",
+    path: "/simulations/chess",
     title: "Jev attempts chess",
     description: "The wrong tool for the job, on purpose.",
     category: "KNOWN LIMITATION",
@@ -195,7 +280,7 @@ export const SOCIAL_PAGES = {
     result: "One decision → no plan",
   },
   "jev-browser-agent": {
-    path: "/jev-browser-agent",
+    path: "/agents/jev-browser-agent",
     title: "Jev-powered browser agent",
     description: "One goal. One request per step.",
     category: "DYNAMIC ACTION SPACE",
@@ -207,7 +292,7 @@ export const SOCIAL_PAGES = {
     result: "Goal → verified page state",
   },
   "smt-solver": {
-    path: "/smt-solver",
+    path: "/governance/smt-solver",
     title: "SMT solver lab",
     description: "Fast predictions. Exact verification.",
     category: "JEV + Z3",

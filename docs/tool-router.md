@@ -1,6 +1,6 @@
 # Jev tool router
 
-Open `/tool-router` to route a request one graph edge at a time. **Run Routing Step** asks Jev to choose a permitted next node. **Run mock scenario** follows a seeded path without an API call. Both modes mock all agent and tool execution. This is a small LangGraph-style state machine, not a LangGraph integration.
+Open `/agents/tool-router` to route a request one graph edge at a time. **Run Routing Step** asks Jev to choose a permitted next node. **Run mock scenario** follows a seeded path without an API call. Both modes mock all agent and tool execution. This is a small LangGraph-style state machine, not a LangGraph integration.
 
 ## Graph and policy
 

@@ -3,7 +3,7 @@ import { DOOM_ACTIONS } from "../../types/doom";
 test("Doom human controls shoot, pause, and preserve a comparable run", async ({
   page,
 }) => {
-  await page.goto("/doom");
+  await page.goto("/simulations/doom");
   await page.getByRole("button", { name: "Start arena", exact: true }).click();
   await page.getByRole("application").focus();
   await page.keyboard.down("Space");
@@ -61,7 +61,7 @@ test("Doom batches real frames, displays all probabilities and exposes chaos sta
       },
     });
   });
-  await page.goto("/doom");
+  await page.goto("/simulations/doom");
   await page.getByRole("radio", { name: "Jev control", exact: true }).click();
   await page.getByLabel("Chaos mode · hide enemy distance").check();
   await page.getByRole("button", { name: "Start arena", exact: true }).click();
@@ -106,7 +106,7 @@ test("Doom never applies delayed or invented model actions", async ({
       },
     });
   });
-  await page.goto("/doom");
+  await page.goto("/simulations/doom");
   await page.getByRole("radio", { name: "Jev control", exact: true }).click();
   await page.getByRole("button", { name: "Start arena", exact: true }).click();
   await expect(page.locator("main").getByRole("alert")).toContainText(
@@ -142,7 +142,7 @@ test("Doom waits for delayed decisions and quick taps survive the tick boundary"
       },
     });
   });
-  await page.goto("/doom");
+  await page.goto("/simulations/doom");
   await page.getByRole("radio", { name: "Jev control", exact: true }).click();
   await page.getByRole("button", { name: "Start arena", exact: true }).click();
   await expect(page.locator(".doom-current-action")).toContainText(
@@ -175,7 +175,7 @@ test("Doom pauses on provider failure without silently retrying", async ({
       },
     });
   });
-  await page.goto("/doom");
+  await page.goto("/simulations/doom");
   await page.getByRole("radio", { name: "Jev control", exact: true }).click();
   await page.getByRole("button", { name: "Start arena", exact: true }).click();
   await expect(page.locator("main").getByRole("alert")).toContainText("402");
@@ -221,7 +221,7 @@ test("Doom discards an in-flight decision when controls change", async ({
       })
       .catch(() => {}); // Browser may already have aborted this request.
   });
-  await page.goto("/doom");
+  await page.goto("/simulations/doom");
   await page.getByRole("radio", { name: "Jev control", exact: true }).click();
   await page.getByRole("button", { name: "Start arena", exact: true }).click();
   await expect.poll(() => received).toBe(true);
@@ -238,7 +238,7 @@ test("Doom discards an in-flight decision when controls change", async ({
 test("Doom fullscreen keeps controls reachable and exits without resetting", async ({
   page,
 }) => {
-  await page.goto("/doom");
+  await page.goto("/simulations/doom");
   await page.getByRole("button", { name: "Fullscreen", exact: true }).click();
   await expect(page.locator(".doom-arena-panel")).toHaveClass(
     /doom-fullscreen/,
@@ -269,7 +269,7 @@ test("Doom fullscreen fallback supports Escape", async ({ page }) => {
       configurable: true,
     }),
   );
-  await page.goto("/doom");
+  await page.goto("/simulations/doom");
   await page.getByRole("button", { name: "Fullscreen", exact: true }).click();
   await expect(page.locator(".doom-arena-panel")).toHaveClass(
     /doom-fullscreen/,
@@ -320,7 +320,7 @@ test("Jev moves on the map, turns once, and holds aim while awaiting its next ch
       })
       .catch(() => {});
   });
-  await page.goto("/doom");
+  await page.goto("/simulations/doom");
   const viewport = page.locator(".doom-viewport");
   const x = Number(await viewport.getAttribute("data-player-x"));
   await page.getByRole("radio", { name: "Jev control", exact: true }).click();

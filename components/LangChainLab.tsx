@@ -257,7 +257,7 @@ export function LangChainLab() {
                     false. Keep the action paused until a separate trusted
                     approval flow authorizes it.
                   </p>
-                  <Link href="/tool-router">
+                  <Link href="/agents/tool-router">
                     Try the approval walkthrough →
                   </Link>
                 </div>

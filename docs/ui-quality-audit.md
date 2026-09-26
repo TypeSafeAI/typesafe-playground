@@ -1,6 +1,6 @@
 # Workspace quality audit
 
-Reference: `/jev-browser-agent`. Scope: every page and example, including the local Clean Room workspace. Preserve existing drafts, request contracts, and explicit live/mock/uncertainty boundaries.
+Reference: `/agents/jev-browser-agent`. Scope: every page and example, including the local Clean Room workspace. Preserve existing drafts, request contracts, and explicit live/mock/uncertainty boundaries.
 
 ## Execution
 
@@ -30,7 +30,7 @@ Reference: `/jev-browser-agent`. Scope: every page and example, including the lo
 
 ## Coverage
 
-- The 18 routes in this audit: home, examples, conversation, extraction, reranker, memes, Ask gate, workflow, Tool Router, LangChain, Clean Room, browser agent, PR review, AST governance, SMT solver, JevDoom, MicroDuck, and chess. The later `/youtube-extract` and `/jev-chat` additions have dedicated browser suites; they are outside the original audit receipts below.
+- The 18 routes in this audit: home, examples, conversation, extraction, reranker, memes, Ask gate, workflow, Tool Router, LangChain, Clean Room, browser agent, PR review, AST governance, SMT solver, JevDoom, MicroDuck, and chess. The later `/language/youtube-extract` and `/language/jev-chat` additions have dedicated browser suites; they are outside the original audit receipts below.
 - All 110 authored catalog examples across 22 packs: selection, editor content, typed result rendering, A/B variants where defined, and a failed-provider run per pack, on desktop and mobile.
 - Light/dark route screenshots; narrow/short screens; existing nine-size viewport matrix; keyboard guide open/close and focus return; router continuation/cancellation; stored drafts, import/export, result rails, navigation, and success/error states through the existing browser suite.
 - Detailed guide coverage on every page in both themes and on desktop/mobile; 320×568 and 844×390 keyboard navigation, visible close controls, preserved editor values, and zero model requests from opening a guide.
