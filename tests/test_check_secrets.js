@@ -6,6 +6,7 @@ const { tmpdir } = require("node:os");
 const { join, resolve } = require("node:path");
 
 const sourceScript = resolve(__dirname, "../scripts/check-secrets.mjs");
+const CONTEST_VALUE = "contestA1B2C3D4E5F6G7H8I9J0K1L2";
 
 function sh(cwd, ...args) {
   const result = spawnSync("git", args, { cwd, encoding: "utf8" });
@@ -35,7 +36,7 @@ function runCheck(cwd, args) {
 test("explicit path mode flags real-shaped inline TypeSafe values", () => {
   const root = makeRepo();
   try {
-    writeFileSync(join(root, "fixture.txt"), "TYPESAFE_API_KEY=contestabcdefghijklmnop\n");
+    writeFileSync(join(root, "fixture.txt"), `TYPESAFE_API_KEY=${CONTEST_VALUE}\n`);
     const result = runCheck(root, ["fixture.txt"]);
     assert.equal(result.status, 1);
     assert.match(result.stderr, /looks like a TypeSafe key assigned inline/);
@@ -84,7 +85,7 @@ test("synthetic labels require marker boundaries and still allow explicit fixtur
     let result = runCheck(root, ["synthetic.txt"]);
     assert.equal(result.status, 0, result.stderr);
 
-    writeFileSync(join(root, "synthetic.txt"), "TYPESAFE_API_KEY=contestabcdefghijklmnop\n");
+    writeFileSync(join(root, "synthetic.txt"), `TYPESAFE_API_KEY=${CONTEST_VALUE}\n`);
     result = runCheck(root, ["synthetic.txt"]);
     assert.equal(result.status, 1);
     assert.match(result.stderr, /looks like a TypeSafe key assigned inline/);
