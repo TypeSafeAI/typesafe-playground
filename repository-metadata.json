@@ -1,18 +1,19 @@
 {
   "repository": "TypeSafeAI/typesafe-playground",
-  "description": "Community playground for TypeSafe AI Jev: editable classification experiments, A/B comparisons, routing, extraction, reasoning checks, and interactive simulations.",
+  "description": "Unofficial Jev playground for typed classification, extraction, A/B comparisons, routing, agent workflows, and interactive simulations.",
   "topics": [
     "typesafe-ai",
     "jev",
     "ai-playground",
     "ai-evaluation",
     "classification",
-    "decision-models",
     "typescript",
     "nextjs",
+    "ai-agents",
     "langchain",
-    "z3",
-    "reranking"
+    "z3"
   ],
-  "note": "Intended GitHub About metadata. This file does not apply repository settings automatically."
+  "social_preview": "docs/discovery/assets/social-preview.png",
+  "status": "proposed-not-applied",
+  "note": "Capability-focused discovery metadata. Committing this file does not itself change GitHub repository settings."
 }
