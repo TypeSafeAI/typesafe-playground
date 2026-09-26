@@ -15,7 +15,7 @@ regex = '''(?i)TYPESAFE_API_KEY\s*[:=]\s*["']?([A-Za-z0-9_\-\.]{16,})'''
 keywords = ["typesafe_api_key"]
 [rules.allowlist]
 regexTarget = "match"
-regexes = ['''(?i)(^|[^A-Za-z0-9])(test|synthetic|example|placeholder|dummy|fake|unused|sample|your-?key|changeme|redacted|xxx)([^A-Za-z0-9]|$)''']
+regexes = ['''(?i)(^|[^A-Za-z0-9_])(test|synthetic|example|placeholder|dummy|fake|unused|sample|your-?key|changeme|redacted|xxx)([^A-Za-z0-9_]|$)''']
 
 [[rules]]
 id = "generic-bearer-header"
@@ -24,7 +24,7 @@ regex = '''(?i)authorization["']?\s*[:=]\s*["']?bearer\s+([A-Za-z0-9_\-\.=]{20,}
 keywords = ["bearer"]
 [rules.allowlist]
 regexTarget = "match"
-regexes = ['''(?i)(^|[^A-Za-z0-9])(test|synthetic|example|placeholder|dummy|fake|unused|sample|your-?key|changeme|redacted|xxx)([^A-Za-z0-9]|$)''']
+regexes = ['''(?i)(^|[^A-Za-z0-9_])(test|synthetic|example|placeholder|dummy|fake|unused|sample|your-?key|changeme|redacted|xxx)([^A-Za-z0-9_]|$)''']
 
 [allowlist]
 description = "Lockfiles, media, and fonts are not secrets"

@@ -25,7 +25,7 @@ const PATTERNS = [
   [".env file staged", null], // handled by path check
 ];
 /** Values that announce themselves as fake using explicit marker boundaries. */
-const SYNTHETIC = /(^|[^A-Za-z0-9])(test|synthetic|example|placeholder|dummy|fake|unused|sample|your-?key|changeme|redacted|xxx)([^A-Za-z0-9]|$)/i;
+const SYNTHETIC = /(^|[^A-Za-z0-9_])(test|synthetic|example|placeholder|dummy|fake|unused|sample|your-?key|changeme|redacted|xxx)([^A-Za-z0-9_]|$)/i;
 const ENV_PATH = /(^|\/)\.env(\..+)?$/;
 const ENV_ALLOW = /(^|\/)\.env\.(example|1password)$/; // .env.1password holds op:// references, never values
 const SKIP = /^(pnpm-lock\.yaml|package-lock\.json|.*\.svg|.*\.png|.*\.jpg|.*\.webp|.*\.gif|.*\.woff2?|.*\.lock)$/;
