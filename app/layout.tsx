@@ -6,10 +6,21 @@ import "./dashboard.css";
 import "./workspace.css";
 import "./polish.css";
 export const metadata: Metadata = {
-  metadataBase: new URL("https://typesafe-ai-playground.vercel.app"),
+  metadataBase: new URL("https://jev.works"),
   title: "TypeSafe · Playground",
   description:
-    "A hands-on workspace for Jev classification, conversation routing, and grounded document extraction.",
+    "An unofficial community workspace for Jev classification, conversation routing, and grounded document extraction.",
+  openGraph: {
+    type: "website",
+    siteName: "TypeSafe Playground",
+    title: "TypeSafe Playground — small experiments, clear decisions",
+    description: "Unofficial community Jev experiments: classification, routing, extraction, and inspectable decisions.",
+    images: [{ url: "/og.png", alt: "TypeSafe AI community playground — small experiments, clear decisions" }],
+  },
+  twitter: {
+    card: "summary_large_image",
+    images: [{ url: "/og.png", alt: "TypeSafe AI community playground — small experiments, clear decisions" }],
+  },
 };
 export default function RootLayout({
   children,
