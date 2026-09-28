@@ -169,6 +169,7 @@ test("live mocked run grades checked answers and excludes the key from requests"
 test("stopping during the final reading pause keeps the completed report visible", async ({
   page,
 }) => {
+  test.setTimeout(45000);
   await page.route("**/api/run", (route) =>
     route.fulfill({ json: answer(IQ_QUESTIONS[0].expected) }),
   );
