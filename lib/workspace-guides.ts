@@ -5,6 +5,25 @@ export type WorkspaceGuide = {
   flow: [string, string, string];
 };
 export const workspaceGuides: Record<string, WorkspaceGuide> = {
+  "/simulations/iq-test": {
+    steps: [
+      [
+        "Choose a run",
+        "Local demo always selects A without a model call. Live Jev uses your configured key for up to 12 questions.",
+      ],
+      [
+        "Watch each answer",
+        "The view follows Jev and holds each answer for two seconds. Inspect earlier questions at any time, then enable Follow current question to rejoin the run.",
+      ],
+      [
+        "Read the final breakdown",
+        "A completed test opens a numerical IQ estimate, raw score and category breakdowns. The estimate is an uncalibrated heuristic with a disclosed formula. Errors stop the run and leave it incomplete, without an estimate.",
+      ],
+    ],
+    boundary:
+      "The IQ estimate uses assumed reference values, not human norms. Confidence does not prove correctness. Reference answers are withheld from Jev; patterns are sent as text.",
+    flow: ["Reasoning puzzle", "Jev choice", "Checked answer"],
+  },
   "/arcade/snake": {
     steps: [
       [

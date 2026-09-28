@@ -8,6 +8,16 @@ export type WorkspaceDetails = {
 };
 
 export const workspaceDetails: Record<string, WorkspaceDetails> = {
+  "/simulations/iq-test": {
+    input:
+      "Twelve fixed, original multiple-choice questions: four numerical, four logical, and four text-based patterns. Each states its assumptions.",
+    process:
+      "Live Jev receives one isolated question and four choices per call. The reference key and explanations stay local. Code checks the answer and grades it against the key; a provider error or malformed answer stops the run.",
+    output:
+      "A question view that follows the run, with a two-second reading pause after every answer. The final report shows an estimated IQ, raw score and category breakdowns. The IQ number uses a disclosed, uncalibrated formula; incomplete tests get no estimate. Exports include the scoring assumptions and method version, alongside local-demo or live execution.",
+    experiment:
+      "Run the local demo, which always chooses A, then explicitly select Live Jev to compare on the same questions. A raw score on this practice set is not an IQ or a general capability benchmark.",
+  },
   "/arcade/snake": {
     input:
       "A seed and a player: Live Jev, the scripted rule, the random baseline, or you on the keyboard.",
