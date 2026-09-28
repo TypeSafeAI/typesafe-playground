@@ -3,6 +3,10 @@
   overflow: auto;
   overscroll-behavior: contain;
 }
+.iq-lab:focus-visible {
+  outline: 2px solid var(--accent);
+  outline-offset: 2px;
+}
 .iq-lab > * {
   flex-shrink: 0;
 }

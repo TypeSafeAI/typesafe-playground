@@ -166,6 +166,29 @@ test("live mocked run grades checked answers and excludes the key from requests"
   );
 });
 
+test("stopping during the final reading pause keeps the completed report visible", async ({
+  page,
+}) => {
+  test.setTimeout(45000);
+  await page.route("**/api/run", (route) =>
+    route.fulfill({ json: answer(IQ_QUESTIONS[0].expected) }),
+  );
+  await open(page);
+  await page.getByLabel("Run mode").selectOption("live");
+  await start(page);
+  await expect(page.getByTestId("iq-watch-status")).toContainText(
+    "Results next",
+    { timeout: 35000 },
+  );
+  await page.getByRole("button", { name: "Stop", exact: true }).click();
+  await expect(page.getByTestId("iq-run-status")).toHaveText(
+    "Complete · Live Jev",
+  );
+  await expect(
+    page.getByRole("region", { name: "Final IQ-style test result" }),
+  ).toBeVisible();
+});
+
 test("follows each question and answer, with an option to inspect earlier answers", async ({
   page,
 }, info) => {
@@ -339,6 +362,12 @@ test("keyboard inspection and both themes fit short and narrow screens", async (
   page,
 }) => {
   await open(page);
+  const workspace = page.getByRole("region", {
+    name: "IQ-style test workspace",
+  });
+  await expect(workspace).toHaveAttribute("tabindex", "0");
+  await workspace.focus();
+  await expect(workspace).toBeFocused();
   for (const theme of ["light", "dark"]) {
     await page.evaluate(
       (theme) => (document.documentElement.dataset.theme = theme),
