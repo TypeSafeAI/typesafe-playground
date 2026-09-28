@@ -4,7 +4,7 @@ const SECTIONS = [
   { href: "/language", heading: "Messy context.", cards: 7 },
   { href: "/agents", heading: "One next step.", cards: 6 },
   { href: "/governance", heading: "Typed judgments.", cards: 4 },
-  { href: "/simulations", heading: "Small decisions.", cards: 3 },
+  { href: "/simulations", heading: "Small decisions.", cards: 4 },
   { href: "/arcade", heading: "Insert coin.", cards: 3 },
 ];
 

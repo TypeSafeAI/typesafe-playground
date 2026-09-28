@@ -20,6 +20,7 @@ import {
   Worm,
   BrickWall,
   Rocket,
+  Brain,
 } from "lucide-react";
 import { sectionPath } from "./routes";
 
@@ -224,6 +225,14 @@ export const playgroundGroups = [
         detail:
           "See why choosing a legal move without lookahead falls short of a chess engine.",
         flow: "Legal moves → one choice",
+      },
+      {
+        href: "/simulations/iq-test",
+        label: "IQ-style test",
+        icon: Brain,
+        detail:
+          "Give Jev 12 original reasoning puzzles and check each choice against an explained answer key.",
+        flow: "Reasoning puzzles → checked answers",
       },
     ],
   },
