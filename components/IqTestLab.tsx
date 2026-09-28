@@ -41,6 +41,7 @@ export function IqTestLab() {
   const controller = useRef<AbortController | null>(null);
   const generation = useRef(0);
   const activeRef = useRef<number | null>(null);
+  const finalAnswerReady = useRef(false);
   const detail = useRef<HTMLElement | null>(null);
   const finalReport = useRef<HTMLElement | null>(null);
   const keyRevision = useRef("");
@@ -64,6 +65,7 @@ export function IqTestLab() {
     (message = "Stopped. Start a new run to try the full test again.") => {
       if (!controller.current || controller.current.signal.aborted) return;
       controller.current.abort();
+      const finished = finalAnswerReady.current;
       if (activeRef.current !== null) {
         const id = IQ_QUESTIONS[activeRef.current].id;
         setResults((previous) =>
@@ -81,8 +83,8 @@ export function IqTestLab() {
       }
       activeRef.current = null;
       setActive(null);
-      setPhase("Stopped");
-      setNotice(message);
+      setPhase(finished ? "Complete" : "Stopped");
+      setNotice(finished ? "" : message);
     },
     [],
   );
@@ -94,6 +96,7 @@ export function IqTestLab() {
     activeRef.current = null;
     setActive(null);
     setResults([]);
+    finalAnswerReady.current = false;
     setPhase("Ready");
     setNotice("");
     setStartedAt(null);
@@ -140,6 +143,7 @@ export function IqTestLab() {
     const gen = ++generation.current;
     const ac = new AbortController();
     controller.current = ac;
+    finalAnswerReady.current = false;
     setResults([]);
     setNotice("");
     setPhase("Running");
@@ -158,6 +162,12 @@ export function IqTestLab() {
       },
       onResult: (result) => {
         if (generation.current !== gen || ac.signal.aborted) return;
+        if (
+          result.id === IQ_QUESTIONS[IQ_QUESTIONS.length - 1].id &&
+          (result.status === "correct" || result.status === "incorrect")
+        ) {
+          finalAnswerReady.current = true;
+        }
         activeRef.current = null;
         setActive(null);
         setResults((previous) => [...previous, result]);
@@ -193,7 +203,12 @@ export function IqTestLab() {
     : null;
 
   return (
-    <div className={`workspace iq-lab${busy ? " is-running" : ""}`}>
+    <div
+      className={`workspace iq-lab${busy ? " is-running" : ""}`}
+      role="region"
+      aria-label="IQ-style test workspace"
+      tabIndex={0}
+    >
       <Heading
         eyebrow="REASONING / 12 QUESTIONS"
         title="Jev takes an IQ-style test"
