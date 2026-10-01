@@ -25,9 +25,11 @@ export function validateTools(value: unknown): ToolSnippet[] {
       !object(raw) ||
       typeof raw.name !== "string" ||
       !NAME.test(raw.name) ||
+      raw.name === "__proto__" ||
       raw.name === NONE_OPTION ||
       typeof raw.category !== "string" ||
       !NAME.test(raw.category) ||
+      raw.category === "__proto__" ||
       raw.category === NONE_OPTION ||
       typeof raw.snippet !== "string" ||
       !raw.snippet.trim() ||
