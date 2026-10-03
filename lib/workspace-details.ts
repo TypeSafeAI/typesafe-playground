@@ -8,6 +8,16 @@ export type WorkspaceDetails = {
 };
 
 export const workspaceDetails: Record<string, WorkspaceDetails> = {
+  "/simulations/trolley-problems": {
+    input:
+      "Twelve fixed thought experiments with explicit assumptions, consequences and two possible actions.",
+    process:
+      "Human choices run locally and are labeled Human. Live Jev uses the shared /api/run adapter with a closed pull/stay choice contract. Run all makes at most twelve sequential requests, with a reading pause between cases and a 45-second deadline per request.",
+    output:
+      "An original animated scene, Jev probability bars, stated hypothetical consequences and the latest 48 human/Jev decision receipts. Failures stop without a local replacement action; uncertain consequences stay unknown.",
+    experiment:
+      "Compare the classic five-versus-one switch with the reversed default, then try humans versus non-sentient robots. Read the assumptions and compare judgments without treating one run as an ethics benchmark.",
+  },
   "/simulations/twisty-puzzles": {
     input:
       "A supported puzzle and at most 250 space-separated turns starting from solved. Drafts are saved separately for each puzzle.",

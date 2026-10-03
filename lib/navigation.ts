@@ -45,7 +45,7 @@ export const navigationSections: Record<
     groups: [
       {
         label: "Reasoning",
-        workspaces: ["chess", "iq-test", "twisty-puzzles"],
+        workspaces: ["chess", "iq-test", "twisty-puzzles", "trolley-problems"],
       },
       { label: "Simulations", workspaces: ["doom", "microduck"] },
     ],
