@@ -72,36 +72,38 @@ export function WorkspaceNavigation({
         aria-label={group.label}
       >
         <p className="nav-subsection-label">{group.label}</p>
-        {group.workspaces.map((slug) => {
-          const item = section.examples.find(
-            (item) => item.href === workspacePath(slug),
-          )!;
-          const Icon = item.icon;
-          return (
-            <div key={slug}>
-              <Link
-                href={item.href}
-                prefetch={false}
-                aria-label={item.label}
-                aria-current={path === item.href ? "page" : undefined}
-                className={path === item.href ? "active" : ""}
-              >
-                <Icon size={16} aria-hidden="true" />
-                <span>{item.label}</span>
-              </Link>
-              {slug === "jev-browser-agent" && (
+        <ul className="nav-subtopic-list">
+          {group.workspaces.map((slug) => {
+            const item = section.examples.find(
+              (item) => item.href === workspacePath(slug),
+            )!;
+            const Icon = item.icon;
+            return (
+              <li key={slug}>
                 <Link
-                  href={`${item.href}/native`}
+                  href={item.href}
                   prefetch={false}
-                  className={`nav-nested-link${path.endsWith("/native") ? " active" : ""}`}
-                  aria-current={path.endsWith("/native") ? "page" : undefined}
+                  aria-label={item.label}
+                  aria-current={path === item.href ? "page" : undefined}
+                  className={path === item.href ? "active" : ""}
                 >
-                  <span>Native browser</span>
+                  <Icon size={15} strokeWidth={1.5} aria-hidden="true" />
+                  <span>{item.label}</span>
                 </Link>
-              )}
-            </div>
-          );
-        })}
+                {slug === "jev-browser-agent" && (
+                  <Link
+                    href={`${item.href}/native`}
+                    prefetch={false}
+                    className={`nav-nested-link${path.endsWith("/native") ? " active" : ""}`}
+                    aria-current={path.endsWith("/native") ? "page" : undefined}
+                  >
+                    <span>Native browser</span>
+                  </Link>
+                )}
+              </li>
+            );
+          })}
+        </ul>
       </div>
     ));
   }

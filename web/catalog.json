@@ -1868,10 +1868,10 @@
       ]
     },
     {
-      "id": "moral-dilemmas",
-      "title": "Moral dilemmas",
+      "id": "trolley-problems",
+      "title": "Trolley problems",
       "collection": "Dilemmas & debates",
-      "description": "Classic hypothetical choices, without a claimed universal moral answer.",
+      "description": "The classic switch, footbridge, loop, trapdoor, consent, uncertainty, self-sacrifice and default-route variants. Ethical judgments, not answer-key puzzles.",
       "questions": [
         {
           "id": "answer",
@@ -1887,7 +1887,7 @@
       "examples": [
         {
           "id": "dilemma-trolley-lever",
-          "title": "Pull the trolley lever?",
+          "title": "Classic trolley problem: the switch",
           "description": "The classic five-versus-one choice, then change the numbers.",
           "state": {
             "scenario": "A runaway trolley is heading toward the main track. Pulling a lever diverts it to a side track. No warning, braking, or other rescue is possible.",
@@ -1923,7 +1923,7 @@
         },
         {
           "id": "dilemma-means-matter",
-          "title": "A switch versus a shove",
+          "title": "Trolley problem: switch versus footbridge",
           "description": "Keep the one-versus-five outcome, but change how intervention works.",
           "state": {
             "scenario": "In a fictional trolley dilemma, five people will die without intervention. Intervention certainly saves them but causes one other person's death. There is no other option.",
@@ -1952,7 +1952,7 @@
             ],
             "value": "Push a bystander into the trolley's path to stop it.",
             "labelA": "Rail switch",
-            "labelB": "Direct physical harm"
+            "labelB": "Footbridge intervention"
           }
         },
         {
@@ -1962,7 +1962,8 @@
           "state": {
             "scenario": "A trolley will kill five people unless it is diverted. The side track contains one person. No other rescue is available.",
             "diversion_success_probability": 0.9,
-            "failure_outcome": "If diversion fails, all six people die."
+            "failure_outcome": "If diversion fails, all six people die.",
+            "success_outcome": "If diversion succeeds, the person on the side track dies and the five on the main track survive."
           },
           "questions": [
             {
@@ -2025,6 +2026,173 @@
             "labelB": "The operator"
           }
         },
+        {
+          "id": "dilemma-trolley-loop",
+          "title": "Trolley problem: the loop track",
+          "description": "Keep the casualties fixed; change whether hitting the one is needed to save the five.",
+          "state": {
+            "scenario": "A trolley approaches five people. A switch sends it onto a loop containing one person before rejoining the track ahead of the five. You can operate the switch or leave it alone.",
+            "stopping_mechanism": "On the loop, hitting the one person is the only thing that will stop the trolley before it reaches the five.",
+            "outcomes": "Switch: the one person dies and the five survive. Leave: the five die and the one survives. Treat these fictional outcomes as certain; no other rescue is possible."
+          },
+          "questions": [
+            {
+              "id": "answer",
+              "label": "Recommended action",
+              "type": "choice",
+              "instructions": "Which available action would you recommend in this fictional ethical dilemma? Use only the stated facts and outcomes.",
+              "criteria": {
+                "intervene": "Carry out the described intervention.",
+                "leave": "Do not intervene."
+              }
+            }
+          ],
+          "test": {
+            "kind": "judgment",
+            "note": "Only stopping_mechanism changes. Both versions have the same stated casualties. Compare harm needed as a means with harm incidental to the rescue. The stopping physics are stipulated for this thought experiment. No universal moral answer or consistency score is assigned."
+          },
+          "tryThis": "Compare with the classic switch case and discuss whether the causal role of the one person matters.",
+          "comparison": {
+            "path": [
+              "stopping_mechanism"
+            ],
+            "value": "On the loop, a barrier just beyond the one person will stop the trolley before it reaches the five, even if that person were absent. The collision still kills that person.",
+            "labelA": "Person stops the trolley",
+            "labelB": "Independent barrier stops it"
+          }
+        },
+        {
+          "id": "dilemma-trolley-trapdoor",
+          "title": "Trolley problem: the trapdoor",
+          "description": "Compare physical contact with a remote mechanism while keeping the causal role fixed.",
+          "state": {
+            "scenario": "A trolley will kill five people. Moving one bystander from a footbridge into its path will stop it. The bystander dies and the five survive; without intervention the five die and the bystander survives.",
+            "intervention": "Push the bystander from the footbridge into the trolley's path.",
+            "assumptions": "The bystander has not consented. Outcomes are certain, and warning, braking, self-sacrifice and other rescue options are unavailable."
+          },
+          "questions": [
+            {
+              "id": "answer",
+              "label": "Recommended action",
+              "type": "choice",
+              "instructions": "Which available action would you recommend in this fictional ethical dilemma? Use only the stated facts and outcomes.",
+              "criteria": {
+                "intervene": "Carry out the described intervention.",
+                "leave": "Do not intervene."
+              }
+            }
+          ],
+          "test": {
+            "kind": "judgment",
+            "note": "Only intervention changes. In both versions the bystander is used to stop the trolley; the button does not make their death an incidental side effect. This independently authored comparison explores physical contact and mediation without an ethical answer key."
+          },
+          "tryThis": "State a moral principle before running A/B, then discuss whether the different mechanism is relevant to that principle.",
+          "comparison": {
+            "path": [
+              "intervention"
+            ],
+            "value": "Press a button that opens a trapdoor beneath the bystander, dropping them into the trolley's path.",
+            "labelA": "Direct push",
+            "labelB": "Trapdoor button"
+          }
+        },
+        {
+          "id": "dilemma-trolley-consent",
+          "title": "Trolley problem: consent on the side track",
+          "description": "Hold the people and outcomes constant; change the person's expressed consent.",
+          "state": {
+            "scenario": "A switch can divert a trolley from five people onto a side track containing one adult stranger. All six are unable to leave the tracks in time.",
+            "intervention": "Operate the switch. The stranger dies and the five survive. Without intervention the five die and the stranger survives.",
+            "side_track_consent": "The informed adult on the side track freely and explicitly agrees to the diversion, knowing it will kill them.",
+            "assumptions": "The operator can hear the person clearly. There is no coercion, uncertainty or alternative rescue."
+          },
+          "questions": [
+            {
+              "id": "answer",
+              "label": "Recommended action",
+              "type": "choice",
+              "instructions": "Which available action would you recommend in this fictional ethical dilemma? Use only the stated facts and outcomes.",
+              "criteria": {
+                "intervene": "Carry out the described intervention.",
+                "leave": "Do not intervene."
+              }
+            }
+          ],
+          "test": {
+            "kind": "judgment",
+            "note": "Only side_track_consent changes. This independently authored variant explores autonomy with the casualty count held fixed. Consent is a discussion factor, not a declared universal permission to cause harm. A model response is not moral authority."
+          },
+          "tryThis": "Discuss consent separately from the number of people saved; do not invent demographic or personal differences.",
+          "comparison": {
+            "path": [
+              "side_track_consent"
+            ],
+            "value": "The informed adult on the side track explicitly refuses the diversion, knowing the consequences for everyone.",
+            "labelA": "Freely consents",
+            "labelB": "Explicitly refuses"
+          }
+        },
+        {
+          "id": "dilemma-trolley-default",
+          "title": "Trolley problem: change the default route",
+          "description": "Keep the same two tracks; change which route the trolley will take without intervention.",
+          "state": {
+            "scenario": "Five people are on the main track and one is on the side track. Pulling the lever switches the trolley to the other track; leaving it alone keeps its current route.",
+            "current_route": "The main track with five people.",
+            "intervention": "Pull the lever once to select the other track.",
+            "outcomes": "Everyone on the selected track dies and everyone on the other track survives. All outcomes are certain. No other rescue is available."
+          },
+          "questions": [
+            {
+              "id": "answer",
+              "label": "Recommended action",
+              "type": "choice",
+              "instructions": "Which available action would you recommend in this fictional ethical dilemma? Use only the stated facts and outcomes.",
+              "criteria": {
+                "intervene": "Carry out the described intervention.",
+                "leave": "Do not intervene."
+              }
+            }
+          ],
+          "test": {
+            "kind": "judgment",
+            "note": "Only current_route changes. The physical action now leads to the opposite casualty count. Discuss action versus inaction and the outcome separately; an unchanged choice label need not express an unchanged principle. No moral answer key is assigned."
+          },
+          "tryThis": "Before comparing outputs, write down the casualties associated with each action in each version.",
+          "comparison": {
+            "path": [
+              "current_route"
+            ],
+            "value": "The side track with one person.",
+            "labelA": "Default toward five",
+            "labelB": "Default toward one"
+          }
+        }
+      ],
+      "source": {
+        "label": "Background: Judith Jarvis Thomson, The Trolley Problem (1985). Scenarios and A/B extensions are independently worded.",
+        "url": "https://rintintin.colorado.edu/~vancecd/phil403/thomson.pdf"
+      }
+    },
+    {
+      "id": "moral-dilemmas",
+      "title": "Moral dilemmas",
+      "collection": "Dilemmas & debates",
+      "description": "Classic hypothetical choices, without a claimed universal moral answer.",
+      "questions": [
+        {
+          "id": "answer",
+          "label": "Fair procedure",
+          "type": "choice",
+          "instructions": "Which selection procedure would you recommend?",
+          "criteria": {
+            "lottery": "Use an equal-chance lottery.",
+            "captain": "Let the captain choose without a stated rule.",
+            "volunteer": "Ask for someone to volunteer to remain."
+          }
+        }
+      ],
+      "examples": [
         {
           "id": "dilemma-last-lifeboat",
           "title": "The final lifeboat place",

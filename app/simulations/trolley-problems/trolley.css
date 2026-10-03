@@ -1,0 +1,533 @@
+.dashboard-shell .workspace.trolley-lab {
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
+  min-height: 0;
+  overflow: auto;
+}
+.trolley-layout {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) 300px;
+  gap: 16px;
+  flex: 1;
+  min-height: 0;
+}
+.trolley-stage,
+.trolley-console {
+  min-width: 0;
+  border: 1px solid var(--line);
+  border-radius: 16px;
+  background: var(--panel);
+}
+.trolley-stage {
+  display: flex;
+  flex-direction: column;
+  overflow: auto;
+}
+.trolley-case-nav {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  padding: 12px 18px;
+  border-bottom: 1px solid var(--line);
+}
+.trolley-lab .sr-only {
+  position: absolute;
+  width: 1px;
+  height: 1px;
+  padding: 0;
+  margin: -1px;
+  overflow: hidden;
+  clip-path: inset(50%);
+  white-space: nowrap;
+  border: 0;
+}
+.trolley-case-count {
+  white-space: nowrap;
+  font: 14px var(--font-mono);
+}
+.trolley-case-count span {
+  color: var(--muted);
+  font-size: 11px;
+}
+.trolley-case-nav select {
+  flex: 1;
+  min-width: 0;
+  width: 0;
+  margin: 0;
+  font-size: 12px;
+}
+.trolley-case-arrows {
+  display: flex;
+  gap: 4px;
+}
+.trolley-lab .icon-button {
+  min-width: 32px;
+  width: 32px;
+  padding: 0;
+  height: 32px;
+  min-height: 32px;
+  justify-content: center;
+}
+.trolley-case-heading {
+  padding: 18px 22px 0;
+}
+.trolley-kicker {
+  font: 10px var(--font-mono);
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  color: var(--muted);
+}
+.trolley-case-heading h2 {
+  margin: 7px 0 0;
+  font-size: clamp(21px, 2.2vw, 31px);
+  font-weight: 550;
+  letter-spacing: -0.035em;
+  line-height: 1.15;
+}
+.trolley-scene {
+  display: block;
+  width: 100%;
+  flex: 1 1 210px;
+  min-height: 160px;
+  max-height: 310px;
+  color: var(--ink);
+}
+.trolley-rails {
+  stroke: var(--muted);
+  stroke-width: 1.4;
+  opacity: 0.6;
+}
+.trolley-rails .trolley-rail-bed {
+  stroke: var(--soft);
+  stroke-width: 19;
+}
+.trolley-rails .trolley-rail-ties {
+  stroke-width: 21;
+  stroke-dasharray: 2 12;
+  opacity: 0.55;
+}
+.trolley-chosen-rail {
+  stroke: var(--accent);
+  stroke-width: 3;
+  stroke-dasharray: 5 5;
+}
+.trolley-track-label {
+  fill: var(--ink);
+  font: 17px var(--font-mono);
+}
+.trolley-switch-label {
+  fill: var(--muted);
+  font: 12px var(--font-mono);
+  letter-spacing: 1px;
+}
+.trolley-occupants {
+  stroke: var(--ink);
+  stroke-width: 2;
+  stroke-linecap: round;
+  stroke-linejoin: round;
+  fill: var(--panel);
+}
+.trolley-lever {
+  stroke: var(--ink);
+  stroke-width: 2;
+  fill: var(--panel);
+  stroke-linecap: round;
+}
+.trolley-lever circle {
+  fill: var(--accent);
+  stroke: var(--accent);
+}
+.trolley-car {
+  fill: var(--accent);
+  stroke: var(--ink);
+  stroke-width: 1.5;
+}
+.trolley-trim {
+  stroke: var(--ink);
+  stroke-width: 2;
+  fill: none;
+}
+.trolley-window {
+  fill: var(--panel);
+  opacity: 0.9;
+}
+.trolley-wheel {
+  fill: var(--ink);
+  stroke: var(--panel);
+  stroke-width: 2;
+}
+.trolley-tram.is-moving {
+  animation: trolley-travel 1.2s cubic-bezier(0.35, 0, 0.55, 1) forwards;
+}
+@keyframes trolley-travel {
+  from {
+    offset-distance: 0%;
+  }
+  to {
+    offset-distance: 100%;
+  }
+}
+.trolley-situation {
+  padding: 0 22px 14px;
+  font-size: 14px;
+  line-height: 1.65;
+}
+.trolley-situation > p {
+  color: var(--ink);
+}
+.trolley-situation details {
+  margin-top: 8px;
+  font-size: 11px;
+  color: var(--muted);
+}
+.trolley-situation summary {
+  cursor: pointer;
+  width: fit-content;
+}
+.trolley-situation details p {
+  margin-top: 8px;
+}
+.dashboard-shell .workspace.trolley-lab .trolley-situation details {
+  background: none;
+  border: 0;
+  border-radius: 0;
+  padding: 0;
+  margin: 4px 0 0;
+  box-shadow: none;
+}
+.dashboard-shell .workspace.trolley-lab .trolley-situation details > summary {
+  min-height: 24px;
+  padding: 2px 0;
+  margin: 0;
+  background: none;
+  border: 0;
+  font-size: 11px;
+  font-weight: 400;
+}
+.dashboard-shell .workspace.trolley-lab .trolley-situation details > p {
+  padding: 0;
+}
+.trolley-human-controls {
+  padding: 13px 22px;
+  display: flex;
+  gap: 8px;
+  align-items: center;
+  border-top: 1px solid var(--line);
+}
+.trolley-human-controls > span {
+  margin-right: auto;
+  font-size: 12px;
+  font-weight: 600;
+}
+.trolley-human-controls small {
+  display: block;
+  margin-top: 4px;
+  font-size: 10px;
+  color: var(--muted);
+  font-weight: 400;
+}
+.trolley-human-controls .button {
+  white-space: nowrap;
+}
+.trolley-consequence {
+  padding: 14px 22px;
+  background: var(--soft);
+  border-radius: 0 0 16px 16px;
+  border-top: 1px solid var(--line);
+  min-height: 76px;
+}
+.trolley-consequence.has-decision {
+  background: var(--accent-soft);
+}
+.trolley-consequence p {
+  margin-top: 6px;
+  font-size: 12px;
+  line-height: 1.6;
+}
+.trolley-console {
+  padding: 18px;
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
+  overflow: auto;
+}
+.trolley-console-heading {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 10px;
+}
+.trolley-live-label {
+  display: flex;
+  align-items: center;
+  gap: 7px;
+  font-size: 12px;
+  font-weight: 600;
+}
+.trolley-live-label i {
+  width: 5px;
+  height: 5px;
+  border-radius: 50%;
+  background: var(--accent);
+}
+.trolley-console-intro h2 {
+  font-size: 19px;
+  letter-spacing: -0.025em;
+  font-weight: 550;
+  margin-bottom: 7px;
+}
+.trolley-console-intro p,
+.trolley-console-boundary {
+  font-size: 11px;
+  line-height: 1.6;
+  color: var(--muted);
+}
+.trolley-jev-controls {
+  display: grid;
+  gap: 8px;
+}
+.trolley-jev-controls > .button {
+  justify-content: center;
+}
+.trolley-jev-controls > div {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 8px;
+}
+.trolley-jev-controls > div .button {
+  justify-content: center;
+}
+.trolley-call-note {
+  font-size: 10px;
+  line-height: 1.5;
+  color: var(--muted);
+}
+.trolley-distribution {
+  display: grid;
+  gap: 12px;
+  padding-block: 16px;
+  border-block: 1px solid var(--line);
+}
+.trolley-mini-heading,
+.trolley-session-heading {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 6px;
+}
+.trolley-mini-heading h3,
+.trolley-session-heading h3 {
+  font-size: 11px;
+  font-weight: 550;
+}
+.trolley-mini-heading > span {
+  font: 10px var(--font-mono);
+  color: var(--muted);
+  white-space: nowrap;
+}
+.trolley-probability > div:first-child {
+  display: flex;
+  justify-content: space-between;
+  font-size: 11px;
+  margin-bottom: 6px;
+}
+.trolley-probability strong {
+  font: 11px var(--font-mono);
+}
+.trolley-probability-track {
+  height: 4px;
+  border-radius: 3px;
+  background: var(--soft);
+  overflow: hidden;
+}
+.trolley-probability-track span {
+  display: block;
+  height: 100%;
+  background: var(--accent);
+  border-radius: inherit;
+  transition: width 180ms ease-out;
+}
+.trolley-session-heading {
+  margin-top: -5px;
+}
+.trolley-history {
+  flex: 1;
+  min-height: 44px;
+  overflow: auto;
+  overscroll-behavior: contain;
+  margin-top: -10px;
+  border-radius: 3px;
+}
+.trolley-history > p {
+  font-size: 11px;
+  line-height: 1.7;
+  color: var(--muted);
+}
+.trolley-history ol {
+  list-style: none;
+  padding: 0;
+  margin: 0;
+}
+.trolley-history li {
+  display: flex;
+  justify-content: space-between;
+  gap: 12px;
+  padding: 10px 0;
+  border-bottom: 1px solid var(--line);
+}
+.trolley-history strong {
+  display: block;
+  font-size: 11px;
+  font-weight: 500;
+}
+.trolley-history small {
+  display: block;
+  margin-top: 4px;
+  font-size: 10px;
+  color: var(--muted);
+}
+.trolley-console-boundary {
+  border-top: 1px solid var(--line);
+  padding-top: 12px;
+}
+.trolley-status {
+  display: flex;
+  align-items: start;
+  justify-content: space-between;
+  gap: 14px;
+  font-size: 11px;
+  line-height: 1.6;
+  color: var(--muted);
+  min-height: 36px;
+  flex-shrink: 0;
+}
+.trolley-status strong {
+  flex-shrink: 0;
+  font: 10px var(--font-mono);
+  padding-top: 3px;
+}
+.trolley-error {
+  color: var(--error);
+  font-size: 12px;
+  line-height: 1.6;
+}
+@media (min-width: 1100px) and (min-height: 650px) {
+  .dashboard-shell .workspace.trolley-lab {
+    overflow: hidden;
+  }
+  .trolley-stage {
+    overflow: auto;
+  }
+}
+@media (max-height: 800px) and (min-width: 1100px) {
+  .trolley-console {
+    gap: 8px;
+    padding: 12px 16px;
+  }
+  .trolley-console-intro p {
+    display: none;
+  }
+  .trolley-case-heading {
+    padding-top: 10px;
+  }
+  .trolley-scene {
+    min-height: 150px;
+  }
+  .trolley-distribution {
+    padding-block: 12px;
+    gap: 9px;
+  }
+  .trolley-situation {
+    font-size: 12px;
+    padding-bottom: 6px;
+  }
+  .trolley-human-controls {
+    padding-block: 8px;
+  }
+  .trolley-case-nav {
+    padding-block: 8px;
+  }
+  .trolley-consequence {
+    padding-block: 10px;
+    min-height: 64px;
+  }
+  .trolley-stage > :not(.trolley-scene) {
+    flex-shrink: 0;
+  }
+}
+@media (max-width: 1099px), (max-height: 649px) {
+  .trolley-layout {
+    flex: none;
+    min-height: auto;
+  }
+  .trolley-console {
+    overflow: visible;
+  }
+  .trolley-history {
+    max-height: 160px;
+    min-height: 60px;
+  }
+  .trolley-scene {
+    flex: none;
+    height: auto;
+    min-height: 0;
+  }
+}
+@media (max-width: 900px) {
+  .trolley-layout {
+    grid-template-columns: minmax(0, 1fr);
+  }
+  .trolley-console {
+    gap: 16px;
+  }
+  .trolley-case-nav {
+    padding: 12px;
+    gap: 8px;
+  }
+  .trolley-case-heading,
+  .trolley-situation {
+    padding-inline: 16px;
+  }
+  .trolley-human-controls,
+  .trolley-consequence {
+    padding-inline: 16px;
+  }
+  .trolley-human-controls {
+    flex-wrap: wrap;
+  }
+  .trolley-human-controls > span {
+    width: 100%;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+  }
+  .trolley-human-controls small {
+    margin-top: 0;
+  }
+  .trolley-human-controls .button {
+    flex: 1;
+    justify-content: center;
+    min-height: 44px;
+  }
+  .trolley-case-count {
+    display: none;
+  }
+  .trolley-lab .icon-button {
+    width: 40px;
+    height: 40px;
+    min-height: 40px;
+  }
+  .trolley-status {
+    flex-wrap: wrap;
+  }
+}
+@media (prefers-reduced-motion: reduce) {
+  .trolley-tram.is-moving {
+    animation: none;
+    offset-distance: 100%;
+  }
+  .trolley-probability-track span {
+    transition: none;
+  }
+}

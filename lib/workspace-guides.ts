@@ -5,6 +5,25 @@ export type WorkspaceGuide = {
   flow: [string, string, string];
 };
 export const workspaceGuides: Record<string, WorkspaceGuide> = {
+  "/simulations/trolley-problems": {
+    steps: [
+      [
+        "Choose a dilemma",
+        "Explore twelve original scenarios, including the classic switch, consent, uncertainty, the loop and humans versus robots. Read the assumptions before deciding.",
+      ],
+      [
+        "Take the lever or ask Jev",
+        "Your own choices make no API calls. Let Jev decide uses one real request through your configured key. Run all 12 starts from the first scenario and makes at most twelve sequential calls.",
+      ],
+      [
+        "Follow the decision",
+        "The trolley animates the selected route. Probabilities come from Jev; consequences are stipulated by the scenario. Pause, switching scenarios, hiding the page or changing keys stops the run. Export retains the latest 48 decisions.",
+      ],
+    ],
+    boundary:
+      "Subjective judgments have no universal answer key. Confidence is not ethical correctness. Uncertain outcomes remain unknown. Failed or malformed Jev responses stop without a fallback choice. The SVG is original; the interaction was inspired by Max Rovensky's Jev trolley clip.",
+    flow: ["Stated dilemma", "Human or Jev choice", "Hypothetical outcome"],
+  },
   "/simulations/twisty-puzzles": {
     steps: [
       [

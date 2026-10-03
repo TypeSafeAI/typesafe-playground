@@ -242,6 +242,14 @@ export const playgroundGroups = [
           "Ask Jev to choose turns on 2×2, 3×3, 4×4 and Megaminx, verify the state, and compare with local search.",
         flow: "Scramble → checked solution",
       },
+      {
+        href: "/simulations/trolley-problems",
+        label: "Trolley problems",
+        icon: Scale,
+        detail:
+          "Take the lever or let Jev choose across twelve animated dilemmas, including humans versus robots.",
+        flow: "Moral dilemma → visible choice",
+      },
     ],
   },
   {
