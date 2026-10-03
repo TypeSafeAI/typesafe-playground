@@ -274,6 +274,7 @@ export function AstGovernanceLab() {
         <section
           id="governance-results"
           className="panel lab-panel lab-result-target priority-output"
+          aria-label="Governance decision"
           tabIndex={0}
         >
           <div className="panel-heading">

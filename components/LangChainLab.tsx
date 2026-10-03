@@ -215,6 +215,7 @@ export function LangChainLab() {
         <section
           id="langchain-result"
           className="panel lab-panel lab-result-target priority-output"
+          aria-label="LangChain tool response"
           tabIndex={0}
         >
           <div className="panel-heading">

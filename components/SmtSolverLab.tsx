@@ -302,6 +302,7 @@ export function SmtSolverLab() {
         <section
           id="solver-results"
           className="panel lab-panel lab-result-target priority-output"
+          aria-label="Solver comparison"
           tabIndex={0}
         >
           <div className="panel-heading">

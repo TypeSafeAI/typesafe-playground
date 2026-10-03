@@ -222,6 +222,7 @@ export function ToolRouterLab() {
         <section
           id="router-results"
           className="panel lab-panel lab-result-target priority-output"
+          aria-label="Routing results"
           tabIndex={0}
         >
           <div className="panel-heading">

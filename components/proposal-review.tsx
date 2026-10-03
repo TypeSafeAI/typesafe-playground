@@ -387,6 +387,7 @@ export function ProposalReview({ fixtures }: { fixtures: ClientFixture[] }) {
         <section
           id="proposal-review-result"
           className="panel lab-panel lab-result-target priority-output"
+          aria-label="Proposal review receipt"
           tabIndex={0}
         >
           <div className="panel-heading">

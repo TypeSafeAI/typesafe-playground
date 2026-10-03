@@ -202,7 +202,11 @@ export function YouTubeExtractLab() {
         description="Existing YouTube captions → Jev relevance decisions → a chronological extract. No generated prose, transcription, or translation."
       />
       <div className="media-workbench">
-        <section className="panel youtube-input" tabIndex={0}>
+        <section
+          className="panel youtube-input"
+          aria-label="YouTube extract inputs"
+          tabIndex={0}
+        >
           <div className="panel-heading">
             <h2>YouTube extract</h2>
             <span className="muted">Live Jev · two questions per call</span>

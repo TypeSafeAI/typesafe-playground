@@ -72,6 +72,11 @@ for (const path of routes)
       )
       .toBeLessThanOrEqual(1);
     const main = page.locator("#main");
+    for (const region of await main
+      .locator(".priority-output, .youtube-input")
+      .all()) {
+      await expect(region).toHaveAccessibleName(/\S/);
+    }
     const action = actions[path]
       ? main.getByRole("button", { name: actions[path], exact: true })
       : null;
@@ -94,6 +99,7 @@ for (const path of routes)
       ".arcade-board",
       ".twisty-board svg",
       ".doom-viewport",
+      ".microduck-scene-wrap",
       ".microduck-drive",
     ]) {
       const output = main.locator(selector).first();
