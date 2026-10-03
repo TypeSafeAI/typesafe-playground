@@ -13,16 +13,16 @@ export const workspaceGuides: Record<string, WorkspaceGuide> = {
       ],
       [
         "Load and solve",
-        "Load the scramble, inspect the diagram, then start local search. Cancel at any time; no API key is used.",
+        "Load the scramble, then request one Jev move or a run of up to 40 moves. Live Jev uses your configured key; Local solver is an explicit no-model comparison.",
       ],
       [
         "Follow the moves",
-        "Step through the checked solution or select an individual step. All faces appear in the unfolded view.",
+        "Inspect Jev decision receipts and the current state. Only a solved state gets verified playback; incomplete attempts stay unsolved.",
       ],
     ],
     boundary:
-      "All four puzzles use state search from an entered scramble. The 4×4 uses reduction and a 3×3 handoff. No camera/color input or shortest-solution guarantee.",
-    flow: ["Scrambled state", "Local computation", "Verified moves"],
+      "Jev selects turns from current state and one-turn outcomes. It may fail to solve; local code enforces legal moves and checks the state. No automatic local-solver fallback, camera/color input or shortest-solution claim.",
+    flow: ["Scrambled state", "Jev move choices", "Local state check"],
   },
   "/simulations/iq-test": {
     steps: [

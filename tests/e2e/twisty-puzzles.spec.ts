@@ -5,7 +5,7 @@ test.beforeEach(async ({ page }) => {
     route.fulfill({ json: { ok: true, configured: false } }),
   );
   await page.route("**/api/run", () => {
-    throw Error("Puzzle solving must not call Jev.");
+    throw Error("Local comparison must not call Jev.");
   });
 });
 
@@ -36,6 +36,9 @@ for (const puzzle of ["2×2 cube", "3×3 cube", "4×4 cube", "Megaminx"]) {
     const errors: string[] = [];
     page.on("pageerror", (error) => errors.push(error.message));
     await page.goto("/simulations/twisty-puzzles");
+    await page
+      .getByRole("button", { name: "Local solver", exact: true })
+      .click();
     await page.getByRole("button", { name: puzzle, exact: true }).click();
     await expect(page.locator(".twisty-board")).toHaveAttribute(
       "data-status",
@@ -89,6 +92,7 @@ test("drafts are separate per puzzle, survive refresh and invalid notation canno
   page,
 }) => {
   await page.goto("/simulations/twisty-puzzles");
+  await page.getByRole("button", { name: "Local solver", exact: true }).click();
   const input = page.getByLabel("Scramble from a solved puzzle");
   await input.fill("R U2 F'");
   await page.getByRole("button", { name: "2×2 cube", exact: true }).click();
@@ -105,7 +109,7 @@ test("drafts are separate per puzzle, survive refresh and invalid notation canno
     page.locator(".twisty-controls").getByRole("alert"),
   ).toContainText("Unsupported move");
   await expect(
-    page.getByRole("button", { name: "Solve puzzle", exact: true }),
+    page.getByRole("button", { name: "One Jev move", exact: true }),
   ).toBeDisabled();
 });
 
@@ -113,6 +117,7 @@ test("narrow, short and dark layouts preserve controls and keyboard guidance", a
   page,
 }) => {
   await page.goto("/simulations/twisty-puzzles");
+  await page.getByRole("button", { name: "Local solver", exact: true }).click();
   for (const size of [
     { width: 320, height: 568 },
     { width: 844, height: 390 },
@@ -157,6 +162,7 @@ test("cancel terminates a pending search and a late reply cannot restore its res
     });
   });
   await page.goto("/simulations/twisty-puzzles");
+  await page.getByRole("button", { name: "Local solver", exact: true }).click();
   await page.getByLabel("Scramble from a solved puzzle").fill("R");
   await page
     .getByRole("button", { name: "Load scramble", exact: true })

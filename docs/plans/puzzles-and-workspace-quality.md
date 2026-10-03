@@ -52,3 +52,22 @@ The proposed Node 26 declarations were reverted to Node 22.20.3 to match the run
 4. PR #54 must pass terminal CI on its final integrated head before merging. Its live checks and merge state are the delivery record; this document records the pre-merge verification snapshot.
 
 Automated browser responses are mocked. No live-provider quality, human VoiceOver acceptance, or public deployment verification is claimed. Do not mark the goal complete before PR #54 is delivered and the open-work inventory is refreshed.
+
+## Follow-up: real Jev puzzle control (2026-10-03)
+
+The initial delivery was entirely local. The user requested actual Jev participation.
+Live Jev is now the default mode and sends one real `/api/run` closed-set choice
+per model move. Local code supplies current piece state and one-turn outcomes,
+applies the returned legal move, and independently checks solved state. It never
+supplies a searched solution or silently falls back to local solving. Local solver
+remains an explicit comparison mode.
+
+The live path has a 40-move attempt limit, 45-second request deadline, shared
+request queue/usage instrumentation, strict response validation, decision receipts,
+and cancellation/freshness guards for pause, navigation, hidden pages, draft/puzzle/
+mode edits and API-key changes. Incomplete attempts and failed requests stay unsolved.
+
+Pre-delivery verification: all 678 unit tests (46 JavaScript + 632 TypeScript),
+typecheck, production build and secret scan pass. Independent source review found
+no blockers. Production browser verification is recorded in the follow-up PR.
+Automated Jev responses are mocked; this is not live-provider quality evidence.

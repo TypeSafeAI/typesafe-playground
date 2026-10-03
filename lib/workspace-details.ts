@@ -12,11 +12,11 @@ export const workspaceDetails: Record<string, WorkspaceDetails> = {
     input:
       "A supported puzzle and at most 250 space-separated turns starting from solved. Drafts are saved separately for each puzzle.",
     process:
-      "Local browser workers search the piece state. The 4×4 reduces centers and pairs edges, then solves the remaining 3×3 state. Every solution is applied to the input state and checked before display.",
+      "Live Jev makes one real choice request per move using current piece state and one-turn outcomes. Code applies legal turns and verifies the state. An explicit Local solver comparison uses browser state search without Jev.",
     output:
-      "Verified moves, a face diagram and previous/next controls. Failed, cancelled and timed-out searches do not produce a passing result.",
+      "Jev move/confidence/model receipts, a face diagram and verified playback only if solved. Errors, invalid answers and the 40-move limit never become a successful solution.",
     experiment:
-      "Try R U R' U' on the 3×3. Solve it, step through the moves, then return to step zero with Back.",
+      "Start with R on the 3×3, load it and ask for one Jev move. Inspect the chosen turn and receipt, then try a harder scramble or compare with Local solver.",
   },
   "/simulations/iq-test": {
     input:

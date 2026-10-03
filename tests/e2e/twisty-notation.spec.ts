@@ -37,7 +37,7 @@ test("Megaminx labels match the full public face notation and stay readable on m
     .getByRole("button", { name: "Load scramble", exact: true })
     .click();
   await expect(
-    page.getByRole("button", { name: "Solve puzzle", exact: true }),
+    page.getByRole("button", { name: "One Jev move", exact: true }),
   ).toBeEnabled();
   await page
     .getByText("Notation, instructions and solver limits", { exact: true })

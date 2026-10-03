@@ -239,7 +239,7 @@ export const playgroundGroups = [
         label: "Twisty puzzle solver",
         icon: Blocks,
         detail:
-          "Solve 2×2, 3×3, 4×4 and Megaminx states locally with checked, step-by-step moves.",
+          "Ask Jev to choose turns on 2×2, 3×3, 4×4 and Megaminx, verify the state, and compare with local search.",
         flow: "Scramble → checked solution",
       },
     ],

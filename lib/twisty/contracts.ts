@@ -40,7 +40,7 @@ export type PuzzleResult = {
   scramble: string;
   solution: string;
   moves: string[];
-  method: "state-search";
+  method: "state-search" | "jev-moves";
   verified: true;
 };
 export const MAX_MOVES = 250;
