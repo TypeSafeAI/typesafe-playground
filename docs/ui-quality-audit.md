@@ -2,6 +2,32 @@
 
 Reference: `/agents/jev-browser-agent`. Scope: every page and example, including the local Clean Room workspace. Preserve existing drafts, request contracts, and explicit live/mock/uncertainty boundaries.
 
+## Refresh in progress — 2026-10-03
+
+The receipts below remain the historical September audit. The current inventory
+has 32 navigable routes (Home, five section pages, 25 workspaces and the native
+browser subpage), with 26 route-specific guides. Tests now derive this inventory
+from the route/guide catalogs instead of a fixed list, including Jev Chat, the
+arcade, IQ test, proposal review and twisty puzzles.
+
+Current changes make background content inert while the mobile drawer is open
+and release its focus trap when resizing to desktop. The refreshed source audit also
+found and fixed arcade playback surviving pause/navigation, Jev Chat history
+leaving a backdrop after resize, and an unconditional idle usage-clock timer.
+Their new desktop/mobile browser regressions pass on a separately built, identical source snapshot. Twisty puzzles use static
+SVG, lazy renderer/worker assets, explicit solve actions, cancellation and a
+60-second deadline. The puzzle instructions distinguish practice scrambles,
+state verification and solver limits; results are local computation.
+
+The selected production audit passed 159 cases with 11 intentional skips; two
+batch-triage timing assertions were corrected to use the existing request queue
+interval and passed separately. The integrated 4×4 solver has since passed unit,
+type and build checks; the later review fixes passed 53 affected-workspace cases
+(one intentional skip) plus two Megaminx label/notation cases in a separate
+frozen production build. A full 475-case baseline browser run is in progress.
+See `docs/plans/puzzles-and-workspace-quality.md` for current receipts and gaps.
+No human VoiceOver acceptance or live-provider verification is claimed.
+
 ## Execution
 
 - [x] Inventory routes, example families, shared UI, and existing browser coverage.

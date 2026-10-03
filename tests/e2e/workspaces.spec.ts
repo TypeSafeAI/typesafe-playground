@@ -1,4 +1,10 @@
 import { test, expect } from "@playwright/test";
+import { REQUEST_POLICY } from "../../lib/requestRateLimit";
+import {
+  SECTION_IDS,
+  SECTION_WORKSPACES,
+  workspacePath,
+} from "../../lib/routes";
 test.beforeEach(async ({ page }) => {
   await page.route("**/api/gate-docs", (route) =>
     route.fulfill({
@@ -20,26 +26,14 @@ test("all workspaces fit the viewport and navigate without runtime errors", asyn
 }) => {
   const errors: string[] = [];
   page.on("pageerror", (e) => errors.push(e.message));
-  for (const path of [
+  test.setTimeout(120_000);
+  const paths = [
     "/",
-    "/language/examples",
-    "/language/conversation",
-    "/agents/gate",
-    "/simulations/chess",
-    "/agents/workflow",
-    "/language/extraction",
-    "/language/memes",
-    "/simulations/microduck",
-    "/governance/pr-review",
-    "/governance/proposal-review",
-    "/governance/ast-governance",
-    "/governance/smt-solver",
-    "/agents/tool-router",
-    "/agents/langchain",
-    "/agents/jev-browser-agent",
-    "/language/reranker",
-    "/simulations/doom",
-  ]) {
+    ...SECTION_IDS.map((id) => `/${id}`),
+    ...Object.values(SECTION_WORKSPACES).flat().map(workspacePath),
+    "/agents/jev-browser-agent/native",
+  ];
+  for (const path of paths) {
     await page.goto(path);
     await expect(page.locator("h1")).toBeVisible();
     expect(
@@ -48,6 +42,9 @@ test("all workspaces fit the viewport and navigate without runtime errors", asyn
       ),
     ).toBe(true);
   }
+  // The native browser subpage intentionally has its own shell. Exercise the
+  // shared theme control on Home after auditing that independent surface.
+  await page.goto("/");
   await page.getByRole("button", { name: "Switch to dark mode" }).click();
   await page.reload();
   await expect(page.locator("html")).toHaveAttribute("data-theme", "dark");
@@ -300,21 +297,21 @@ for (const [width, height] of [
                             ? "Review PR"
                             : route === "/governance/proposal-review"
                               ? "Review proposal"
-                            : route === "/governance/ast-governance"
-                              ? "Analyze changes"
-                              : route === "/governance/smt-solver"
-                                ? "Run Check"
-                                : route === "/agents/tool-router"
-                                  ? "Run Routing Step"
-                                  : route === "/agents/langchain"
-                                    ? "Invoke LangChain tool"
-                                    : route === "/agents/jev-browser-agent"
-                                      ? "Find PC parts"
-                                      : route === "/language/reranker"
-                                        ? "Compare both"
-                                        : route === "/simulations/doom"
-                                          ? "Start arena"
-                                          : "Test meme",
+                              : route === "/governance/ast-governance"
+                                ? "Analyze changes"
+                                : route === "/governance/smt-solver"
+                                  ? "Run Check"
+                                  : route === "/agents/tool-router"
+                                    ? "Run Routing Step"
+                                    : route === "/agents/langchain"
+                                      ? "Invoke LangChain tool"
+                                      : route === "/agents/jev-browser-agent"
+                                        ? "Find PC parts"
+                                        : route === "/language/reranker"
+                                          ? "Compare both"
+                                          : route === "/simulations/doom"
+                                            ? "Start arena"
+                                            : "Test meme",
           exact: true,
         });
         await action.scrollIntoViewIfNeeded();
@@ -1126,6 +1123,11 @@ test("batch mode gates each question and counts the avoidable ones", async ({
   await page.goto("/agents/gate");
   await page.getByLabel("Mode", { exact: true }).selectOption("batch");
   await page.getByRole("button", { name: "Run triage", exact: true }).click();
+  // Six requests need five 1.2-second queue intervals before the final reply.
+  // Wait for completion using that policy; keep the result assertions strict.
+  await expect(
+    page.getByRole("button", { name: "Run triage", exact: true }),
+  ).toBeEnabled({ timeout: REQUEST_POLICY.intervalMs * 5 + 5000 });
   await expect(page.locator("tbody tr")).toHaveCount(6);
   expect(asked).toHaveLength(6);
   await expect(page.locator(".annoyance-meter")).toContainText("3 of 6");

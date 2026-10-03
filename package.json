@@ -11,19 +11,20 @@
     "typecheck": "tsc --noEmit",
     "test": "node --test tests/test_*.js && tsx --test tests/*.test.ts",
     "test:e2e": "playwright test",
-    "predev": "node scripts/require-pnpm.cjs",
-    "prebuild": "node scripts/require-pnpm.cjs",
+    "predev": "node scripts/require-pnpm.cjs && pnpm puzzles:build-worker",
+    "prebuild": "node scripts/require-pnpm.cjs && pnpm puzzles:build-worker",
     "prestart": "node scripts/require-pnpm.cjs",
     "pretest": "node scripts/require-pnpm.cjs",
-    "pretypecheck": "node scripts/require-pnpm.cjs",
+    "pretypecheck": "node scripts/require-pnpm.cjs && pnpm puzzles:build-worker",
     "pretest:e2e": "node scripts/require-pnpm.cjs",
     "preexample:langchain": "node scripts/require-pnpm.cjs",
     "clean-room": "tsx scripts/clean-room.ts",
     "preclean-room": "node scripts/require-pnpm.cjs",
     "dev:op": "op run --env-file=.env.1password -- next dev --hostname 127.0.0.1 --port 3042",
-    "predev:op": "node scripts/require-pnpm.cjs",
+    "predev:op": "node scripts/require-pnpm.cjs && pnpm puzzles:build-worker",
     "start:op": "op run --env-file=.env.1password -- next start",
-    "prestart:op": "node scripts/require-pnpm.cjs"
+    "prestart:op": "node scripts/require-pnpm.cjs",
+    "puzzles:build-worker": "node scripts/build-twisty-worker.mjs"
   },
   "devDependencies": {
     "@playwright/test": "1.63.0",
@@ -31,6 +32,7 @@
     "@types/react": "19.3.0",
     "@types/react-dom": "19.3.0",
     "@types/three": "^0.186.0",
+    "esbuild": "0.28.2",
     "prettier": "3.9.7",
     "tsx": "4.23.13",
     "typescript": "7.0.2"
@@ -41,6 +43,7 @@
     "@langchain/core": "1.2.11",
     "cheerio": "1.2.0",
     "chess.js": "1.4.0",
+    "cubing": "0.63.8",
     "ipaddr.js": "2.5.0",
     "lucide-react": "1.46.0",
     "next": "16.3.5",
@@ -53,7 +56,7 @@
     "zod": "4.6.5"
   },
   "engines": {
-    "node": ">=22.0.0",
+    "node": ">=22.3.0",
     "pnpm": ">=10.0.0"
   }
 }

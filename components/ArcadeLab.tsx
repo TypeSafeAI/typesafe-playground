@@ -91,15 +91,15 @@ const KEYS: Record<string, "up" | "down" | "left" | "right"> = {
 const sleep = (ms: number, signal?: AbortSignal) =>
   new Promise<void>((resolve, reject) => {
     if (signal?.aborted) return reject(signal.reason);
-    const timer = setTimeout(resolve, ms);
-    signal?.addEventListener(
-      "abort",
-      () => {
-        clearTimeout(timer);
-        reject(signal.reason);
-      },
-      { once: true },
-    );
+    const abort = () => {
+      clearTimeout(timer);
+      reject(signal?.reason);
+    };
+    const timer = setTimeout(() => {
+      signal?.removeEventListener("abort", abort);
+      resolve();
+    }, ms);
+    signal?.addEventListener("abort", abort, { once: true });
   });
 
 export function ArcadeLab({
@@ -127,7 +127,7 @@ export function ArcadeLab({
   const stateRef = useRef(state);
   stateRef.current = state;
   const runningRef = useRef(false);
-  /** Bumped by every reset, so a late answer for an old game is discarded. */
+  /** Invalidates stopped runs and answers, including rapid pause/resume. */
   const generation = useRef(0);
   const controller = useRef<AbortController | null>(null);
   const lastRequest = useRef(0);
@@ -141,8 +141,10 @@ export function ArcadeLab({
   const scripted = useMemo(() => playOut(game, seed, "scripted"), [game, seed]);
 
   const stop = useCallback(() => {
+    generation.current++;
     runningRef.current = false;
     setRunning(false);
+    setBusy(false);
     controller.current?.abort();
   }, []);
 
@@ -164,7 +166,14 @@ export function ArcadeLab({
     [game, seed, stop],
   );
 
-  useEffect(() => () => controller.current?.abort(), []);
+  useEffect(
+    () => () => {
+      generation.current++;
+      runningRef.current = false;
+      controller.current?.abort();
+    },
+    [],
+  );
 
   // A hidden tab pauses the run, so nothing keeps spending requests unseen.
   useEffect(() => {
@@ -216,6 +225,7 @@ export function ArcadeLab({
         } catch {
           return false;
         }
+        if (ac.signal.aborted || gen !== generation.current) return false;
         lastRequest.current = Date.now();
         const started = performance.now();
         let response: unknown;
@@ -290,37 +300,48 @@ export function ArcadeLab({
   }, [game, gameId, mode, model]);
 
   const play = useCallback(async () => {
-    if (runningRef.current || game.over(stateRef.current)) return;
+    if (runningRef.current || busy || game.over(stateRef.current)) return;
+    const gen = generation.current;
+    const pace = new AbortController();
+    controller.current = pace;
     runningRef.current = true;
     setRunning(true);
     setError("");
     setNotice("");
     if (mode === "human") board.current?.focus();
     try {
-      while (runningRef.current) {
+      while (runningRef.current && gen === generation.current) {
         setBusy(mode === "jev");
         const more = await advance();
+        if (gen !== generation.current) return;
         setBusy(false);
         if (!more) break;
         if (mode === "scripted" || mode === "random")
-          await sleep(SPEEDS[speed]);
-        else if (mode === "human") await sleep(HUMAN_TICK_MS[gameId]);
+          await sleep(SPEEDS[speed], pace.signal);
+        else if (mode === "human")
+          await sleep(HUMAN_TICK_MS[gameId], pace.signal);
       }
+    } catch (cause) {
+      if (!pace.signal.aborted && gen === generation.current)
+        setError(errorMessage(cause));
     } finally {
-      runningRef.current = false;
-      setRunning(false);
-      setBusy(false);
+      if (gen === generation.current) {
+        runningRef.current = false;
+        setRunning(false);
+        setBusy(false);
+      }
     }
-  }, [advance, gameId, mode, speed, game]);
+  }, [advance, gameId, mode, speed, game, busy]);
 
   const stepOnce = useCallback(async () => {
     if (runningRef.current || busy || game.over(stateRef.current)) return;
+    const gen = generation.current;
     setError("");
     setBusy(mode === "jev");
     try {
       await advance();
     } finally {
-      setBusy(false);
+      if (gen === generation.current) setBusy(false);
     }
   }, [advance, busy, game, mode]);
 
@@ -418,7 +439,7 @@ export function ArcadeLab({
                 type="button"
                 className="button primary"
                 onClick={play}
-                disabled={over || quotaBlocked}
+                disabled={over || busy || quotaBlocked}
                 title={
                   quotaBlocked
                     ? "Live API calls paused. Open Usage in the header."

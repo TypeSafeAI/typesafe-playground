@@ -23,6 +23,9 @@ importers:
       chess.js:
         specifier: 1.4.0
         version: 1.4.0
+      cubing:
+        specifier: 0.63.8
+        version: 0.63.8
       ipaddr.js:
         specifier: 2.5.0
         version: 2.5.0
@@ -69,6 +72,9 @@ importers:
       '@types/three':
         specifier: ^0.186.0
         version: 0.186.0
+      esbuild:
+        specifier: 0.28.2
+        version: 0.28.2
       prettier:
         specifier: 3.9.7
         version: 3.9.7
@@ -94,6 +100,9 @@ packages:
     peerDependencies:
       '@create-markdown/core': '>=2.0.3'
       react: '>=18.0.0'
+
+  '@cubing/lazy-promise@0.1.1':
+    resolution: {integrity: sha512-yeNQuAfwcZTTPkJhrkIIQFjg0Lr76awN+lWYh4bm6UK6AKUIbjuBBGjcoXWLw2zE78Y4na1rAx3OjMYEr2tYBA==}
 
   '@dimforge/rapier3d-compat@0.12.0':
     resolution: {integrity: sha512-uekIGetywIgopfD97oDL5PfeezkFpNhwlzlaEYNOA0N6ghdsOvh/HYjSMek5Q2O1PYvRSDFcqFVJl4r4ZBwOow==}
@@ -478,6 +487,14 @@ packages:
     cpu: [x64]
     os: [win32]
 
+  '@optique/core@1.3.2':
+    resolution: {integrity: sha512-YVdAuhx7l2UcnoeAsAuRgQ5LDGlixwQ6LuSmhiNPwZt29PU4rCkbTgo8P2o+OmF8MHKCJkaApYhKY6+QYhVWiw==}
+    engines: {bun: '>=1.2.0', deno: '>=2.3.0', node: '>=20.0.0'}
+
+  '@optique/run@1.3.2':
+    resolution: {integrity: sha512-9Dovp3LHLmUZok7Eyzx0NAY+gh3tr/VA9cOmBuWDxioBayZGAStszLUHh1y9o9zuv31mNdeFgDUW9vY1vwJ/Ag==}
+    engines: {bun: '>=1.2.0', deno: '>=2.3.0', node: '>=20.0.0'}
+
   '@playwright/test@1.63.0':
     resolution: {integrity: sha512-oxMK4vllB9RK5NQ2l1pq1IfOf2AvnEuj/vYGDj0H2nMtmtZpKtCwt/l00GEO6xjGfpBNAvjovvYdCm50dRQkpQ==}
     engines: {node: '>=20'}
@@ -506,8 +523,14 @@ packages:
   '@types/stats.js@0.17.4':
     resolution: {integrity: sha512-jIBvWWShCvlBqBNIZt0KAshWpvSjhkwkEu4ZUcASoAvhmrgAUI2t1dXrjSL4xXVLB4FznPrIsX3nKXFl/Dt4vA==}
 
+  '@types/three@0.169.0':
+    resolution: {integrity: sha512-oan7qCgJBt03wIaK+4xPWclYRPG9wzcg7Z2f5T8xYTNEF95kh0t0lklxLLYBDo7gQiGLYzE6iF4ta7nXF2bcsw==}
+
   '@types/three@0.186.0':
     resolution: {integrity: sha512-mxYSBpDC+D0pLfSP6sW4WZTcT+nrtmZcimMqnVmy36Hte3XpeYSrvgg4TRdaM1GemGog1AWzI5qL2VoIfMXbJQ==}
+
+  '@types/web-bluetooth@0.0.21':
+    resolution: {integrity: sha512-oIQLCGWtcFZy2JW77j9k8nHzAOpqMHLQejDA48XXMWH6tjCQHz5RCFz1bzsmROyL6PUm+LLnUiI4BCn221inxA==}
 
   '@types/webxr@0.5.24':
     resolution: {integrity: sha512-h8fgEd/DpoS9CBrjEQXR+dIDraopAEfu4wYVNY2tEPwk60stPWhvZMf4Foo5FakuQ7HFZoa8WceaWFervK2Ovg==}
@@ -632,6 +655,9 @@ packages:
     cpu: [x64]
     os: [win32]
 
+  '@webgpu/types@0.1.74':
+    resolution: {integrity: sha512-lgiI4hbuLcI9unnm2cL/tvCaQU45dp0xcLWJh5uB/9MBGvIA4F8XIk7nSiBeg+K4xWGYwgZKn80LmERI5CxoTA==}
+
   async-mutex@0.3.2:
     resolution: {integrity: sha512-HuTK7E7MT7jZEh1P9GtRW9+aTWiDWWi9InbZ5hjxrnRa39KS4BW04+xLBhYNS2aXhHUIKZSw3gj4Pn1pj+qGAA==}
 
@@ -674,6 +700,11 @@ packages:
 
   csstype@3.2.3:
     resolution: {integrity: sha512-z1HGKcYy2xA8AGQfwrn0PAy+PB7X/GSj3UVJW9qKyn43xWa+gl5nXmU4qqLMRzWVLFC8KusUX8T/0kCiOYpAIQ==}
+
+  cubing@0.63.8:
+    resolution: {integrity: sha512-suliTEg6p+PgyFcGtp3Y2NLd8gHnZFKYa5+Wd2HK7ciKuQOIuvRiM/on6HTVQuAxz2cNB/7WedgfUjQ1kR0kcA==}
+    engines: {bun: '>=1.3.0', node: '>=22.3.0'}
+    hasBin: true
 
   detect-libc@2.1.2:
     resolution: {integrity: sha512-Btj2BOOO83o3WyH59e8MgXsxEQVcarkUOpEYrubB0urwnN10yQ364rsiByU11nZlqWYZm05i/of7io4mzihBtQ==}
@@ -768,6 +799,9 @@ packages:
     peerDependencies:
       react: ^16.5.1 || ^17.0.0 || ^18.0.0 || ^19.0.0
 
+  meshoptimizer@0.18.1:
+    resolution: {integrity: sha512-ZhoIoL7TNV4s5B6+rx5mC//fw8/POGyNxS/DZyCJeiZ12ScLfVwRE/GfsxwiTkMYYD5DmK2/JXnEVXqL4rF+Sw==}
+
   meshoptimizer@1.1.1:
     resolution: {integrity: sha512-oRFNWJRDA/WTrVj7NWvqa5HqE1t9MYDj2VaWirQCzCCrAd2GHrqR/sQezCxiWATPNlKTcRaPRHPJwIRoPBAp5g==}
 
@@ -860,6 +894,10 @@ packages:
     engines: {node: '>=14'}
     hasBin: true
 
+  random-uint-below@3.3.0:
+    resolution: {integrity: sha512-5x3lft1bn5gev9qA9iVFcmd0+t10j3eDl/QKB56T/3v/bdrM7WsfO2D0rb1JYcQdkcV0/Bs5iydgQmkTE6rczA==}
+    engines: {node: '>=19'}
+
   react-dom@19.3.0:
     resolution: {integrity: sha512-JDk8dgif51OjFoDE70+OT9ICyYr+69HlmihNwp1+Nsfbna3t5sIiCa9ZJktDmQ4/1b/rn26hIAR2uYXDMr5r0Q==}
     peerDependencies:
@@ -909,11 +947,18 @@ packages:
       babel-plugin-macros:
         optional: true
 
+  tagged-tag@1.0.0:
+    resolution: {integrity: sha512-yEFYrVhod+hdNyx7g5Bnkkb0G6si8HJurOoOEgC8B/O0uXLHlaey/65KRv6cuWBNhBgHKAROVpc7QyYqE5gFng==}
+    engines: {node: '>=20'}
+
   tesseract.js-core@7.0.0:
     resolution: {integrity: sha512-WnNH518NzmbSq9zgTPeoF8c+xmilS8rFIl1YKbk/ptuuc7p6cLNELNuPAzcmsYw450ca6bLa8j3t0VAtq435Vw==}
 
   tesseract.js@7.0.0:
     resolution: {integrity: sha512-exPBkd+z+wM1BuMkx/Bjv43OeLBxhL5kKWsz/9JY+DXcXdiBjiAch0V49QR3oAJqCaL5qURE0vx9Eo+G5YE7mA==}
+
+  three@0.170.0:
+    resolution: {integrity: sha512-FQK+LEpYc0fBD+J8g6oSEyyNzjp+Q7Ks1C568WWaoMRLW+TkNNWmenWeGgJjV105Gd+p/2ql1ZcjYvNiPZBhuQ==}
 
   three@0.186.0:
     resolution: {integrity: sha512-cr/fIM2ddMSVbYVgkfD4jLJv7Fh/8ZTjvo+7gQeSVGUZHxpx9FDwoL5iC7hUz/LiRA8wMbqfnb90xKfm1/HHkQ==}
@@ -928,6 +973,10 @@ packages:
     resolution: {integrity: sha512-BL5MGkRln6aDYhb0xbQlEAGw743BaZYWdbWtdJOBriYJboKgUUYCadFp2/FpBBZquBC/ezNBn7wMMPx7FDZUDw==}
     engines: {node: '>=18.0.0'}
     hasBin: true
+
+  type-fest@5.10.0:
+    resolution: {integrity: sha512-NoSdpq/WEiAg5sjmBkmV/hfxv6HJH4NqPNrqjtSO5CwRmpsDfaf4begxW34KdJykH/l1yHtwBWQkCRdoXO8mPA==}
+    engines: {node: '>=20'}
 
   typescript@7.0.2:
     resolution: {integrity: sha512-8FYau96o3NKOhbjKi/qNvG/W5jhzxkbdm5sj9AbZ/5T5sWqn3hJgLfGx27sRKZWTvyzCP8dLRBTf5tBTSRVUNA==}
@@ -979,6 +1028,8 @@ snapshots:
     dependencies:
       '@create-markdown/core': 2.0.3
       react: 19.3.0
+
+  '@cubing/lazy-promise@0.1.1': {}
 
   '@dimforge/rapier3d-compat@0.12.0': {}
 
@@ -1213,6 +1264,12 @@ snapshots:
   '@next/swc-win32-x64-msvc@16.3.5':
     optional: true
 
+  '@optique/core@1.3.2': {}
+
+  '@optique/run@1.3.2':
+    dependencies:
+      '@optique/core': 1.3.2
+
   '@playwright/test@1.63.0':
     dependencies:
       playwright: 1.63.0
@@ -1239,6 +1296,15 @@ snapshots:
 
   '@types/stats.js@0.17.4': {}
 
+  '@types/three@0.169.0':
+    dependencies:
+      '@tweenjs/tween.js': 23.1.3
+      '@types/stats.js': 0.17.4
+      '@types/webxr': 0.5.24
+      '@webgpu/types': 0.1.74
+      fflate: 0.8.3
+      meshoptimizer: 0.18.1
+
   '@types/three@0.186.0':
     dependencies:
       '@dimforge/rapier3d-compat': 0.12.0
@@ -1247,6 +1313,8 @@ snapshots:
       '@types/webxr': 0.5.24
       fflate: 0.8.3
       meshoptimizer: 1.1.1
+
+  '@types/web-bluetooth@0.0.21': {}
 
   '@types/webxr@0.5.24': {}
 
@@ -1310,6 +1378,8 @@ snapshots:
   '@typescript/typescript-win32-x64@7.0.2':
     optional: true
 
+  '@webgpu/types@0.1.74': {}
+
   async-mutex@0.3.2:
     dependencies:
       tslib: 2.8.1
@@ -1362,6 +1432,17 @@ snapshots:
   css-what@6.2.2: {}
 
   csstype@3.2.3: {}
+
+  cubing@0.63.8:
+    dependencies:
+      '@cubing/lazy-promise': 0.1.1
+      '@optique/core': 1.3.2
+      '@optique/run': 1.3.2
+      '@types/three': 0.169.0
+      '@types/web-bluetooth': 0.0.21
+      random-uint-below: 3.3.0
+      three: 0.170.0
+      type-fest: 5.10.0
 
   detect-libc@2.1.2: {}
 
@@ -1459,6 +1540,8 @@ snapshots:
     dependencies:
       react: 19.3.0
 
+  meshoptimizer@0.18.1: {}
+
   meshoptimizer@1.1.1: {}
 
   mustache@4.2.0: {}
@@ -1541,6 +1624,8 @@ snapshots:
 
   prettier@3.9.7: {}
 
+  random-uint-below@3.3.0: {}
+
   react-dom@19.3.0(react@19.3.0):
     dependencies:
       react: 19.3.0
@@ -1596,6 +1681,8 @@ snapshots:
       client-only: 0.0.1
       react: 19.3.0
 
+  tagged-tag@1.0.0: {}
+
   tesseract.js-core@7.0.0: {}
 
   tesseract.js@7.0.0:
@@ -1612,6 +1699,8 @@ snapshots:
     transitivePeerDependencies:
       - encoding
 
+  three@0.170.0: {}
+
   three@0.186.0: {}
 
   tr46@0.0.3: {}
@@ -1623,6 +1712,10 @@ snapshots:
       esbuild: 0.28.2
     optionalDependencies:
       fsevents: 2.3.3
+
+  type-fest@5.10.0:
+    dependencies:
+      tagged-tag: 1.0.0
 
   typescript@7.0.2:
     optionalDependencies:

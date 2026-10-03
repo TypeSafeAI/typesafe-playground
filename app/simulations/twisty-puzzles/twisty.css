@@ -1,0 +1,170 @@
+.twisty-workspace {
+  overflow-y: auto;
+  padding-bottom: 24px;
+}
+.twisty-layout {
+  display: grid;
+  grid-template-columns: minmax(260px, 0.85fr) minmax(0, 1.3fr);
+  gap: 20px;
+  align-items: start;
+}
+.twisty-controls,
+.twisty-view,
+.twisty-help {
+  min-width: 0;
+  padding: clamp(16px, 2vw, 28px);
+}
+.twisty-section-heading {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  margin: 8px 0 16px;
+}
+.twisty-section-heading h2,
+.twisty-view-heading h2 {
+  margin: 0;
+  font-size: 18px;
+}
+.twisty-number {
+  display: grid;
+  place-items: center;
+  width: 28px;
+  height: 28px;
+  border: 1px solid var(--line);
+  border-radius: 50%;
+  font: 12px var(--font-mono, monospace);
+}
+.twisty-puzzle-picker {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 8px;
+}
+.twisty-puzzle-picker [aria-pressed="true"],
+.twisty-moves [aria-current="step"] {
+  border-color: var(--accent);
+  box-shadow: inset 0 0 0 1px var(--accent);
+}
+.twisty-controls label {
+  display: block;
+  margin: 20px 0 8px;
+  font-weight: 600;
+}
+.twisty-controls textarea {
+  width: 100%;
+  min-height: 110px;
+  resize: vertical;
+  font-family: var(--font-mono, monospace);
+}
+.twisty-workspace p {
+  line-height: 1.65;
+  overflow-wrap: anywhere;
+}
+.twisty-actions {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px;
+  margin: 16px 0 24px;
+}
+.twisty-workspace .button {
+  min-height: 44px;
+}
+.twisty-status {
+  min-height: 3em;
+}
+.twisty-view-heading {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  flex-wrap: wrap;
+  gap: 12px;
+}
+.twisty-board {
+  display: grid;
+  place-items: center;
+  width: 100%;
+  min-height: 220px;
+  margin: 16px 0;
+}
+.twisty-board > div {
+  width: 100%;
+}
+.twisty-board svg {
+  width: 100%;
+  height: clamp(220px, 32vw, 390px);
+}
+.twisty-step-controls {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  flex-wrap: wrap;
+  gap: 8px;
+}
+.twisty-step-controls > span {
+  font-variant-numeric: tabular-nums;
+  font-size: 13px;
+}
+.twisty-next {
+  font-size: 18px;
+}
+.twisty-next strong {
+  margin-left: 8px;
+  font-size: 26px;
+}
+.twisty-moves {
+  display: flex;
+  gap: 6px;
+  flex-wrap: wrap;
+  max-height: 220px;
+  overflow-y: auto;
+  padding: 3px;
+  margin-bottom: 16px;
+}
+.twisty-moves .button {
+  min-width: 44px;
+  font-family: var(--font-mono, monospace);
+}
+.twisty-proof {
+  font-size: 13px;
+}
+.twisty-solution {
+  white-space: pre-wrap;
+  overflow-wrap: anywhere;
+  user-select: all;
+}
+.twisty-help {
+  margin-top: 20px;
+}
+.twisty-help summary {
+  cursor: pointer;
+  font-weight: 600;
+  min-height: 28px;
+}
+@media (max-width: 1000px) {
+  .twisty-layout {
+    grid-template-columns: minmax(0, 1fr);
+  }
+  .twisty-board svg {
+    height: 300px;
+  }
+}
+@media (max-width: 400px) {
+  .twisty-controls,
+  .twisty-view,
+  .twisty-help {
+    padding: 14px;
+  }
+  .twisty-board svg {
+    height: 230px;
+  }
+}
+
+.twisty-face-label {
+  font: 700 22px var(--font-mono, monospace);
+  fill: #111;
+  stroke: #fff;
+  stroke-width: 3px;
+  paint-order: stroke;
+  text-anchor: middle;
+  dominant-baseline: central;
+  pointer-events: none;
+}

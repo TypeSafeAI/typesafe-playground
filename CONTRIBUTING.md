@@ -6,7 +6,7 @@ Read [README.md](README.md) for the workspaces and [AGENTS.md](AGENTS.md) for re
 
 ## Next.js development
 
-Use Node.js 22+ and the pnpm version pinned in package.json. Install with `pnpm install --frozen-lockfile`, copy `.env.example` to `.env.local`, and start with `pnpm dev`. Configure a server-only TypeSafe key only when intentionally running live evaluations; mocked tests do not need one.
+Use Node.js 22.3+ and the pnpm version pinned in package.json. Install with `pnpm install --frozen-lockfile`, copy `.env.example` to `.env.local`, and start with `pnpm dev`. Configure a server-only TypeSafe key only when intentionally running live evaluations; mocked tests do not need one.
 
 The local package-manager guard requires pnpm for installation and the dev, build, start, test, typecheck, browser-test, and LangChain scripts. Keep only pnpm-lock.yaml; do not introduce npm, Yarn, or Bun lockfiles or bypass the guard.
 

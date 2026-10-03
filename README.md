@@ -12,7 +12,7 @@ A community playground for **TypeSafe AI's Jev**: edit classification experiment
 
 ## Run locally
 
-Use **Node.js 22+** and the exact pnpm version pinned in [package.json](package.json), currently `10.34.5`. Use pnpm only: the repository's local guard rejects other package managers, and `pnpm-lock.yaml` is the single JavaScript dependency lockfile.
+Use **Node.js 22.3+** and the exact pnpm version pinned in [package.json](package.json), currently `10.34.5`. Use pnpm only: the repository's local guard rejects other package managers, and `pnpm-lock.yaml` is the single JavaScript dependency lockfile.
 
 ```sh
 git clone https://github.com/TypeSafeAI/typesafe-playground.git
@@ -83,6 +83,7 @@ Older flat links such as `/jev-chat` or `/chess` redirect permanently to their n
 | **MicroDuck arena** `/simulations/microduck` | Compare bounded robot actions in a local 3D simulation. |
 | **Jev attempts chess** `/simulations/chess` | Observe the limitations of legal-move selection without lookahead. |
 | **IQ-style test** `/simulations/iq-test` | Watch Jev answer 12 original reasoning puzzles, then inspect a numerical IQ estimate, raw score and category breakdowns. The estimate is an uncalibrated heuristic; local demo and live runs stay separate. See [the scoring method](docs/iq-test.md). |
+| **Twisty puzzle solver** `/simulations/twisty-puzzles` | Local, verified state search for 2×2, 3×3, 4×4 and Megaminx with step-by-step playback. See [instructions and limits](docs/twisty-puzzles.md). |
 | **Snake** `/arcade/snake` | Watch Jev steer a snake one cell per request, scored against a random baseline on the same seed. See [the Arcade guide](docs/arcade.md). |
 | **Breakout** `/arcade/breakout` | Watch Jev move a paddle under a predicted landing column to keep the ball in play. |
 | **Meteor dodge** `/arcade/meteor-dodge` | Watch Jev change lanes through falling meteors using a code-computed look-ahead. |

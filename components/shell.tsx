@@ -59,6 +59,16 @@ export function Shell({ children }: { children: React.ReactNode }) {
     setMobileOpen(false);
   }, [path]);
   useEffect(() => {
+    // Match dashboard.css: a rotated phone or resized window must release the
+    // mobile focus trap when the persistent desktop rail becomes visible.
+    const narrow = matchMedia("(max-width: 760px)");
+    const onChange = () => {
+      if (!narrow.matches) setMobileOpen(false);
+    };
+    narrow.addEventListener("change", onChange);
+    return () => narrow.removeEventListener("change", onChange);
+  }, []);
+  useEffect(() => {
     if (!mobileOpen) return;
     const previous = document.activeElement as HTMLElement | null;
     sidebarRef.current
@@ -84,7 +94,8 @@ export function Shell({ children }: { children: React.ReactNode }) {
     document.addEventListener("keydown", keyboard);
     return () => {
       document.removeEventListener("keydown", keyboard);
-      previous?.focus();
+      if (previous?.getClientRects().length) previous.focus();
+      else document.getElementById("main")?.focus();
     };
   }, [mobileOpen]);
   const toggleSidebar = () => {
@@ -130,13 +141,14 @@ export function Shell({ children }: { children: React.ReactNode }) {
     <div
       className={`app-shell dashboard-shell${collapsed ? " nav-collapsed" : ""}${mobileOpen ? " nav-mobile-open" : ""}`}
     >
-      <a href="#main" className="skip-link">
+      <a href="#main" className="skip-link" inert={mobileOpen}>
         Skip to workspace
       </a>
       {mobileOpen && (
         <button
           className="nav-backdrop"
           aria-label="Dismiss navigation overlay"
+          tabIndex={-1}
           onClick={() => setMobileOpen(false)}
         />
       )}
@@ -145,6 +157,8 @@ export function Shell({ children }: { children: React.ReactNode }) {
         className="sidebar"
         id="playground-navigation"
         aria-label="Playground sidebar"
+        role={mobileOpen ? "dialog" : undefined}
+        aria-modal={mobileOpen || undefined}
       >
         <div className="sidebar-title-row">
           <Link
@@ -245,7 +259,7 @@ export function Shell({ children }: { children: React.ReactNode }) {
           </a>
         </div>
       </aside>
-      <div className="app-body">
+      <div className="app-body" inert={mobileOpen}>
         <header className="workspace-topbar">
           <div className="workspace-breadcrumb">
             <button

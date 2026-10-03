@@ -1,5 +1,14 @@
 import type { Metadata } from "next";
 export const SOCIAL_PAGES = {
+  "twisty-puzzles": {
+    path: "/simulations/twisty-puzzles",
+    title: "Twisty puzzle solver",
+    description:
+      "Explore cubes and Megaminx with local computation and verified, step-by-step solutions.",
+    category: "LOCAL PUZZLE SOLVING",
+    steps: ["Load a scramble", "Find a solution", "Follow checked moves"],
+    result: "Scramble → checked solution",
+  },
   "iq-test": {
     path: "/simulations/iq-test",
     title: "Jev takes an IQ-style test",

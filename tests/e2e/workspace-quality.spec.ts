@@ -1,4 +1,5 @@
 import { test, expect } from "@playwright/test";
+import { workspaceGuides } from "../../lib/workspace-guides";
 
 test("workspace guide is keyboard accessible and returns focus when closed", async ({
   page,
@@ -69,28 +70,7 @@ test("router continues from the decision and distinguishes completion from a nex
   await expect(results).toContainText("SIMULATED OUTPUT");
 });
 
-const routes = [
-  "/",
-  "/language/examples",
-  "/language/conversation",
-  "/language/extraction",
-  "/agents/gate",
-  "/agents/workflow",
-  "/agents/tool-router",
-  "/agents/langchain",
-  "/governance/pr-review",
-  "/governance/proposal-review",
-  "/governance/ast-governance",
-  "/governance/smt-solver",
-  "/language/reranker",
-  "/language/memes",
-  "/simulations/chess",
-  "/simulations/microduck",
-  "/simulations/doom",
-  "/agents/clean-room",
-  "/language/youtube-extract",
-  "/agents/jev-browser-agent",
-];
+const routes = Object.keys(workspaceGuides);
 for (const path of routes) {
   test(`quality audit ${path}: both themes, guide, and narrow viewport`, async ({
     page,
@@ -116,7 +96,21 @@ for (const path of routes) {
       await page.goto(path);
       await expect(page.locator("h1")).toBeVisible();
       await expect(page.locator("html")).toHaveAttribute("data-theme", theme);
-      {
+      if (path === "/language/jev-chat") {
+        await page.getByRole("button", { name: "Guide", exact: true }).click();
+        const guide = page.getByRole("complementary", { name: "Chat guide" });
+        await expect(guide).toBeVisible();
+        await expect(guide).toContainText("Jev");
+        expect(
+          await guide.evaluate(
+            (element) => element.scrollWidth - element.clientWidth,
+          ),
+        ).toBe(0);
+        const close = guide.getByRole("button", { name: "Close guide panel" });
+        await expect(close).toBeInViewport();
+        await close.click();
+        await expect(guide).not.toBeVisible();
+      } else {
         await page
           .getByRole("button", {
             name:

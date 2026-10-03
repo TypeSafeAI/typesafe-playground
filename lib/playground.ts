@@ -234,6 +234,14 @@ export const playgroundGroups = [
           "Give Jev 12 original reasoning puzzles and check each choice against an explained answer key.",
         flow: "Reasoning puzzles → checked answers",
       },
+      {
+        href: "/simulations/twisty-puzzles",
+        label: "Twisty puzzle solver",
+        icon: Blocks,
+        detail:
+          "Solve 2×2, 3×3, 4×4 and Megaminx states locally with checked, step-by-step moves.",
+        flow: "Scramble → checked solution",
+      },
     ],
   },
   {

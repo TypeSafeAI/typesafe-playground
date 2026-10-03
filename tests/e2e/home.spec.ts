@@ -34,7 +34,10 @@ test("home discovers examples by type and query and opens the existing builder",
   await page
     .getByRole("button", { name: "Games & simulations", exact: true })
     .click();
-  await expect(page.locator(".home-example-card")).toHaveCount(4);
+  await expect(page.locator(".home-example-card")).toHaveCount(
+    playgroundGroups.find((group) => group.id === "simulations")!.examples
+      .length,
+  );
   await expect(
     page.getByRole("link", { name: "Open Jev attempts chess" }),
   ).toBeVisible();
