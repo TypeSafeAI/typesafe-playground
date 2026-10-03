@@ -210,7 +210,12 @@ export async function callTransport(
       const onAbort = () => reject(Error(abortMessage(combined, timeoutMs)));
       combined.addEventListener("abort", onAbort, { once: true });
       Promise.resolve()
-        .then(() => transport(payload, combined))
+        .then(() => {
+          // Cancellation can arrive after setup but before this microtask.
+          // Do not spend a request even if the transport ignores its signal.
+          if (combined.aborted) throw Error(abortMessage(combined, timeoutMs));
+          return transport(payload, combined);
+        })
         .then(resolve, reject)
         .finally(() => combined.removeEventListener("abort", onAbort));
     });

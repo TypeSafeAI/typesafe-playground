@@ -261,6 +261,23 @@ test("probabilities outside [0,1] or unknown ids are dropped; the explicit choic
   assert.equal(result.confidence, null);
 });
 
+test("immediate cancellation prevents dispatch even when the transport ignores its signal", async () => {
+  const controller = new AbortController();
+  let calls = 0;
+  const pending = routeTask("Email the report", tools, {
+    signal: controller.signal,
+    transport: async () => {
+      calls++;
+      return answer("send_email", { send_email: 1 });
+    },
+  });
+  controller.abort();
+  const result = await pending;
+  assert.match(result.unavailable ?? "", /cancelled/);
+  assert.equal(result.top1, null);
+  assert.equal(calls, 0);
+});
+
 test("catalogs over the option limit route in two stages", async () => {
   const big = synthetic(CHOICE_OPTION_LIMIT + 45, 12);
   assert.equal(planRoute(big), "two-stage");
