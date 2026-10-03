@@ -21,3 +21,5 @@ After classification, graph membership and policy are checked again. Selecting `
 The result separates the proposed node from the final action and explains any policy override. The step log preserves transitions, scores, policy outcomes, prediction provenance and mock outputs. Export downloads this record as JSON; no messages are sent anywhere. Requests are limited to 6,000 characters and paths to 20 routing steps.
 
 Implementation: `types/workflow.ts`, `lib/workflowGraph.ts`, `lib/routeStep.ts`, `lib/toolRouterRules.ts`, and `lib/toolRouterClassifier.ts`. The shared `evaluateHardRules.ts` and `classifyWithJev.ts` entry points also export the router helpers. UI modules: `ToolRouterLab`, `GraphView`, `RoutingResult`, and `StepLog`.
+
+See also the separate [tool router benchmark](tool-router-bench.md), a command-line experiment that routes a task to one of 40 snippet-described tools in a single closed-set question and measures accuracy and context bytes against a lexical baseline.

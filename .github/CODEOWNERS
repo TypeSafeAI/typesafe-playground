@@ -1,0 +1,8 @@
+# Review requests go to the maintainer for everything; the key-handling and
+# CI paths are listed explicitly so a change there is never a surprise.
+*                          @BunsDev
+/lib/serverJev.ts          @BunsDev
+/app/api/                  @BunsDev
+/.github/                  @BunsDev
+/.env.1password            @BunsDev
+/SECURITY.md               @BunsDev

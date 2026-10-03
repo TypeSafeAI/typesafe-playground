@@ -7,10 +7,10 @@ User objective: add 2×2, 3×3, 4×4 and dodecahedral puzzle solving; improve ev
 - [x] Interactive, locally verified solving for 2×2, 3×3, 4×4 and Megaminx (the dodecahedral puzzle).
 - [x] Accessible puzzle controls, step instructions, cancellation, responsive visualization and explicit solver limits. Scramble replay alone does not establish arbitrary-state solving.
 - [x] Route, home, navigation and workspace guide integration.
-- [ ] Audit every current page at desktop, narrow and short sizes; improve shared UI and page-specific defects while preserving drafts and live/mock labels.
-- [ ] Check lazy loading, idle work, request cancellation and production performance.
+- [x] Audit every current page at desktop, narrow and short sizes; improve shared UI and page-specific defects while preserving drafts and live/mock labels.
+- [x] Check lazy loading, idle work, request cancellation and production performance.
 - [ ] Review and resolve all open PRs/issues with verification and exact-head evidence.
-- [ ] Unit, type, production build, browser and legacy verification with recorded coverage gaps.
+- [x] Unit, type, production build, browser and legacy verification with recorded coverage gaps.
 
 ## Current evidence (2026-10-03)
 
@@ -31,17 +31,18 @@ User objective: add 2×2, 3×3, 4×4 and dodecahedral puzzle solving; improve ev
 
 ## Existing pull requests
 
-REST inventory found no standalone open issues and three open, non-draft PRs. #43 and #44 have been merged; #42 remains open.
+REST inventory found no standalone open issues and three existing open PRs. All three are now merged. The new puzzle/UI delivery is tracked in [PR #54](https://github.com/TypeSafeAI/typesafe-playground/pull/54).
 
-- #42: verified four historical scan hits are synthetic fixtures, added exact commit/path/rule/line exclusions and removed bypass advice. Pushed `573d26622aaca793fcbc3ffdb7c3158f47e531c5` from isolated `/tmp/typesafe-pr42-scan`. Independent review also found a same-line scanner bypass: all pattern matches are now inspected, with synthetic exemptions applied per match. Six scanner tests, full-history gitleaks, shell syntax and pre-commit checks passed; re-review cleared the fix. Current-head hosted CI is running.
+- #42: verified four historical scan hits are synthetic fixtures, added exact commit/path/rule/line exclusions and removed bypass advice. Pushed `573d26622aaca793fcbc3ffdb7c3158f47e531c5` from isolated `/tmp/typesafe-pr42-scan`. Independent review also found a same-line scanner bypass: all pattern matches are now inspected, with synthetic exemptions applied per match. Six scanner tests, full-history gitleaks, shell syntax and pre-commit checks passed; re-review cleared the fix. Both exact-head hosted workflows and the Vercel status passed; squash merged as `f4a8c31be13e7949f9472a0942b3903ea9044ca3`.
 - #43: reproduced immediate-cancellation dispatch race, fixed the queued transport's abort check and added regression coverage. Pushed `5b7d3f0cb57fa00b4cd729bd09ea9b4dc29a0342` from isolated `/tmp/typesafe-pr43-cancel`. Focused tests, all 563 branch unit tests, typecheck and build passed. Both exact-head hosted jobs passed; squash merged as `d750fc64391e70ed019c826eb47fb2df1815b8cf`.
 - #44: reviewed confidence normalization/rendering and existing feedback; independent review cleared the code. Both GitHub jobs passed on `96881f01da63a7c83c8cbe97950706fb23404188`. Squash merged as `1e6dcf111e0d156bdec2224aacd2a52c446d45dc`. The fork preview reported Vercel authorization required; no deployment permission settings were changed.
 - Existing user worktrees were left untouched. Superseded CI runs for #42/#43 were cancelled after pushing verified fixes.
 
-## Remaining delivery work
+## Final delivery gates
 
-1. Finish the full 475-case production browser run, including the integrated 4×4 solver; it tests the build before the later notation/lifecycle review fixes. The later review fixes have since passed a separate frozen production build and 55 targeted browser cases. Independent source review is clear. Source provenance and the upstream MIT grant are recorded in `lib/twisty/vendor/README.md`.
-2. Refresh the page-specific visual/performance audit and run any additional coverage required by new changes. Full browser-suite and human assistive-technology coverage remain gaps.
-3. Resolve current-head CI/reviews and integrate all open PRs serially; publish and verify the puzzle/UI branch.
+1. The full 475-case production baseline finished: 455 passed, 18 intentional skips, two failures in the old hardcoded simulation-card count. The section test now asserts the complete canonical workspace-link list; its production rerun passed 17 cases with one intentional skip. These are combined receipts, not one all-green suite. Logs: `/tmp/typesafe-quality-full-e2e.log`, `/tmp/typesafe-sections-e2e.log`.
+2. The later notation/lifecycle review fixes passed 55 targeted browser cases in a separate frozen production build. Integration with merged #43/#44 passed 665 unit tests, typecheck, build and 26 affected browser cases. Source provenance and the upstream MIT grant are recorded in `lib/twisty/vendor/README.md`.
+3. The integrated tree including #42 passed a fresh frozen install, 671 unit tests (46 JavaScript + 625 TypeScript), typecheck, production build and both secret scanners. Logs: `/tmp/typesafe-final-install.log`, `/tmp/typesafe-final-unit.log`, `/tmp/typesafe-final-type.log`, `/tmp/typesafe-final-build.log`, `/tmp/typesafe-final-secrets.log`, `/tmp/typesafe-final-gitleaks.log`.
+4. PR #54 must pass terminal CI on its final integrated head before merging. Its live checks and merge state are the delivery record; this document records the pre-merge verification snapshot.
 
-Do not mark the goal complete while any delivery requirement remains unverified.
+Automated browser responses are mocked. No live-provider quality, human VoiceOver acceptance, or public deployment verification is claimed. Do not mark the goal complete before PR #54 is delivered and the open-work inventory is refreshed.

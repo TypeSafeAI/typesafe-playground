@@ -2,7 +2,7 @@
 
 Reference: `/agents/jev-browser-agent`. Scope: every page and example, including the local Clean Room workspace. Preserve existing drafts, request contracts, and explicit live/mock/uncertainty boundaries.
 
-## Refresh in progress — 2026-10-03
+## Current audit — 2026-10-03
 
 The receipts below remain the historical September audit. The current inventory
 has 32 navigable routes (Home, five section pages, 25 workspaces and the native
@@ -24,7 +24,7 @@ batch-triage timing assertions were corrected to use the existing request queue
 interval and passed separately. The integrated 4×4 solver has since passed unit,
 type and build checks; the later review fixes passed 53 affected-workspace cases
 (one intentional skip) plus two Megaminx label/notation cases in a separate
-frozen production build. A full 475-case baseline browser run is in progress.
+frozen production build. The full 475-case baseline finished with 455 passed, 18 intentional skips and two outdated simulation-card count assertions. Those assertions now check the complete canonical link list; the section-suite rerun passed 17 cases with one intentional skip. Integration with merged PRs #43/#44 also passed 665 unit tests, typecheck, build and 26 affected browser cases. These are combined verification receipts rather than a single all-green suite.
 See `docs/plans/puzzles-and-workspace-quality.md` for current receipts and gaps.
 No human VoiceOver acceptance or live-provider verification is claimed.
 

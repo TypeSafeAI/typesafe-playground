@@ -10,6 +10,7 @@ import {
 } from "lucide-react";
 import { download, errorMessage, percent } from "../lib/client";
 import { Empty, ErrorNote, Heading, RunButton } from "./ui";
+import { ConfidenceBar } from "./ConfidenceBar";
 import {
   aggregateReviewResults,
   buildHunkCandidates,
@@ -650,10 +651,8 @@ function HunkCard({
             {result.candidates.rules[result.rule.selected] ||
               "No grounded rule selection available."}
           </p>
-          <span>
-            Confidence {percent(result.rule.confidence)} · Probability{" "}
-            {percent(result.rule.probability)}
-          </span>
+          <ConfidenceBar label="Confidence" value={result.rule.confidence} />
+          <ConfidenceBar label="Probability" value={result.rule.probability} />
         </div>
         <div className="decision-table-wrap">
           <table>
