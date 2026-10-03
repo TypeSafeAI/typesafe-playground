@@ -8,6 +8,8 @@ async function open(page: Page) {
   );
   await page.goto("/simulations/iq-test");
 }
+// A full run includes a two-second reading pause for each question.
+const completeRunTimeout = IQ_QUESTIONS.length * 2000 + 20000;
 const start = (page: Page) =>
   page.getByRole("button", { name: "Run test", exact: true }).click();
 function answer(choice: string) {
@@ -29,6 +31,7 @@ function answer(choice: string) {
 test("local demo scores the answer sheet without any provider calls", async ({
   page,
 }, info) => {
+  test.setTimeout(completeRunTimeout + 15000);
   let calls = 0;
   await page.route("**/api/run", (route) => {
     calls++;
@@ -42,9 +45,9 @@ test("local demo scores the answer sheet without any provider calls", async ({
   await start(page);
   await expect(page.getByTestId("iq-run-status")).toHaveText(
     "Complete · Local demo",
-    { timeout: 30000 },
+    { timeout: completeRunTimeout },
   );
-  await expect(page.getByTestId("iq-score")).toContainText("3 / 12");
+  await expect(page.getByTestId("iq-score")).toContainText("6 / 24");
   await expect(page.getByTestId("iq-estimate")).toContainText("78");
   await expect(page.getByTestId("iq-estimate")).toContainText(
     "Uncalibrated heuristic",
@@ -66,20 +69,21 @@ test("local demo scores the answer sheet without any provider calls", async ({
   const downloaded = await download;
   expect(downloaded.suggestedFilename()).toBe("jev-iq-test.json");
   const report = JSON.parse(await readFile((await downloaded.path())!, "utf8"));
+  expect(report.version).toBe("reasoning-v2");
   expect(report.execution).toBe("local-demo");
   expect(report.status).toBe("complete");
-  expect(report.summary.correct).toBe(3);
+  expect(report.summary.correct).toBe(6);
   expect(report.summary.iqEstimate).toMatchObject({
     value: 78,
-    method: "assumed-reference-v1",
+    method: "assumed-reference-v2",
     calibration: "uncalibrated",
-    assumedRawMean: 6,
-    assumedRawStandardDeviation: 2,
+    assumedRawMean: 12,
+    assumedRawStandardDeviation: 4,
   });
   expect(
     report.summary.categories.map((category: any) => category.percentage),
   ).toEqual([25, 25, 25]);
-  expect(report.results).toHaveLength(12);
+  expect(report.results).toHaveLength(24);
   expect(report.requestedModel).toBeNull();
   expect(JSON.stringify(report)).not.toMatch(/api.key|authorization|headers/i);
   await page.locator(".iq-lab").evaluate((element) => element.scrollTo(0, 0));
@@ -89,7 +93,7 @@ test("local demo scores the answer sheet without any provider calls", async ({
 test("live mocked run grades checked answers and excludes the key from requests", async ({
   page,
 }, info) => {
-  test.setTimeout(45000);
+  test.setTimeout(completeRunTimeout + 15000);
   const payloads: any[] = [];
   await page.route("**/api/run", (route) => {
     const payload = route.request().postDataJSON();
@@ -102,14 +106,14 @@ test("live mocked run grades checked answers and excludes the key from requests"
   await start(page);
   await expect(page.getByTestId("iq-run-status")).toHaveText(
     "Complete · Live Jev",
-    { timeout: 35000 },
+    { timeout: completeRunTimeout },
   );
   const final = page.getByRole("region", {
     name: "Final IQ-style test result",
   });
   await expect(final).toBeInViewport();
   await expect(final).toBeFocused();
-  await expect(final).toContainText("12 / 12");
+  await expect(final).toContainText("24 / 24");
   await expect(final.getByTestId("iq-estimate")).toContainText("145");
   await expect(final.getByTestId("iq-estimate")).toContainText(
     "Uncalibrated heuristic",
@@ -124,10 +128,10 @@ test("live mocked run grades checked answers and excludes the key from requests"
   await final
     .getByText("How this estimate is calculated", { exact: true })
     .click();
-  await expect(final).toContainText("6 correct answers");
-  await expect(final).toContainText("standard deviation of 2 answers");
+  await expect(final).toContainText("12 correct answers");
+  await expect(final).toContainText("standard deviation of 4 answers");
   await expect(final.locator("code")).toHaveText(
-    "round(100 + 15 × (correct − 6) / 2)",
+    "round(100 + 15 × (correct − 12) / 4)",
   );
   expect(
     await page
@@ -138,15 +142,15 @@ test("live mocked run grades checked answers and excludes the key from requests"
     const breakdown = final.getByRole("group", {
       name: `${category} breakdown`,
     });
-    await expect(breakdown).toContainText("4 correct");
+    await expect(breakdown).toContainText("8 correct");
     await expect(breakdown).toContainText("0 incorrect");
     await expect(breakdown).toContainText("100%");
   }
   await page.screenshot({
     path: `/tmp/typesafe-iq-final-${info.project.name}.png`,
   });
-  await expect(page.getByTestId("iq-score")).toContainText("12 / 12");
-  expect(payloads).toHaveLength(12);
+  await expect(page.getByTestId("iq-score")).toContainText("24 / 24");
+  expect(payloads).toHaveLength(24);
   payloads.forEach((payload, index) => {
     expect(payload.state).toEqual({
       prompt: IQ_QUESTIONS[index].prompt,
@@ -158,7 +162,7 @@ test("live mocked run grades checked answers and excludes the key from requests"
   });
   await expect(
     page.getByRole("button", { name: "Open API usage dashboard" }),
-  ).toContainText("12 calls");
+  ).toContainText("24 calls");
   await page.reload();
   await expect(page.getByLabel("Run mode")).toHaveValue("live");
   await expect(page.getByTestId("iq-run-status")).toHaveText(
@@ -169,7 +173,7 @@ test("live mocked run grades checked answers and excludes the key from requests"
 test("stopping during the final reading pause keeps the completed report visible", async ({
   page,
 }) => {
-  test.setTimeout(45000);
+  test.setTimeout(completeRunTimeout + 15000);
   await page.route("**/api/run", (route) =>
     route.fulfill({ json: answer(IQ_QUESTIONS[0].expected) }),
   );
@@ -178,7 +182,7 @@ test("stopping during the final reading pause keeps the completed report visible
   await start(page);
   await expect(page.getByTestId("iq-watch-status")).toContainText(
     "Results next",
-    { timeout: 35000 },
+    { timeout: completeRunTimeout },
   );
   await page.getByRole("button", { name: "Stop", exact: true }).click();
   await expect(page.getByTestId("iq-run-status")).toHaveText(
@@ -219,7 +223,7 @@ test("follows each question and answer, with an option to inspect earlier answer
     page.getByRole("heading", { name: "One repeated rule", exact: true }),
   ).toBeInViewport();
   await expect(page.getByTestId("iq-watch-status")).toContainText(
-    "Question 2 of 12",
+    "Question 2 of 24",
   );
   await expect(
     page.getByRole("button", { name: "Stop", exact: true }),
@@ -300,7 +304,7 @@ test("stop and reset discard a late response", async ({ page }) => {
   await expect(page.getByTestId("iq-score")).toContainText("No final score");
   await expect(
     page.locator(".iq-answer-sheet .iq-status").filter({ hasText: "Not run" }),
-  ).toHaveCount(12);
+  ).toHaveCount(24);
   expect(calls).toBe(1);
 });
 
@@ -339,7 +343,7 @@ test("hiding the tab stops after the current question without sending another", 
   await open(page);
   await page.getByLabel("Run mode").selectOption("live");
   await start(page);
-  await expect(page.getByTestId("iq-score")).toContainText("1 of 12 answered");
+  await expect(page.getByTestId("iq-score")).toContainText("1 of 24 answered");
   await page.evaluate(() => {
     Object.defineProperty(document, "hidden", {
       configurable: true,
@@ -403,10 +407,10 @@ test("keyboard inspection and both themes fit short and narrow screens", async (
       ).toBeVisible();
       await reveal.press("Enter");
       await page
-        .getByRole("button", { name: /Question 12: A new operator/ })
+        .getByRole("button", { name: /Question 24: An ordered operator/ })
         .click();
       await expect(
-        page.getByRole("heading", { name: "A new operator", exact: true }),
+        page.getByRole("heading", { name: "An ordered operator", exact: true }),
       ).toBeVisible();
       if (theme === "dark" && size.width === 1280)
         await page.screenshot({ path: "/tmp/typesafe-iq-dark-question.png" });

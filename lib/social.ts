@@ -13,7 +13,7 @@ export const SOCIAL_PAGES = {
     path: "/simulations/iq-test",
     title: "Jev takes an IQ-style test",
     description:
-      "Twelve original reasoning puzzles. Typed choices, checked answers, and a raw score.",
+      "Twenty-four original reasoning puzzles. Typed choices, checked answers, and a raw score.",
     category: "REASONING PRACTICE",
     steps: ["Read a puzzle", "Choose with Jev", "Check the answer"],
     result: "Reasoning puzzles → checked answers",

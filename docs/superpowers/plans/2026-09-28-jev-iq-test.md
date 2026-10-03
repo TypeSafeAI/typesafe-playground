@@ -53,3 +53,11 @@ Numerical estimate verification: `pnpm test` passed 39 JavaScript and 598 TypeSc
 - `E2E_PRODUCTION=1 E2E_PORT=3067 pnpm test:e2e tests/e2e/iq-test.spec.ts tests/e2e/sections.spec.ts tests/e2e/home.spec.ts --workers=2`: 35 passed; one desktop-only sidebar check intentionally skipped on mobile.
 - Browser checks exercise 1280×720, 390×844 and 320×568 in light/dark themes. Inspected screenshots of the completed demo and dark question detail. Fixed a desktop footer overlap by making this workspace scroll within the shell.
 - Live provider responses were mocked. Actual provider performance, the full unrelated browser suite, and human assistive-technology acceptance were not tested.
+
+## Follow-up: 24 questions and finer score resolution
+
+At Val's request, question-set version `reasoning-v2` preserves the original 12 questions and adds 12 with multistep rules and plausible distractors. Each category now has eight questions, with two answers in each option position. The set has six warm-ups, twelve intermediate questions and six challenges; these difficulty labels are editorial, not measured Jev performance.
+
+Scoring method `assumed-reference-v2` uses `round(100 + 15 * (correct - 12) / 4)`. The 25 possible raw scores yield 25 distinct rounded values while retaining the 55–145 endpoints. The mean and deviation remain disclosed design assumptions, not human norms. All 24 valid answers are required. Live mode continues to request actual Jev choices; local mode remains explicitly scripted. UI counts, exports, metadata and documentation now describe the expanded set.
+
+Verification: 680 unit tests (46 JavaScript and 634 TypeScript), typecheck, production build, secret scan and 26 legacy Python tests passed. Production browser checks for IQ, home and section navigation passed 39 cases with one intentional mobile sidebar skip. Coverage includes 24-call request isolation, exports, all score mappings, errors, cancellation, final-answer pause, keyboard inspection and light/dark layouts down to 320×568. Inspected desktop and mobile final reports and question 24. Independent review verified every new answer, exhaustive logic/spatial cases, scoring and integration; no blockers found. Automated provider responses were mocked. No live Jev performance or empirical IQ calibration was measured.

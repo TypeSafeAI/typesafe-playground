@@ -28,7 +28,7 @@ export const workspaceGuides: Record<string, WorkspaceGuide> = {
     steps: [
       [
         "Choose a run",
-        "Local demo always selects A without a model call. Live Jev uses your configured key for up to 12 questions.",
+        "Local demo always selects A without a model call. Live Jev uses your configured key for up to 24 questions.",
       ],
       [
         "Watch each answer",
