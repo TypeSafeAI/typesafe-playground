@@ -67,11 +67,12 @@ for (const path of targets(process.argv.slice(2))) {
   for (const [name, re] of PATTERNS) {
     if (!re) continue;
     lines.forEach((line, i) => {
-      const m = re.exec(line);
-      if (!m) return;
-      // A private-key block is never synthetic; everything else may be a labelled fixture.
-      if (!name.startsWith("Private key") && SYNTHETIC.test(m[0])) return;
-      findings.push(`${path}:${i + 1}: looks like a ${name}`);
+      // Check every occurrence: a labelled fixture must not hide a later key.
+      for (const m of line.matchAll(new RegExp(re.source, re.flags + "g"))) {
+        // A private-key block is never synthetic; other matches may be fixtures.
+        if (!name.startsWith("Private key") && SYNTHETIC.test(m[0])) continue;
+        findings.push(`${path}:${i + 1}: looks like a ${name}`);
+      }
     });
   }
 }

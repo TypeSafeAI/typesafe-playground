@@ -116,3 +116,23 @@ test("reports multiple findings in one file", () => {
     rmSync(root, { recursive: true, force: true });
   }
 });
+
+
+test("a synthetic first match does not hide later same-line assignments or headers", () => {
+  const root = makeRepo();
+  try {
+    for (const line of [
+      `TYPESAFE_API_KEY=test-server-only-secret; TYPESAFE_API_KEY=${CONTEST_VALUE}`,
+      `authorization: bearer test-server-only-secret; authorization: bearer ${BEARER_A}`,
+    ]) {
+      writeFileSync(join(root, "same-line.txt"), line + "\n");
+      const result = runCheck(root, ["same-line.txt"]);
+      assert.equal(result.status, 1, result.stdout);
+      assert.match(result.stderr, /same-line\.txt:1: looks like a/);
+      assert.equal(result.stderr.includes(CONTEST_VALUE), false);
+      assert.equal(result.stderr.includes(BEARER_A), false);
+    }
+  } finally {
+    rmSync(root, { recursive: true, force: true });
+  }
+});
