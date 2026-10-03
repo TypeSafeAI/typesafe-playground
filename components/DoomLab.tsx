@@ -216,6 +216,8 @@ export function DoomLab() {
         );
       } catch (e) {
         if (epoch.current !== round) return;
+        // Stop synchronously: React may commit the paused state after the next tick.
+        clearInterval(timer);
         command.current = null;
         setActive(false);
         setError(
