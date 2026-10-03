@@ -38,6 +38,12 @@ REST inventory found no standalone open issues and three existing open PRs. All 
 - #44: reviewed confidence normalization/rendering and existing feedback; independent review cleared the code. Both GitHub jobs passed on `96881f01da63a7c83c8cbe97950706fb23404188`. Squash merged as `1e6dcf111e0d156bdec2224aacd2a52c446d45dc`. The fork preview reported Vercel authorization required; no deployment permission settings were changed.
 - Existing user worktrees were left untouched. Superseded CI runs for #42/#43 were cancelled after pushing verified fixes.
 
+## Dependency automation follow-up
+
+Merging #42 enabled the configured Dependabot schedules and opened #55–#63. Independent review checked all nine updates. Their overlapping manifests/lockfiles are consolidated into #54 for one complete integration gate: pinned checkout/setup-python/upload-artifact/setup-node actions, Prettier/tsx patches, Lucide, Next 16.3.7, Three 0.186.1 and Sharp 0.35.5. The Next update includes its upstream ImageResponse security fix; inspected social-image inputs are fixed catalog content/local assets, not attacker-controlled SVG.
+
+The proposed Node 26 declarations were reverted to Node 22.20.3 to match the runtime contract. Future major Node-type automation is excluded until that contract changes. Puzzle pins remain cubing 0.63.8, direct esbuild 0.28.2, Node >=22.3, and cubing's separate Three 0.170.0. Combined frozen install, 671 unit tests, typecheck and Next 16.3.7 production build passed in the isolated verification checkout. The individual update PRs must be closed as superseded only after the integrated delivery merges.
+
 ## Final delivery gates
 
 1. The full 475-case production baseline finished: 455 passed, 18 intentional skips, two failures in the old hardcoded simulation-card count. The section test now asserts the complete canonical workspace-link list; its production rerun passed 17 cases with one intentional skip. These are combined receipts, not one all-green suite. Logs: `/tmp/typesafe-quality-full-e2e.log`, `/tmp/typesafe-sections-e2e.log`.
