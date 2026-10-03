@@ -32,4 +32,7 @@ Also on: Dependabot alerts and security updates, a `main` ruleset (no force-push
 - A visitor's personal key (browser header override) is used for that request and not stored server-side. Browser `localStorage` is not a secret vault; the UI masks it and offers removal.
 - Automated tests never call the live provider and never consume shared credits.
 
-Bypassing the hook with `--no-verify` is for false positives only. If the thing it caught is real, rotate it.
+Do not bypass the hook. Correct false positives; rotate real keys. Four reviewed
+synthetic negative-test findings from earlier commits are recorded as exact
+commit/file/rule/line fingerprints in `.gitleaksignore`. They do not exempt test
+files, token patterns, or future commits from scanning.

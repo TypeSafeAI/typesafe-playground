@@ -1,6 +1,6 @@
 #!/bin/sh
-# Installed by `pnpm install` (see package.json "prepare"). Bypassing with
-# --no-verify is for false positives only; a real key gets rotated, not hidden.
+# Installed by `pnpm install` (see package.json "prepare").
+# Correct false-positive findings; real keys get rotated, not hidden.
 set -e
 node scripts/check-secrets.mjs --staged
 if command -v gitleaks >/dev/null 2>&1; then
