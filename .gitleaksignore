@@ -1,0 +1,7 @@
+# Reviewed historical negative-test fixtures, never provider credentials.
+# Exact commit/file/rule/line fingerprints keep the same patterns elsewhere
+# covered. Current tests assemble these synthetic strings from separate parts.
+de962e7831ecd27ae026cac0463717a459c1ab71:tests/test_check_secrets.js:typesafe-api-key-assignment:38
+de962e7831ecd27ae026cac0463717a459c1ab71:tests/test_check_secrets.js:typesafe-api-key-assignment:87
+de962e7831ecd27ae026cac0463717a459c1ab71:tests/test_check_secrets.js:generic-bearer-header:101
+78f869aaaf0e985829dc033e94d6909e48a3ab2d:tests/test_check_secrets.js:typesafe-api-key-assignment:93
