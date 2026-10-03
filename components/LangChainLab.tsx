@@ -5,8 +5,9 @@ import Link from "next/link";
 import { useEffect, useRef, useState } from "react";
 import { Heading, RunButton, ErrorNote, Export, Empty } from "./ui";
 import { ROUTER_SCENARIOS, nodeById } from "../lib/workflowGraph";
-import { percent, errorMessage } from "../lib/client";
+import { errorMessage } from "../lib/client";
 import { revealResults } from "../lib/scroll";
+import { ConfidenceBar } from "./ConfidenceBar";
 const snippet = `import { createJevRoutingTool } from "./lib/langchain/jev-tool";
 import { serverJevTransport } from "./lib/serverJev";
 
@@ -238,17 +239,18 @@ export function LangChainLab() {
                   <dd>{Math.round(result.latencyMs)} ms</dd>
                 </div>
                 <div>
-                  <dt>Confidence / probability</dt>
-                  <dd>
-                    {percent(result.output.confidence)} /{" "}
-                    {percent(result.output.probability)}
-                  </dd>
-                </div>
-                <div>
                   <dt>Downstream execution</dt>
                   <dd>None · routing only</dd>
                 </div>
               </dl>
+              <ConfidenceBar
+                label="Confidence"
+                value={result.output.confidence}
+              />
+              <ConfidenceBar
+                label="Probability"
+                value={result.output.probability}
+              />
               {result.output.requires_approval && (
                 <div className="approval-card">
                   <h3>Your host must ask for approval</h3>

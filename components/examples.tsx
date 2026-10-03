@@ -16,6 +16,7 @@ import { JsonView } from "./JsonView";
 import * as library from "../web/library";
 import { runJev, errorMessage, percent, download } from "../lib/client";
 import { Empty, ErrorNote, Export, RunButton } from "./ui";
+import { ConfidenceBar } from "./ConfidenceBar";
 type ResponseData = {
   answers?: Record<
     string,
@@ -788,9 +789,10 @@ export function Examples() {
                                 : String(answer.score ?? "—")}
                           </div>
                           {answer.confidence !== undefined && (
-                            <span className="muted">
-                              Confidence {percent(answer.confidence)}
-                            </span>
+                            <ConfidenceBar
+                              label="Confidence"
+                              value={answer.confidence}
+                            />
                           )}
                           {answer.probabilities &&
                             Object.entries(answer.probabilities)

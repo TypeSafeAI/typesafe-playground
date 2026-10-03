@@ -12,6 +12,7 @@ import {
   type Personality,
 } from "../lib/jev-chat/personality";
 import { JevResponseDetails } from "./JevResponseDetails";
+import { ConfidenceBar } from "./ConfidenceBar";
 import { JevChatProse } from "./JevChatProse";
 import {
   ArrowUp,
@@ -761,14 +762,12 @@ export function JevChatLab() {
                                     <dt>Displayed reply</dt>
                                     <dd>{message.decision.id}</dd>
                                   </div>
-                                  <div>
-                                    <dt>Confidence</dt>
-                                    <dd>
-                                      {message.decision.provenance === "demo"
-                                        ? "Not measured"
-                                        : percent(message.decision.confidence)}
-                                    </dd>
-                                  </div>
+                                  {message.decision.provenance === "demo" && (
+                                    <div>
+                                      <dt>Confidence</dt>
+                                      <dd>Not measured</dd>
+                                    </div>
+                                  )}
                                   <div>
                                     <dt>Origin</dt>
                                     <dd>
@@ -777,6 +776,12 @@ export function JevChatLab() {
                                     </dd>
                                   </div>
                                 </dl>
+                                {message.decision.provenance !== "demo" && (
+                                  <ConfidenceBar
+                                    label="Confidence"
+                                    value={message.decision.confidence}
+                                  />
+                                )}
                                 <p>
                                   {message.decision.uncertain
                                     ? "The available material or decision confidence did not support a direct answer."
