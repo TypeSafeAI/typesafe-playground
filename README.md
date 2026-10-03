@@ -82,7 +82,7 @@ Older flat links such as `/jev-chat` or `/chess` redirect permanently to their n
 | **Meme lab** `/language/memes` | Classify reviewed captions and visual descriptions for tone, audience fit, and possible confusion. |
 | **MicroDuck arena** `/simulations/microduck` | Compare bounded robot actions in a local 3D simulation. |
 | **Jev attempts chess** `/simulations/chess` | Observe the limitations of legal-move selection without lookahead. |
-| **IQ-style test** `/simulations/iq-test` | Watch Jev answer 12 original reasoning puzzles, then inspect a numerical IQ estimate, raw score and category breakdowns. The estimate is an uncalibrated heuristic; local demo and live runs stay separate. See [the scoring method](docs/iq-test.md). |
+| **IQ-style test** `/simulations/iq-test` | Watch Jev answer 24 original reasoning puzzles, then inspect a numerical IQ estimate, raw score and category breakdowns. The estimate is an uncalibrated heuristic; local demo and live runs stay separate. See [the scoring method](docs/iq-test.md). |
 | **Twisty puzzle solver** `/simulations/twisty-puzzles` | Live Jev move selection for 2×2, 3×3, 4×4 and Megaminx, with local state verification and an explicit local-solver comparison. See [instructions and limits](docs/twisty-puzzles.md). |
 | **Snake** `/arcade/snake` | Watch Jev steer a snake one cell per request, scored against a random baseline on the same seed. See [the Arcade guide](docs/arcade.md). |
 | **Breakout** `/arcade/breakout` | Watch Jev move a paddle under a predicted landing column to keep the ball in play. |

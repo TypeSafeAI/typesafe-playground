@@ -210,9 +210,9 @@ export function IqTestLab() {
       tabIndex={0}
     >
       <Heading
-        eyebrow="REASONING / 12 QUESTIONS"
+        eyebrow={`REASONING / ${IQ_QUESTIONS.length} QUESTIONS`}
         title="Jev takes an IQ-style test"
-        description="Number sequences, logical deductions, and symbol patterns. Give Jev the questions, then check every choice against the answer key."
+        description="24 questions from warm-ups to multistep challenges. Watch Jev choose between plausible answers, then check every choice against the answer key."
       >
         <Export data={report} name="jev-iq-test.json" />
       </Heading>
@@ -256,12 +256,13 @@ export function IqTestLab() {
         <p className="muted">
           {mode === "demo"
             ? "The local demo always picks A. It shows how scoring works and makes no model calls."
-            : "Uses jev-latest and your configured API key. Up to 12 requests, one question at a time. Answers and explanations are withheld from Jev."}
+            : "Uses jev-latest and your configured API key. Up to 24 requests, one question at a time. Answers and explanations are withheld from Jev."}
         </p>
         <p className="iq-boundary">
           Not a standardized IQ score. The numerical estimate uses assumed
           reference values; these original practice puzzles have no human
-          population norms. Patterns are sent as text, not images.
+          population norms. Difficulty labels are editorial, not measured.
+          Patterns are sent as text, not images.
         </p>
       </section>
 
@@ -295,12 +296,12 @@ export function IqTestLab() {
       </div>
       <div className="iq-progress">
         <progress
-          max={12}
+          max={IQ_QUESTIONS.length}
           value={summary.answered}
           aria-label="Questions answered"
         />
         <p className="muted">
-          Uniform random guessing would average 3 / 12 across repeated full
+          Uniform random guessing would average 6 / 24 across repeated full
           tests. This is an expected value, not a measured run.
         </p>
       </div>
@@ -324,11 +325,12 @@ export function IqTestLab() {
             aria-atomic="true"
           >
             <strong>
-              Question {watchIndex + 1} of 12 · {watchQuestion.title}
+              Question {watchIndex + 1} of {IQ_QUESTIONS.length} ·{" "}
+              {watchQuestion.title}
             </strong>
             <span>
               {watchResult?.choice
-                ? `${STATUS_LABELS[watchResult.status]} · ${watchResult.choice.toUpperCase()} · ${watchQuestion.options[watchResult.choice]} — ${watchIndex === 11 ? "Results next" : "Next question in 2 seconds"}`
+                ? `${STATUS_LABELS[watchResult.status]} · ${watchResult.choice.toUpperCase()} · ${watchQuestion.options[watchResult.choice]} — ${watchIndex === IQ_QUESTIONS.length - 1 ? "Results next" : "Next question in 2 seconds"}`
                 : `${MODE_LABELS[mode]} is choosing…`}
             </span>
           </div>
@@ -383,7 +385,9 @@ export function IqTestLab() {
                     </span>
                     <span className="iq-question-label">
                       <strong>{item.title}</strong>
-                      <small>{item.category}</small>
+                      <small>
+                        {item.category} · {item.difficulty}
+                      </small>
                     </span>
                     <span className={`iq-status ${scored?.status ?? ""}`}>
                       {status}
@@ -402,7 +406,9 @@ export function IqTestLab() {
         >
           <div className="panel-heading">
             <h2>{question.title}</h2>
-            <span className="muted">{selected + 1} / 12</span>
+            <span className="muted">
+              {selected + 1} / {IQ_QUESTIONS.length}
+            </span>
           </div>
           <div className="panel-content" key={question.id}>
             <p className="iq-prompt">{question.prompt}</p>

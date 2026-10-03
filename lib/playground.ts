@@ -231,7 +231,7 @@ export const playgroundGroups = [
         label: "IQ-style test",
         icon: Brain,
         detail:
-          "Give Jev 12 original reasoning puzzles and check each choice against an explained answer key.",
+          "Give Jev 24 original reasoning puzzles and check each choice against an explained answer key.",
         flow: "Reasoning puzzles → checked answers",
       },
       {

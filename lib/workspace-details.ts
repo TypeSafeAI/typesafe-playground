@@ -20,7 +20,7 @@ export const workspaceDetails: Record<string, WorkspaceDetails> = {
   },
   "/simulations/iq-test": {
     input:
-      "Twelve fixed, original multiple-choice questions: four numerical, four logical, and four text-based patterns. Each states its assumptions.",
+      "Twenty-four fixed, original multiple-choice questions: eight numerical, eight logical, and eight text-based patterns, from warm-ups to multistep challenges. Each states its assumptions.",
     process:
       "Live Jev receives one isolated question and four choices per call. The reference key and explanations stay local. Code checks the answer and grades it against the key; a provider error or malformed answer stops the run.",
     output:
