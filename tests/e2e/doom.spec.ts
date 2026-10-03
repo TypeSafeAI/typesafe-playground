@@ -63,6 +63,9 @@ test("Doom batches real frames, displays all probabilities and exposes chaos sta
   });
   await page.goto("/simulations/doom");
   await page.getByRole("radio", { name: "Jev control", exact: true }).click();
+  await page
+    .getByText("Arena settings and execution limits", { exact: true })
+    .click();
   await page.getByLabel("Chaos mode · hide enemy distance").check();
   await page.getByRole("button", { name: "Start arena", exact: true }).click();
   await expect(page.locator(".doom-current-action")).toContainText(

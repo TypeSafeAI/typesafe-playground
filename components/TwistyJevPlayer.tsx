@@ -189,11 +189,6 @@ export function TwistyJevPlayer({
 
   return (
     <div className="twisty-jev">
-      <p className="muted">
-        Jev chooses each legal turn from the current piece state and one-turn
-        outcomes. Local code checks the result; it does not search for Jev’s
-        moves. Hard scrambles may remain unsolved.
-      </p>
       <div className="twisty-actions">
         <button
           className="button primary"
@@ -252,6 +247,14 @@ export function TwistyJevPlayer({
         {receipts.length} Jev moves applied · requested model jev-latest · usage
         recorded in the header
       </p>
+      <details className="twisty-execution">
+        <summary>How Jev chooses · hard scrambles may remain unsolved</summary>
+        <p className="muted">
+          Jev chooses each legal turn from the current piece state and one-turn
+          outcomes. Local code checks the result; it does not search for Jev’s
+          moves. Hard scrambles may remain unsolved.
+        </p>
+      </details>
       {receipts.length > 0 && (
         <details className="twisty-receipts">
           <summary>Jev decision receipts ({receipts.length})</summary>

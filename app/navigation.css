@@ -1,0 +1,258 @@
+/* Section navigation: a small overview, with workspace detail on demand. */
+.dashboard-shell .sidebar .workspace-nav {
+  gap: 5px;
+  --section-heading-display: flex;
+  --section-children-display: block;
+  --section-trigger-display: none;
+}
+.dashboard-shell .workspace-nav .nav-group {
+  display: block;
+  border: 0;
+  margin: 0;
+  padding: 0;
+}
+.dashboard-shell .workspace-nav .nav-section-heading {
+  display: var(--section-heading-display);
+  align-items: center;
+  gap: 2px;
+  border-radius: 9px;
+}
+.dashboard-shell .workspace-nav .nav-group[data-current] .nav-section-heading {
+  background: var(--accent-soft);
+}
+.dashboard-shell .workspace-nav .nav-overview {
+  padding: 9px 7px;
+  min-height: 40px;
+  gap: 7px;
+  font-size: 12px;
+  color: var(--ink);
+  font-weight: 600;
+  flex: 1;
+  min-width: 0;
+  line-height: 1.35;
+}
+.dashboard-shell .sidebar .workspace-nav .nav-overview span {
+  display: inline;
+  white-space: normal;
+}
+.nav-disclosure {
+  display: grid;
+  place-items: center;
+  flex-shrink: 0;
+  width: 28px;
+  min-height: 32px;
+  padding: 4px;
+  border: 0;
+  border-radius: 6px;
+  background: transparent;
+  color: var(--muted);
+}
+.nav-disclosure:hover {
+  color: var(--ink);
+  background: var(--panel);
+}
+.nav-disclosure svg {
+  transition: transform 120ms ease-out;
+}
+.nav-disclosure[aria-expanded="true"] svg {
+  transform: rotate(180deg);
+}
+.nav-section-children {
+  display: var(--section-children-display);
+  padding: 3px 0 9px 8px;
+}
+.nav-section-children[hidden] {
+  display: none;
+}
+.nav-subsection + .nav-subsection {
+  margin-top: 5px;
+}
+.nav-subsection-label {
+  margin: 0;
+  padding: 6px 8px 3px;
+  font-size: 10px;
+  line-height: 1.5;
+  font-weight: 600;
+  color: var(--muted);
+}
+.dashboard-shell .sidebar .workspace-nav .nav-subsection a {
+  min-height: 32px;
+  padding: 6px 8px;
+  gap: 8px;
+  font-size: 12px;
+  line-height: 1.4;
+  align-items: center;
+  justify-content: flex-start;
+  color: var(--muted);
+}
+.dashboard-shell .sidebar .workspace-nav .nav-subsection a.active {
+  color: var(--accent);
+  background: var(--accent-soft);
+}
+.dashboard-shell .sidebar .workspace-nav .nav-subsection a span {
+  display: inline;
+  white-space: normal;
+}
+.dashboard-shell .sidebar .workspace-nav a svg {
+  flex-shrink: 0;
+}
+.dashboard-shell .sidebar .workspace-nav .nav-nested-link {
+  padding-left: 32px;
+}
+.nav-section-trigger {
+  display: var(--section-trigger-display);
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: 5px;
+  width: 100%;
+  min-height: 59px;
+  padding: 8px 0;
+  border: 0;
+  border-radius: 9px;
+  background: transparent;
+  color: var(--muted);
+  font-size: 10px;
+  font-weight: 550;
+  line-height: 1.35;
+}
+.nav-section-trigger:hover,
+.nav-section-trigger[aria-expanded="true"] {
+  color: var(--ink);
+  background: var(--panel);
+}
+.nav-section-trigger[aria-current] {
+  color: var(--accent);
+  background: var(--accent-soft);
+  box-shadow: inset 3px 0 var(--accent);
+}
+.nav-flyout {
+  position: fixed;
+  inset: 68px auto auto 82px;
+  width: min(300px, calc(100vw - 96px));
+  max-height: calc(100dvh - 88px);
+  margin: 0;
+  padding: 12px;
+  overflow: auto;
+  overscroll-behavior: contain;
+  scrollbar-width: thin;
+  background: var(--panel);
+  color: var(--ink);
+  border: 1px solid var(--line);
+  border-radius: 13px;
+  box-shadow:
+    0 8px 32px #0002,
+    0 2px 6px #0001;
+}
+.nav-flyout:popover-open {
+  display: block;
+}
+.nav-flyout::backdrop {
+  background: transparent;
+}
+.nav-flyout-heading {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  border-bottom: 1px solid var(--line);
+  padding-bottom: 6px;
+  margin-bottom: 4px;
+}
+.dashboard-shell .sidebar .workspace-nav .nav-flyout-heading a {
+  flex: 1;
+  justify-content: space-between;
+  padding: 8px;
+  color: var(--ink);
+  font-size: 13px;
+  font-weight: 650;
+}
+.nav-flyout-heading .icon-button {
+  min-width: 32px;
+  min-height: 32px;
+  display: grid;
+  place-items: center;
+}
+.dashboard-shell .workspace-nav :is(a, button):focus-visible {
+  outline: 2px solid var(--accent);
+  outline-offset: -2px;
+}
+
+@media (min-width: 1101px) {
+  .dashboard-shell.app-shell {
+    grid-template-columns: 244px minmax(0, 1fr);
+  }
+}
+@media (min-width: 761px) {
+  .dashboard-shell.nav-collapsed {
+    grid-template-columns: 76px minmax(0, 1fr);
+  }
+  .dashboard-shell.nav-collapsed .sidebar .workspace-nav {
+    --section-heading-display: none;
+    --section-children-display: none;
+    --section-trigger-display: flex;
+  }
+  .dashboard-shell.nav-collapsed .sidebar {
+    padding-inline: 6px;
+    gap: 12px;
+  }
+  .dashboard-shell.nav-collapsed .workspace-nav .nav-home {
+    flex-direction: column;
+    gap: 4px;
+    font-size: 10px;
+    padding: 8px 0;
+    min-height: 54px;
+  }
+  .dashboard-shell.nav-collapsed .workspace-nav .nav-home span {
+    display: inline;
+  }
+  .dashboard-shell.nav-collapsed .sidebar-bottom {
+    display: block;
+    padding: 0 4px;
+  }
+  .dashboard-shell.nav-collapsed .sidebar-bottom .model-card {
+    display: none;
+  }
+  .dashboard-shell.nav-collapsed .sidebar-bottom .docs-link {
+    padding: 6px 0;
+    min-height: 32px;
+    justify-content: center;
+  }
+}
+@media (min-width: 761px) and (max-width: 1100px) {
+  .dashboard-shell.app-shell {
+    grid-template-columns: 76px minmax(0, 1fr);
+  }
+  .dashboard-shell .sidebar .workspace-nav {
+    --section-heading-display: none;
+    --section-children-display: none;
+    --section-trigger-display: flex;
+  }
+  .dashboard-shell .sidebar {
+    padding-inline: 6px;
+    gap: 12px;
+  }
+  .dashboard-shell .workspace-nav .nav-home {
+    flex-direction: column;
+    gap: 4px;
+    font-size: 10px;
+    padding: 8px 0;
+    min-height: 54px;
+  }
+  .dashboard-shell .workspace-nav .nav-home span {
+    display: inline;
+  }
+}
+@media (max-width: 760px) {
+  .dashboard-shell.nav-mobile-open .sidebar .workspace-nav .nav-subsection a {
+    min-height: 40px;
+  }
+  .nav-section-heading .nav-disclosure {
+    min-height: 40px;
+    width: 36px;
+  }
+}
+@media (prefers-reduced-motion: reduce) {
+  .nav-disclosure svg {
+    transition: none;
+  }
+}

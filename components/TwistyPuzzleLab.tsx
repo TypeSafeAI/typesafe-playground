@@ -206,188 +206,207 @@ export function TwistyPuzzleLab() {
           className="panel twisty-controls"
           aria-labelledby="twisty-setup"
         >
-          <div className="twisty-section-heading">
-            <span className="twisty-number">1</span>
-            <h2 id="twisty-setup">Choose your puzzle</h2>
-          </div>
           <div
-            className="twisty-puzzle-picker"
-            role="group"
-            aria-label="Puzzle type"
+            className="task-scroll"
+            tabIndex={0}
+            role="region"
+            aria-label="Puzzle setup"
           >
-            {(
-              Object.entries(PUZZLES) as [
-                PuzzleId,
-                (typeof PUZZLES)[PuzzleId],
-              ][]
-            ).map(([id, value]) => (
-              <button
-                key={id}
-                className="button"
-                aria-pressed={puzzle === id}
-                onClick={() => {
-                  clearRun();
-                  setPuzzle(id);
-                  setApplied("");
-                  setNotice("Load your saved scramble or create a new one.");
-                }}
-              >
-                {value.label}
-              </button>
-            ))}
-          </div>
-          <p className="muted">
-            {puzzle === "megaminx"
-              ? "A twelve-sided dodecahedral puzzle. Every face turns in fifths."
-              : puzzle === "4x4x4"
-                ? "Includes wide turns that move two layers together."
-                : "Jev can choose legal turns; the local solver is available as a comparison."}
-          </p>
-          <label htmlFor="twisty-scramble">Scramble from a solved puzzle</label>
-          <textarea
-            id="twisty-scramble"
-            value={draft}
-            maxLength={MAX_INPUT}
-            rows={4}
-            spellCheck={false}
-            aria-describedby="twisty-notation"
-            onChange={(event) => {
-              clearRun();
-              setDrafts((previous) => ({
-                ...previous,
-                [puzzle]: event.target.value,
-              }));
-              setNotice("Draft changed. Load it to update the diagram.");
-            }}
-          />
-          <p id="twisty-notation" className="muted">
-            Space-separated turns. Prime (′) means reverse; 2 means twice. Use
-            the straight apostrophe in input.{" "}
-            {puzzle === "4x4x4"
-              ? "Rw turns the two right layers."
-              : puzzle === "megaminx"
-                ? "R++ / D-- scramble notation is also supported."
-                : "Try R U R' U'."}
-          </p>
-          <div className="twisty-actions">
-            <button className="button" onClick={() => load()}>
-              Load scramble
-            </button>
-            <button
-              className="button"
-              onClick={() => {
-                const input = practiceScramble(
-                  puzzle,
-                  crypto.getRandomValues(new Uint32Array(1))[0],
-                );
-                setDrafts((previous) => ({ ...previous, [puzzle]: input }));
-                load(input);
-              }}
+            <div className="twisty-section-heading">
+              <span className="twisty-number">1</span>
+              <h2 id="twisty-setup">Choose your puzzle</h2>
+            </div>
+            <div
+              className="twisty-puzzle-picker"
+              role="group"
+              aria-label="Puzzle type"
             >
-              <Shuffle size={16} /> New scramble
-            </button>
-            <button
-              className="button"
-              onClick={() => {
-                setDrafts((previous) => ({ ...previous, [puzzle]: "" }));
-                load("");
-              }}
-            >
-              <RotateCcw size={16} /> Reset
-            </button>
-          </div>
-          <div className="twisty-section-heading">
-            <span className="twisty-number">2</span>
-            <h2>Choose how to solve</h2>
-          </div>
-          <div
-            className="twisty-puzzle-picker"
-            role="group"
-            aria-label="Solver mode"
-          >
-            <button
-              className="button"
-              aria-pressed={mode === "jev"}
-              onClick={() => {
+              {(
+                Object.entries(PUZZLES) as [
+                  PuzzleId,
+                  (typeof PUZZLES)[PuzzleId],
+                ][]
+              ).map(([id, value]) => (
+                <button
+                  key={id}
+                  className="button"
+                  aria-pressed={puzzle === id}
+                  onClick={() => {
+                    clearRun();
+                    setPuzzle(id);
+                    setApplied("");
+                    setNotice("Load your saved scramble or create a new one.");
+                  }}
+                >
+                  {value.label}
+                </button>
+              ))}
+            </div>
+            <p className="muted">
+              {puzzle === "megaminx"
+                ? "A twelve-sided dodecahedral puzzle. Every face turns in fifths."
+                : puzzle === "4x4x4"
+                  ? "Includes wide turns that move two layers together."
+                  : "Jev can choose legal turns; the local solver is available as a comparison."}
+            </p>
+            <label htmlFor="twisty-scramble">
+              Scramble from a solved puzzle
+            </label>
+            <textarea
+              id="twisty-scramble"
+              disabled={!restored}
+              value={draft}
+              maxLength={MAX_INPUT}
+              rows={4}
+              spellCheck={false}
+              aria-describedby="twisty-notation"
+              onChange={(event) => {
                 clearRun();
-                setMode("jev");
-                setNotice(
-                  "Live Jev selected. Load a scramble, then ask for a move.",
-                );
-              }}
-            >
-              Live Jev
-            </button>
-            <button
-              className="button"
-              aria-pressed={mode === "local"}
-              onClick={() => {
-                clearRun();
-                setMode("local");
-                setNotice(
-                  "Local comparison selected. No model requests will be sent.",
-                );
-              }}
-            >
-              Local solver
-            </button>
-          </div>
-          <p className="muted">
-            {dirty
-              ? "Load your draft first. The diagram still shows the last loaded position."
-              : "The solution is checked by applying every move to the loaded position."}
-          </p>
-          {mode === "jev" ? (
-            <TwistyJevPlayer
-              key={liveSession}
-              puzzle={puzzle}
-              scramble={applied}
-              disabled={dirty}
-              onMoves={setLiveMoves}
-              onSolved={(value) => {
-                setResult(value);
-                setStep(value.moves.length);
-                revealResults("twisty-solution-panel");
+                setDrafts((previous) => ({
+                  ...previous,
+                  [puzzle]: event.target.value,
+                }));
+                setNotice("Draft changed. Load it to update the diagram.");
               }}
             />
-          ) : (
-            <>
-              <p className="muted">
-                Local state search only. This comparison mode makes no Jev
-                request.
-              </p>
-              <div className="twisty-actions">
-                <button
-                  className="button primary"
-                  disabled={busy || dirty}
-                  onClick={solve}
-                >
-                  {busy ? "Searching…" : "Solve puzzle"}
-                </button>
-                {busy && (
-                  <button
-                    className="button"
-                    onClick={() => {
-                      terminate();
-                      setBusy(false);
-                      setNotice("Search cancelled. No solution was accepted.");
-                    }}
-                  >
-                    Cancel search
-                  </button>
-                )}
-              </div>
-            </>
-          )}
-          <p role="status" className="twisty-status">
-            {notice}
-          </p>
-          {error && (
-            <p role="alert" className="error-note">
-              {error}
+            <p id="twisty-notation" className="muted">
+              Space-separated turns. Prime (′) means reverse; 2 means twice. Use
+              the straight apostrophe in input.{" "}
+              {puzzle === "4x4x4"
+                ? "Rw turns the two right layers."
+                : puzzle === "megaminx"
+                  ? "R++ / D-- scramble notation is also supported."
+                  : "Try R U R' U'."}
             </p>
-          )}
-          {storageNote && <p className="muted">{storageNote}</p>}
+
+            <div className="twisty-section-heading">
+              <span className="twisty-number">2</span>
+              <h2>Choose how to solve</h2>
+            </div>
+            <div
+              className="twisty-puzzle-picker"
+              role="group"
+              aria-label="Solver mode"
+            >
+              <button
+                className="button"
+                aria-pressed={mode === "jev"}
+                onClick={() => {
+                  clearRun();
+                  setMode("jev");
+                  setNotice(
+                    "Live Jev selected. Load a scramble, then ask for a move.",
+                  );
+                }}
+              >
+                Live Jev
+              </button>
+              <button
+                className="button"
+                aria-pressed={mode === "local"}
+                onClick={() => {
+                  clearRun();
+                  setMode("local");
+                  setNotice(
+                    "Local comparison selected. No model requests will be sent.",
+                  );
+                }}
+              >
+                Local solver
+              </button>
+            </div>
+            <p className="muted">
+              {dirty
+                ? "Load your draft first. The diagram still shows the last loaded position."
+                : "The solution is checked by applying every move to the loaded position."}
+            </p>
+          </div>
+          <div className="task-footer">
+            <div className="twisty-actions">
+              <button
+                className="button"
+                disabled={!restored}
+                onClick={() => load()}
+              >
+                Load scramble
+              </button>
+              <button
+                className="button"
+                onClick={() => {
+                  const input = practiceScramble(
+                    puzzle,
+                    crypto.getRandomValues(new Uint32Array(1))[0],
+                  );
+                  setDrafts((previous) => ({ ...previous, [puzzle]: input }));
+                  load(input);
+                }}
+              >
+                <Shuffle size={16} /> New scramble
+              </button>
+              <button
+                className="button"
+                onClick={() => {
+                  setDrafts((previous) => ({ ...previous, [puzzle]: "" }));
+                  load("");
+                }}
+              >
+                <RotateCcw size={16} /> Reset
+              </button>
+            </div>
+            {mode === "jev" ? (
+              <TwistyJevPlayer
+                key={liveSession}
+                puzzle={puzzle}
+                scramble={applied}
+                disabled={dirty}
+                onMoves={setLiveMoves}
+                onSolved={(value) => {
+                  setResult(value);
+                  setStep(value.moves.length);
+                  revealResults("twisty-solution-panel");
+                }}
+              />
+            ) : (
+              <>
+                <p className="muted">
+                  Local state search only. This comparison mode makes no Jev
+                  request.
+                </p>
+                <div className="twisty-actions">
+                  <button
+                    className="button primary"
+                    disabled={busy || dirty}
+                    onClick={solve}
+                  >
+                    {busy ? "Searching…" : "Solve puzzle"}
+                  </button>
+                  {busy && (
+                    <button
+                      className="button"
+                      onClick={() => {
+                        terminate();
+                        setBusy(false);
+                        setNotice(
+                          "Search cancelled. No solution was accepted.",
+                        );
+                      }}
+                    >
+                      Cancel search
+                    </button>
+                  )}
+                </div>
+              </>
+            )}
+            <p role="status" className="twisty-status">
+              {notice}
+            </p>
+            {error && (
+              <p role="alert" className="error-note">
+                {error}
+              </p>
+            )}
+            {storageNote && <p className="muted">{storageNote}</p>}
+          </div>
         </section>
         <section
           className="panel twisty-view"

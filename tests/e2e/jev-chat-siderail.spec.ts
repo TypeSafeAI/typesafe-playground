@@ -28,6 +28,9 @@ test("the shell siderail navigates out of the chat studio", async ({
       () => document.documentElement.scrollWidth <= innerWidth,
     ),
   ).toBe(true);
+  await rail
+    .getByRole("button", { name: "Agents & workflows workspaces", exact: true })
+    .click();
   await rail.getByRole("link", { name: "Ask gate", exact: true }).click();
   await expect(page).toHaveURL(/\/gate$/);
 });
@@ -40,6 +43,12 @@ test("narrow screens reach the same navigation through the menu", async ({
   await page.locator(".mobile-menu").click();
   const rail = page.locator("aside.sidebar");
   await expect(rail).toBeVisible();
+  await rail
+    .getByRole("button", {
+      name: "Show Agents & workflows workspaces",
+      exact: true,
+    })
+    .click();
   await rail.getByRole("link", { name: "Ask gate", exact: true }).click();
   await expect(page).toHaveURL(/\/gate$/);
 });

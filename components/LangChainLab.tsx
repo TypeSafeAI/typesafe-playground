@@ -88,7 +88,7 @@ export function LangChainLab() {
     }
   }
   return (
-    <div className="workspace compact-lab langchain-workspace">
+    <div className="workspace priority-lab compact-lab langchain-workspace">
       <Heading
         eyebrow="RUNNABLE TYPESCRIPT INTEGRATION"
         title="Jev × LangChain"
@@ -104,104 +104,119 @@ export function LangChainLab() {
         <span>Typed result</span>
       </div>
       <div className="lab-columns">
-        <section className="panel lab-panel">
+        <section className="panel lab-panel priority-input">
           <div className="panel-heading">
             <h2>Invoke the routing tool</h2>
             <span className="tag">@langchain/core</span>
           </div>
-          <fieldset disabled={busy} className="lab-fields">
-            <label>
-              Example request
-              <select
-                aria-label="Example request"
-                defaultValue="0"
-                onChange={(e) => {
-                  setRequest(ROUTER_SCENARIOS[Number(e.target.value)].request);
-                  clear();
-                }}
-              >
-                {ROUTER_SCENARIOS.map((s, i) => (
-                  <option key={s.name} value={i}>
-                    {s.name}
-                  </option>
-                ))}
-              </select>
-            </label>
-            <label>
-              User request
-              <textarea
-                aria-label="User request"
-                rows={4}
-                maxLength={6000}
-                value={request}
-                onChange={(e) => {
-                  setRequest(e.target.value);
-                  clear();
-                }}
-              />
-            </label>
-            <label>
-              Current graph node
-              <select
-                aria-label="Current graph node"
-                value={current}
-                onChange={(e) => {
-                  setCurrent(e.target.value);
-                  clear();
-                }}
-              >
-                <option value="ops_agent">Operations · choose a tool</option>
-                <option value="start">Start · choose an agent</option>
-              </select>
-            </label>
-          </fieldset>
-          <ErrorNote message={error} />
-          <div className="lab-actions">
-            <RunButton
-              busy={busy}
-              onClick={() => invoke("live")}
-              onCancel={() => controller.current?.abort()}
-              disabled={!request.trim()}
-            >
-              Invoke LangChain tool
-            </RunButton>
-            <button
-              className="button"
-              disabled={busy || !request.trim()}
-              onClick={() => invoke("mock")}
-            >
-              Try mock invocation
-            </button>
+          <div
+            className="task-scroll"
+            role="region"
+            aria-label="Tool inputs"
+            tabIndex={0}
+          >
+            <fieldset disabled={busy} className="lab-fields">
+              <label>
+                Example request
+                <select
+                  aria-label="Example request"
+                  defaultValue="0"
+                  onChange={(e) => {
+                    setRequest(
+                      ROUTER_SCENARIOS[Number(e.target.value)].request,
+                    );
+                    clear();
+                  }}
+                >
+                  {ROUTER_SCENARIOS.map((s, i) => (
+                    <option key={s.name} value={i}>
+                      {s.name}
+                    </option>
+                  ))}
+                </select>
+              </label>
+              <label>
+                User request
+                <textarea
+                  aria-label="User request"
+                  rows={4}
+                  maxLength={6000}
+                  value={request}
+                  onChange={(e) => {
+                    setRequest(e.target.value);
+                    clear();
+                  }}
+                />
+              </label>
+              <label>
+                Current graph node
+                <select
+                  aria-label="Current graph node"
+                  value={current}
+                  onChange={(e) => {
+                    setCurrent(e.target.value);
+                    clear();
+                  }}
+                >
+                  <option value="ops_agent">Operations · choose a tool</option>
+                  <option value="start">Start · choose an agent</option>
+                </select>
+              </label>
+            </fieldset>
+
+            <details>
+              <summary>What this integration guarantees</summary>
+              <ul>
+                <li>
+                  Zod validates the request and the two supported routing
+                  points.
+                </li>
+                <li>
+                  Blocked requests stop before Jev; forbidden nodes never enter
+                  the candidate set.
+                </li>
+                <li>
+                  Both scores must reach 85%. Low confidence asks for
+                  clarification.
+                </li>
+                <li>
+                  Configuration changes return an approval requirement, not
+                  permission to execute.
+                </li>
+              </ul>
+            </details>
           </div>
-          <p className="field-hint">
-            Both buttons invoke a real LangChain structured tool on the server.
-            Live mode uses Jev; mock mode substitutes seeded predictions.
-            Neither executes a downstream action.
-          </p>
-          <details>
-            <summary>What this integration guarantees</summary>
-            <ul>
-              <li>
-                Zod validates the request and the two supported routing points.
-              </li>
-              <li>
-                Blocked requests stop before Jev; forbidden nodes never enter
-                the candidate set.
-              </li>
-              <li>
-                Both scores must reach 85%. Low confidence asks for
-                clarification.
-              </li>
-              <li>
-                Configuration changes return an approval requirement, not
-                permission to execute.
-              </li>
-            </ul>
-          </details>
+          <div className="task-footer">
+            <ErrorNote message={error} />
+            <div className="lab-actions">
+              <RunButton
+                busy={busy}
+                onClick={() => invoke("live")}
+                onCancel={() => controller.current?.abort()}
+                disabled={!request.trim()}
+              >
+                Invoke LangChain tool
+              </RunButton>
+              <button
+                className="button"
+                disabled={busy || !request.trim()}
+                onClick={() => invoke("mock")}
+              >
+                Try mock invocation
+              </button>
+            </div>
+            <p className="field-hint">
+              Both buttons invoke a real LangChain structured tool on the
+              server. Live mode uses Jev; mock mode substitutes seeded
+              predictions. Neither executes a downstream action.
+            </p>
+          </div>
         </section>
         <section
           id="langchain-result"
-          className="panel lab-panel lab-result-target"
+          className="panel lab-panel lab-result-target priority-output"
+          aria-label="LangChain tool response"
+          tabIndex={0}
         >
           <div className="panel-heading">
             <h2>Tool response</h2>
@@ -279,38 +294,41 @@ export function LangChainLab() {
           )}
         </section>
       </div>
-      <section className="panel lab-panel integration-code">
-        <div className="panel-heading">
-          <div>
-            <h2>Use it in your TypeScript app</h2>
-            <p className="field-hint">
-              Local integration example · not a published LangChain plugin
-              package
+      <details className="workspace-more">
+        <summary>Use this tool in your TypeScript app</summary>
+        <section className="panel lab-panel integration-code">
+          <div className="panel-heading">
+            <div>
+              <h2>Use it in your TypeScript app</h2>
+              <p className="field-hint">
+                Local integration example · not a published LangChain plugin
+                package
+              </p>
+            </div>
+            <button className="button" onClick={copy}>
+              {copied ? "Copied" : "Copy example"}
+            </button>
+          </div>
+          <pre className="diff-evidence">{snippet}</pre>
+          <div className="integration-notes">
+            <p>
+              <strong>Try locally:</strong> <code>pnpm example:langchain</code>{" "}
+              runs the actual tool through a RunnableLambda chain with mock
+              predictions.
+            </p>
+            <p>
+              <strong>Use live Jev:</strong> set <code>TYPESAFE_API_KEY</code>{" "}
+              in your server environment or <code>.env.local</code>, then run{" "}
+              <code>pnpm example:langchain --live</code>.
+            </p>
+            <p>
+              The factory is in <code>lib/langchain/jev-tool.ts</code>. Pass it
+              as a tool to your LangChain host or call <code>.invoke()</code>{" "}
+              directly. No OpenAI or LangSmith key is required for this example.
             </p>
           </div>
-          <button className="button" onClick={copy}>
-            {copied ? "Copied" : "Copy example"}
-          </button>
-        </div>
-        <pre className="diff-evidence">{snippet}</pre>
-        <div className="integration-notes">
-          <p>
-            <strong>Try locally:</strong> <code>pnpm example:langchain</code>{" "}
-            runs the actual tool through a RunnableLambda chain with mock
-            predictions.
-          </p>
-          <p>
-            <strong>Use live Jev:</strong> set <code>TYPESAFE_API_KEY</code> in
-            your server environment or <code>.env.local</code>, then run{" "}
-            <code>pnpm example:langchain --live</code>.
-          </p>
-          <p>
-            The factory is in <code>lib/langchain/jev-tool.ts</code>. Pass it as
-            a tool to your LangChain host or call <code>.invoke()</code>{" "}
-            directly. No OpenAI or LangSmith key is required for this example.
-          </p>
-        </div>
-      </section>
+        </section>
+      </details>
     </div>
   );
 }

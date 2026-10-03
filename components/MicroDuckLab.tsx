@@ -296,7 +296,7 @@ export function MicroDuckLab() {
   const duck = world.ducks.find((d) => d.id === selected) ?? world.ducks[0];
   const perTick = world.ducks.length * (degrade && hidden.length ? 2 : 1);
   return (
-    <div className="workspace">
+    <div className="workspace microduck-lab">
       <Heading
         eyebrow="MicroDuck arena"
         title="Can a typed choice drive a robot?"
@@ -390,154 +390,159 @@ export function MicroDuckLab() {
                 </>
               }
             />
-            <div className="table-wrap">
-              <table className="duck-roster">
-                <caption className="muted">
-                  Tick {world.tick} · seed {world.seed}. Select a duck to read
-                  its decisions.
-                </caption>
-                <thead>
-                  <tr>
-                    <th>Duck</th>
-                    <th>Battery</th>
-                    <th>Cargo</th>
-                    <th>Delivered</th>
-                    <th>Dents</th>
-                    <th>Wasted</th>
-                  </tr>
-                </thead>
-                <tbody>
-                  {world.ducks.map((d, index) => (
-                    <tr
-                      key={d.id}
-                      data-duck={index + 1}
-                      aria-current={d.id === selected ? "true" : undefined}
-                    >
-                      <td>
-                        <button
-                          className="link-button"
-                          onClick={() => setSelected(d.id)}
-                        >
-                          {d.name}
-                        </button>
-                      </td>
-                      <td>{d.battery}%</td>
-                      <td>{d.carrying ? "aboard" : "—"}</td>
-                      <td>{d.goals}</td>
-                      <td>{d.collisions}</td>
-                      <td>{d.wasted}</td>
+            <details className="game-settings">
+              <summary>Arena setup and robot roster</summary>
+              <div className="table-wrap">
+                <table className="duck-roster">
+                  <caption className="muted">
+                    Tick {world.tick} · seed {world.seed}. Select a duck to read
+                    its decisions.
+                  </caption>
+                  <thead>
+                    <tr>
+                      <th>Duck</th>
+                      <th>Battery</th>
+                      <th>Cargo</th>
+                      <th>Delivered</th>
+                      <th>Dents</th>
+                      <th>Wasted</th>
                     </tr>
-                  ))}
-                </tbody>
-              </table>
-            </div>
-            <fieldset disabled={busy}>
-              <label htmlFor="duck-mode">Who drives</label>
-              <select
-                id="duck-mode"
-                value={mode}
-                onChange={(event) => setMode(event.target.value as ControlMode)}
-              >
-                {Object.entries(modeLabels).map(([value, label]) => (
-                  <option key={value} value={value}>
-                    {label}
-                  </option>
-                ))}
-              </select>
-              <div className="arena-options">
-                <label>
-                  Ducks
-                  <input
-                    type="number"
-                    min={1}
-                    max={4}
-                    value={options.ducks}
-                    onChange={(event) =>
-                      rebuild({ ducks: Number(event.target.value) })
-                    }
-                  />
-                </label>
-                <label>
-                  Seed
-                  <input
-                    type="number"
-                    value={options.seed}
-                    onChange={(event) =>
-                      rebuild({ seed: Number(event.target.value) })
-                    }
-                  />
-                </label>
-                <label>
-                  Width
-                  <input
-                    type="number"
-                    min={5}
-                    max={14}
-                    value={options.width}
-                    onChange={(event) =>
-                      rebuild({ width: Number(event.target.value) })
-                    }
-                  />
-                </label>
-                <label>
-                  Height
-                  <input
-                    type="number"
-                    min={5}
-                    max={14}
-                    value={options.height}
-                    onChange={(event) =>
-                      rebuild({ height: Number(event.target.value) })
-                    }
-                  />
-                </label>
+                  </thead>
+                  <tbody>
+                    {world.ducks.map((d, index) => (
+                      <tr
+                        key={d.id}
+                        data-duck={index + 1}
+                        aria-current={d.id === selected ? "true" : undefined}
+                      >
+                        <td>
+                          <button
+                            className="link-button"
+                            onClick={() => setSelected(d.id)}
+                          >
+                            {d.name}
+                          </button>
+                        </td>
+                        <td>{d.battery}%</td>
+                        <td>{d.carrying ? "aboard" : "—"}</td>
+                        <td>{d.goals}</td>
+                        <td>{d.collisions}</td>
+                        <td>{d.wasted}</td>
+                      </tr>
+                    ))}
+                  </tbody>
+                </table>
               </div>
-              <details className="disclosure">
-                <summary>Withheld-sensor test and model</summary>
-                <label className="checkbox-row">
-                  <input
-                    type="checkbox"
-                    checked={degrade}
-                    onChange={(event) => setDegrade(event.target.checked)}
-                  />
-                  Re-ask each tick with fields withheld
-                </label>
-                <span className="field-hint">
-                  Doubles the requests. The second ask drops these fields from
-                  the state entirely.
-                </span>
-                <div className="field-options">
-                  {hideableFields.map((field) => (
-                    <label
-                      key={field}
-                      className={hidden.includes(field) ? "selected" : ""}
-                    >
-                      <input
-                        type="checkbox"
-                        checked={hidden.includes(field)}
-                        onChange={(event) =>
-                          setHidden(
-                            event.target.checked
-                              ? [...hidden, field]
-                              : hidden.filter((f) => f !== field),
-                          )
-                        }
-                      />
-                      <Check size={13} />
-                      {field}
-                    </label>
+              <fieldset disabled={busy}>
+                <label htmlFor="duck-mode">Who drives</label>
+                <select
+                  id="duck-mode"
+                  value={mode}
+                  onChange={(event) =>
+                    setMode(event.target.value as ControlMode)
+                  }
+                >
+                  {Object.entries(modeLabels).map(([value, label]) => (
+                    <option key={value} value={value}>
+                      {label}
+                    </option>
                   ))}
+                </select>
+                <div className="arena-options">
+                  <label>
+                    Ducks
+                    <input
+                      type="number"
+                      min={1}
+                      max={4}
+                      value={options.ducks}
+                      onChange={(event) =>
+                        rebuild({ ducks: Number(event.target.value) })
+                      }
+                    />
+                  </label>
+                  <label>
+                    Seed
+                    <input
+                      type="number"
+                      value={options.seed}
+                      onChange={(event) =>
+                        rebuild({ seed: Number(event.target.value) })
+                      }
+                    />
+                  </label>
+                  <label>
+                    Width
+                    <input
+                      type="number"
+                      min={5}
+                      max={14}
+                      value={options.width}
+                      onChange={(event) =>
+                        rebuild({ width: Number(event.target.value) })
+                      }
+                    />
+                  </label>
+                  <label>
+                    Height
+                    <input
+                      type="number"
+                      min={5}
+                      max={14}
+                      value={options.height}
+                      onChange={(event) =>
+                        rebuild({ height: Number(event.target.value) })
+                      }
+                    />
+                  </label>
                 </div>
-                <label>
-                  Model
-                  <input
-                    value={model}
-                    maxLength={100}
-                    onChange={(event) => setModel(event.target.value)}
-                  />
-                </label>
-              </details>
-            </fieldset>
+                <details className="disclosure">
+                  <summary>Withheld-sensor test and model</summary>
+                  <label className="checkbox-row">
+                    <input
+                      type="checkbox"
+                      checked={degrade}
+                      onChange={(event) => setDegrade(event.target.checked)}
+                    />
+                    Re-ask each tick with fields withheld
+                  </label>
+                  <span className="field-hint">
+                    Doubles the requests. The second ask drops these fields from
+                    the state entirely.
+                  </span>
+                  <div className="field-options">
+                    {hideableFields.map((field) => (
+                      <label
+                        key={field}
+                        className={hidden.includes(field) ? "selected" : ""}
+                      >
+                        <input
+                          type="checkbox"
+                          checked={hidden.includes(field)}
+                          onChange={(event) =>
+                            setHidden(
+                              event.target.checked
+                                ? [...hidden, field]
+                                : hidden.filter((f) => f !== field),
+                            )
+                          }
+                        />
+                        <Check size={13} />
+                        {field}
+                      </label>
+                    ))}
+                  </div>
+                  <label>
+                    Model
+                    <input
+                      value={model}
+                      maxLength={100}
+                      onChange={(event) => setModel(event.target.value)}
+                    />
+                  </label>
+                </details>
+              </fieldset>
+            </details>
           </div>
           <div className="panel-bottom">
             <label className="tick-count">

@@ -20,9 +20,7 @@ export function SectionPage({ id }: { id: SectionId }) {
             TYPESAFE AI / {group.label.toUpperCase()}
           </p>
           <h1>
-            {lead}
-            <br />
-            <span>{accent}</span>
+            {lead} <span>{accent}</span>
           </h1>
           <p className="home-description">{group.description}</p>
         </div>

@@ -1,5 +1,6 @@
 "use client";
 import Link from "next/link";
+import { WorkspaceNavigation } from "./WorkspaceNavigation";
 import { UsageDashboard } from "./UsageDashboard";
 import { QuotaWarningBanner } from "./QuotaWarningBanner";
 import { ApiKeySettings } from "./ApiKeySettings";
@@ -16,12 +17,7 @@ import {
   Sun,
   Sparkles,
 } from "lucide-react";
-import {
-  groupForPath,
-  homePage,
-  playgroundGroups,
-  playgroundPages as pages,
-} from "../lib/playground";
+import { groupForPath, playgroundPages as pages } from "../lib/playground";
 const NARROW_RAIL_ROUTES = new Set(["/language/jev-chat"]);
 export function Shell({ children }: { children: React.ReactNode }) {
   const path = usePathname();
@@ -195,52 +191,11 @@ export function Shell({ children }: { children: React.ReactNode }) {
             <X size={18} />
           </button>
         </div>
-        <nav aria-label="Workspaces">
-          <Link
-            href="/"
-            prefetch={false}
-            aria-label="Home"
-            title="Home"
-            className={path === "/" ? "active" : ""}
-            aria-current={path === "/" ? "page" : undefined}
-          >
-            <homePage.icon size={18} />
-            <span>Home</span>
-          </Link>
-          {playgroundGroups.map((group) => (
-            <div
-              className="nav-group"
-              key={group.id}
-              role="group"
-              aria-labelledby={`nav-${group.id}`}
-            >
-              <Link
-                href={group.href}
-                prefetch={false}
-                className={`nav-label nav-section-link${path === group.href ? " active" : ""}`}
-                id={`nav-${group.id}`}
-                aria-current={path === group.href ? "page" : undefined}
-                title={`${group.label} section`}
-              >
-                {group.label}
-              </Link>
-              {group.examples.map(({ href, label, icon: Icon }) => (
-                <Link
-                  key={href}
-                  href={href}
-                  prefetch={false}
-                  aria-label={label}
-                  title={label}
-                  className={path === href ? "active" : ""}
-                  aria-current={path === href ? "page" : undefined}
-                >
-                  <Icon size={18} />
-                  <span>{label}</span>
-                </Link>
-              ))}
-            </div>
-          ))}
-        </nav>
+        <WorkspaceNavigation
+          path={path}
+          collapsed={collapsed}
+          mobileOpen={mobileOpen}
+        />
         <div className="sidebar-bottom">
           <div className="model-card">
             <Sparkles size={17} />
@@ -336,7 +291,7 @@ export function Shell({ children }: { children: React.ReactNode }) {
           </div>
         </header>
         <QuotaWarningBanner />
-        <main id="main" tabIndex={-1}>
+        <main id="main" tabIndex={-1} data-layout="priority">
           {children}
         </main>
         <footer className="app-footer">

@@ -33,6 +33,7 @@ export function IqTestLab() {
   const [phase, setPhase] = useState<Phase>("Ready");
   const [results, setResults] = useState<IqResult[]>([]);
   const [selected, setSelected] = useState(0);
+  const [reportSelected, setReportSelected] = useState(false);
   const [active, setActive] = useState<number | null>(null);
   const [notice, setNotice] = useState("");
   const [startedAt, setStartedAt] = useState<string | null>(null);
@@ -53,13 +54,17 @@ export function IqTestLab() {
   }
 
   useEffect(() => {
+    detail.current?.scrollTo({ top: 0 });
+  }, [selected, reportSelected]);
+
+  useEffect(() => {
     if (!following) return;
     if (phase === "Running") detail.current?.scrollIntoView({ block: "start" });
     if (phase === "Complete") {
       finalReport.current?.focus({ preventScroll: true });
       finalReport.current?.scrollIntoView({ block: "start" });
     }
-  }, [phase, selected, following]);
+  }, [phase, selected, following, reportSelected]);
 
   const stop = useCallback(
     (message = "Stopped. Start a new run to try the full test again.") => {
@@ -84,6 +89,7 @@ export function IqTestLab() {
       activeRef.current = null;
       setActive(null);
       setPhase(finished ? "Complete" : "Stopped");
+      setReportSelected(finished && followingRef.current);
       setNotice(finished ? "" : message);
     },
     [],
@@ -98,6 +104,7 @@ export function IqTestLab() {
     setResults([]);
     finalAnswerReady.current = false;
     setPhase("Ready");
+    setReportSelected(false);
     setNotice("");
     setStartedAt(null);
     setSelected(0);
@@ -147,6 +154,7 @@ export function IqTestLab() {
     setResults([]);
     setNotice("");
     setPhase("Running");
+    setReportSelected(false);
     follow(true);
     setSelected(0);
     setStartedAt(new Date().toISOString());
@@ -176,6 +184,7 @@ export function IqTestLab() {
     if (generation.current !== gen || ac.signal.aborted) return;
     controller.current = null;
     setPhase(summarizeIq(collected).complete ? "Complete" : "Incomplete");
+    setReportSelected(summarizeIq(collected).complete && followingRef.current);
   }
 
   const summary = summarizeIq(results);
@@ -253,17 +262,26 @@ export function IqTestLab() {
             {phase} · {MODE_LABELS[mode]}
           </span>
         </div>
-        <p className="muted">
-          {mode === "demo"
-            ? "The local demo always picks A. It shows how scoring works and makes no model calls."
-            : "Uses jev-latest and your configured API key. Up to 24 requests, one question at a time. Answers and explanations are withheld from Jev."}
+        <p className="iq-boundary-summary">
+          Not a standardized IQ score. Estimate uses uncalibrated assumptions.
         </p>
-        <p className="iq-boundary">
-          Not a standardized IQ score. The numerical estimate uses assumed
-          reference values; these original practice puzzles have no human
-          population norms. Difficulty labels are editorial, not measured.
-          Patterns are sent as text, not images.
-        </p>
+        <details className="iq-run-details">
+          <summary>Run details and scoring limits</summary>
+          <p className="muted">
+            {mode === "demo"
+              ? "The local demo always picks A. It shows how scoring works and makes no model calls."
+              : "Uses jev-latest and your configured API key. Up to 24 requests, one question at a time. Answers and explanations are withheld from Jev."}
+          </p>
+          <p className="iq-boundary">
+            The numerical estimate uses assumed reference values; these original
+            practice puzzles have no human population norms. Difficulty labels
+            are editorial, not measured. Patterns are sent as text, not images.
+          </p>
+          <p className="muted">
+            Uniform random guessing would average 6 / 24 across repeated full
+            tests. This is an expected value, not a measured run.
+          </p>
+        </details>
       </section>
 
       <div className="iq-summary" aria-label="Test results">
@@ -300,10 +318,6 @@ export function IqTestLab() {
           value={summary.answered}
           aria-label="Questions answered"
         />
-        <p className="muted">
-          Uniform random guessing would average 6 / 24 across repeated full
-          tests. This is an expected value, not a measured run.
-        </p>
       </div>
       {notice && (
         <p role="status" className="callout">
@@ -311,10 +325,6 @@ export function IqTestLab() {
         </p>
       )}
       <ErrorNote message={error} />
-
-      {phase === "Complete" && summary.complete && (
-        <IqTestReport summary={summary} mode={mode} reportRef={finalReport} />
-      )}
 
       {busy && (
         <div className="iq-player" aria-label="Watch the test">
@@ -357,7 +367,19 @@ export function IqTestLab() {
         <section className="panel iq-answer-sheet" aria-label="Answer sheet">
           <div className="panel-heading">
             <h2>Answer sheet</h2>
-            <span className="muted">Select a question</span>
+            {summary.complete ? (
+              <button
+                className="button quiet"
+                onClick={() => {
+                  setReportSelected(true);
+                  follow(true);
+                }}
+              >
+                Final result
+              </button>
+            ) : (
+              <span className="muted">Select a question</span>
+            )}
           </div>
           <ol>
             {IQ_QUESTIONS.map((item, index) => {
@@ -372,12 +394,15 @@ export function IqTestLab() {
                 <li key={item.id}>
                   <button
                     aria-label={`Question ${index + 1}: ${item.title}, ${status}`}
-                    aria-pressed={selected === index}
+                    aria-pressed={!reportSelected && selected === index}
                     onClick={() => {
                       follow(false);
+                      setReportSelected(false);
                       setSelected(index);
                       if (window.innerWidth < 760)
-                        detail.current?.scrollIntoView({ block: "start" });
+                        requestAnimationFrame(() =>
+                          detail.current?.scrollIntoView({ block: "start" }),
+                        );
                     }}
                   >
                     <span className="iq-number">
@@ -399,79 +424,86 @@ export function IqTestLab() {
           </ol>
         </section>
 
-        <section
-          ref={detail}
-          className="panel iq-question"
-          aria-label="Selected question"
-        >
-          <div className="panel-heading">
-            <h2>{question.title}</h2>
-            <span className="muted">
-              {selected + 1} / {IQ_QUESTIONS.length}
-            </span>
-          </div>
-          <div className="panel-content" key={question.id}>
-            <p className="iq-prompt">{question.prompt}</p>
-            <p className="iq-assumption">
-              <strong>Assumption</strong> {question.assumption}
-            </p>
-            <ol className="iq-options" aria-label="Answer options">
-              {(Object.entries(question.options) as [IqOption, string][]).map(
-                ([id, label]) => (
-                  <li
-                    key={id}
-                    className={result?.choice === id ? "is-selected" : ""}
-                  >
-                    <span className="iq-option-letter">{id.toUpperCase()}</span>
-                    <span>{label}</span>
-                    {result?.probabilities && (
-                      <span
-                        className="iq-probability"
-                        aria-label={`Probability ${percent(result.probabilities[id])}`}
-                      >
-                        {percent(result.probabilities[id])}
-                      </span>
-                    )}
-                  </li>
-                ),
-              )}
-            </ol>
-            <div className="iq-verdict">
-              <strong>
-                {result?.choice
-                  ? `Selected: ${result.choice.toUpperCase()} · ${question.options[result.choice]}`
-                  : active === selected
-                    ? "Waiting for Jev…"
-                    : "No scored answer yet"}
-              </strong>
-              {result && (
-                <p>
-                  {STATUS_LABELS[result.status]} · {MODE_LABELS[mode]}
-                  {result.confidence !== null
-                    ? ` · Reported confidence ${percent(result.confidence)}`
-                    : ""}
-                  {result.latencyMs !== null && result.latencyMs !== undefined
-                    ? ` · ${result.latencyMs} ms`
-                    : ""}
-                </p>
-              )}
-              <p className="muted">
-                Confidence describes the model’s response. The checked answer
-                determines correctness.
-              </p>
+        {summary.complete && reportSelected ? (
+          <IqTestReport summary={summary} mode={mode} reportRef={finalReport} />
+        ) : (
+          <section
+            ref={detail}
+            tabIndex={0}
+            className="panel iq-question"
+            aria-label="Selected question"
+          >
+            <div className="panel-heading">
+              <h2>{question.title}</h2>
+              <span className="muted">
+                {selected + 1} / {IQ_QUESTIONS.length}
+              </span>
             </div>
-            <details>
-              <summary>Checked answer and explanation</summary>
-              <p>
-                <strong>
-                  {question.expected.toUpperCase()} ·{" "}
-                  {question.options[question.expected]}
-                </strong>
+            <div className="panel-content" key={question.id}>
+              <p className="iq-prompt">{question.prompt}</p>
+              <p className="iq-assumption">
+                <strong>Assumption</strong> {question.assumption}
               </p>
-              <p>{question.explanation}</p>
-            </details>
-          </div>
-        </section>
+              <ol className="iq-options" aria-label="Answer options">
+                {(Object.entries(question.options) as [IqOption, string][]).map(
+                  ([id, label]) => (
+                    <li
+                      key={id}
+                      className={result?.choice === id ? "is-selected" : ""}
+                    >
+                      <span className="iq-option-letter">
+                        {id.toUpperCase()}
+                      </span>
+                      <span>{label}</span>
+                      {result?.probabilities && (
+                        <span
+                          className="iq-probability"
+                          aria-label={`Probability ${percent(result.probabilities[id])}`}
+                        >
+                          {percent(result.probabilities[id])}
+                        </span>
+                      )}
+                    </li>
+                  ),
+                )}
+              </ol>
+              <div className="iq-verdict">
+                <strong>
+                  {result?.choice
+                    ? `Selected: ${result.choice.toUpperCase()} · ${question.options[result.choice]}`
+                    : active === selected
+                      ? "Waiting for Jev…"
+                      : "No scored answer yet"}
+                </strong>
+                {result && (
+                  <p>
+                    {STATUS_LABELS[result.status]} · {MODE_LABELS[mode]}
+                    {result.confidence !== null
+                      ? ` · Reported confidence ${percent(result.confidence)}`
+                      : ""}
+                    {result.latencyMs !== null && result.latencyMs !== undefined
+                      ? ` · ${result.latencyMs} ms`
+                      : ""}
+                  </p>
+                )}
+                <p className="muted">
+                  Confidence describes the model’s response. The checked answer
+                  determines correctness.
+                </p>
+              </div>
+              <details>
+                <summary>Checked answer and explanation</summary>
+                <p>
+                  <strong>
+                    {question.expected.toUpperCase()} ·{" "}
+                    {question.options[question.expected]}
+                  </strong>
+                </p>
+                <p>{question.explanation}</p>
+              </details>
+            </div>
+          </section>
+        )}
       </div>
     </div>
   );

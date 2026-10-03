@@ -399,15 +399,18 @@ export function ArcadeLab({
         <Info size={16} />
         <div>
           <strong>Code computes the consequences. Jev picks the move.</strong>
-          <p>
-            Before every move, the game works out what each legal action would
-            do: crash or not, distance to the goal, and a short look-ahead where
-            noted. Jev reads those facts and chooses one action from the offered
-            set. It is a reactive choice, not a planner, and a malformed answer
-            plays a safe fallback that is counted separately. Scores are
-            compared with a random baseline on the same seed, which sees the
-            identical world.
-          </p>
+          <details className="game-explanation">
+            <summary>How choices and comparisons work</summary>
+            <p>
+              Before every move, the game works out what each legal action would
+              do: crash or not, distance to the goal, and a short look-ahead
+              where noted. Jev reads those facts and chooses one action from the
+              offered set. It is a reactive choice, not a planner, and a
+              malformed answer plays a safe fallback that is counted separately.
+              Scores are compared with a random baseline on the same seed, which
+              sees the identical world.
+            </p>
+          </details>
         </div>
       </div>
       <div className="split arcade-split">
@@ -515,20 +518,6 @@ export function ArcadeLab({
                 <span>{game.scoreLabel}</span>
                 <strong data-testid="arcade-score">{score}</strong>
               </div>
-              <dl className="arcade-compare">
-                <div>
-                  <dt>Random baseline, this seed</dt>
-                  <dd>{baseline.sameSeed}</dd>
-                </div>
-                <div>
-                  <dt>Random baseline, mean of {baseline.runs} seeds</dt>
-                  <dd>{baseline.mean.toFixed(1)}</dd>
-                </div>
-                <div>
-                  <dt>Scripted rule, this seed</dt>
-                  <dd>{scripted.score}</dd>
-                </div>
-              </dl>
               {over && history.length > 0 && (
                 <p className="arcade-verdict" data-verdict={verdict}>
                   {MODE_LABELS[mode]} {verdict} the random baseline on this
@@ -538,36 +527,55 @@ export function ArcadeLab({
                     : ""}
                 </p>
               )}
-              {mode === "jev" && (
-                <dl className="arcade-stats">
+              <details className="game-metrics">
+                <summary>Baseline comparison and decision metrics</summary>
+                <dl className="arcade-compare">
                   <div>
-                    <dt>Jev choices</dt>
-                    <dd>{jevRecords.length}</dd>
+                    <dt>Random baseline, this seed</dt>
+                    <dd>{baseline.sameSeed}</dd>
                   </div>
                   <div>
-                    <dt>Forced moves</dt>
-                    <dd>{forced}</dd>
+                    <dt>Random baseline, mean of {baseline.runs} seeds</dt>
+                    <dd>{baseline.mean.toFixed(1)}</dd>
                   </div>
                   <div>
-                    <dt>Fallbacks</dt>
-                    <dd>{fallbacks}</dd>
-                  </div>
-                  <div>
-                    <dt>Mean confidence</dt>
-                    <dd>
-                      {meanConfidence === null ? "—" : percent(meanConfidence)}
-                    </dd>
-                  </div>
-                  <div>
-                    <dt>Mean latency</dt>
-                    <dd>
-                      {meanLatency === null
-                        ? "—"
-                        : `${Math.round(meanLatency)} ms`}
-                    </dd>
+                    <dt>Scripted rule, this seed</dt>
+                    <dd>{scripted.score}</dd>
                   </div>
                 </dl>
-              )}
+                {mode === "jev" && (
+                  <dl className="arcade-stats">
+                    <div>
+                      <dt>Jev choices</dt>
+                      <dd>{jevRecords.length}</dd>
+                    </div>
+                    <div>
+                      <dt>Forced moves</dt>
+                      <dd>{forced}</dd>
+                    </div>
+                    <div>
+                      <dt>Fallbacks</dt>
+                      <dd>{fallbacks}</dd>
+                    </div>
+                    <div>
+                      <dt>Mean confidence</dt>
+                      <dd>
+                        {meanConfidence === null
+                          ? "—"
+                          : percent(meanConfidence)}
+                      </dd>
+                    </div>
+                    <div>
+                      <dt>Mean latency</dt>
+                      <dd>
+                        {meanLatency === null
+                          ? "—"
+                          : `${Math.round(meanLatency)} ms`}
+                      </dd>
+                    </div>
+                  </dl>
+                )}
+              </details>
             </div>
           </section>
           <section className="panel arcade-setup">
@@ -660,64 +668,67 @@ export function ArcadeLab({
           </section>
         </div>
       </div>
-      <div className="split arcade-split-lower">
-        <section className="panel">
-          <div className="panel-heading">
-            <h2>The decision</h2>
-            {shown && <span className="muted">move {shown.tick + 1}</span>}
-          </div>
-          <div className="panel-content">
-            {shown ? (
-              <DecisionDetail record={shown} labels={game.actionLabels} />
-            ) : (
-              <Empty title="No moves yet">
-                Press Play or One move. Each move shows the facts the game
-                computed for every legal action and the choice that was made.
-              </Empty>
-            )}
-          </div>
-        </section>
-        <section className="panel">
-          <div className="panel-heading">
-            <h2>Move log</h2>
-            <span className="muted">{history.length} moves</span>
-          </div>
-          <div className="panel-content">
-            {history.length ? (
-              <ol className="arcade-log" reversed>
-                {history
-                  .slice(-60)
-                  .reverse()
-                  .map((r) => (
-                    <li key={r.tick}>
-                      <button
-                        type="button"
-                        aria-pressed={shown?.tick === r.tick}
-                        onClick={() => setSelected(r.tick)}
-                      >
-                        <span className="arcade-log-tick">{r.tick + 1}</span>
-                        <span className="arcade-log-action">
-                          {game.actionLabels[r.action] ?? r.action}
-                        </span>
-                        <span className={`arcade-source source-${r.source}`}>
-                          {SOURCE_LABELS[r.source]}
-                        </span>
-                        <span className="arcade-log-conf">
-                          {r.confidence === null ? "" : percent(r.confidence)}
-                        </span>
-                      </button>
-                    </li>
-                  ))}
-              </ol>
-            ) : (
-              <Empty title="No moves yet">
-                Every move lands here with who chose it: Jev, a forced move, a
-                fallback, the scripted rule, random, or you.
-              </Empty>
-            )}
-          </div>
-        </section>
-      </div>
+      <details className="workspace-more game-history">
+        <summary>Decision details and move history</summary>
+        <div className="split arcade-split-lower">
+          <section className="panel">
+            <div className="panel-heading">
+              <h2>The decision</h2>
+              {shown && <span className="muted">move {shown.tick + 1}</span>}
+            </div>
+            <div className="panel-content">
+              {shown ? (
+                <DecisionDetail record={shown} labels={game.actionLabels} />
+              ) : (
+                <Empty title="No moves yet">
+                  Press Play or One move. Each move shows the facts the game
+                  computed for every legal action and the choice that was made.
+                </Empty>
+              )}
+            </div>
+          </section>
+          <section className="panel">
+            <div className="panel-heading">
+              <h2>Move log</h2>
+              <span className="muted">{history.length} moves</span>
+            </div>
+            <div className="panel-content">
+              {history.length ? (
+                <ol className="arcade-log" reversed>
+                  {history
+                    .slice(-60)
+                    .reverse()
+                    .map((r) => (
+                      <li key={r.tick}>
+                        <button
+                          type="button"
+                          aria-pressed={shown?.tick === r.tick}
+                          onClick={() => setSelected(r.tick)}
+                        >
+                          <span className="arcade-log-tick">{r.tick + 1}</span>
+                          <span className="arcade-log-action">
+                            {game.actionLabels[r.action] ?? r.action}
+                          </span>
+                          <span className={`arcade-source source-${r.source}`}>
+                            {SOURCE_LABELS[r.source]}
+                          </span>
+                          <span className="arcade-log-conf">
+                            {r.confidence === null ? "" : percent(r.confidence)}
+                          </span>
+                        </button>
+                      </li>
+                    ))}
+                </ol>
+              ) : (
+                <Empty title="No moves yet">
+                  Every move lands here with who chose it: Jev, a forced move, a
+                  fallback, the scripted rule, random, or you.
+                </Empty>
+              )}
+            </div>
+          </section>
+        </div>
+      </details>
     </div>
   );
 }

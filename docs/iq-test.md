@@ -10,9 +10,9 @@ The default **Local demo** always picks A. It makes no model requests and shows 
 
 Select **Live Jev**, then **Run test**, to use `jev-latest` with the configured key. The run sends at most 24 sequential requests. Each answered question stays visible for two seconds before the next question; the last answer has the same reading pause before the final report. Each request contains only that question's prompt, assumption, and four choices. Reference answers, explanations, other questions and previous results are not sent. Symbol patterns are text; Jev receives no images.
 
-The question view follows the run automatically. A sticky player shows the current question, selected answer and correctness, with a **Stop** button. Selecting an earlier question suspends following while Jev continues; check **Follow current question** to rejoin the current question. Live answers show the reported confidence, choice probabilities and request time. Confidence does not determine correctness: code compares the selected option to the reference key. Reveal **Checked answer and explanation** to inspect that key.
+The question view follows the run automatically. A player shows the current question, selected answer and correctness, with a **Stop** button. Selecting an earlier question suspends following while Jev continues; check **Follow current question** to rejoin the current question. Live answers show the reported confidence, choice probabilities and request time. Confidence does not determine correctness: code compares the selected option to the reference key. Reveal **Checked answer and explanation** to inspect that key.
 
-After all 24 answers, the final report shows the numerical IQ estimate, raw score and percentage, total correct/incorrect/unscored counts, and numerical, logical and pattern breakdowns. Following moves the view and keyboard focus to that report. If you are inspecting an earlier answer, the report appears without moving your view. Open **How this estimate is calculated** to inspect the assumptions.
+After all 24 answers, the final report shows the numerical IQ estimate, raw score and percentage, total correct/incorrect/unscored counts, and numerical, logical and pattern breakdowns. Following moves the view and keyboard focus to that report. If you are inspecting an earlier answer, your view stays on it; select **Final result** in the answer-sheet header to open the report. Selecting any question returns to its prompt. Open **How this estimate is calculated** to inspect the assumptions.
 
 ## Numerical estimate
 
@@ -25,12 +25,12 @@ estimated IQ = round(100 + 15 × (correct − 12) / 4)
 The assumed raw-score mean of **12 correct out of 24** and standard deviation of **4 answers** are provisional design choices. They have not been measured in a human sample or validated for Jev. Twelve is the midpoint of this small set; the assumed four-answer spread maps its endpoints three scale deviations from 100. Changing these assumptions changes the estimate. The displayed whole number is rounded, not a claim of measurement precision. There are now 25 possible raw scores and 25 distinct rounded estimates, with each answer changing the estimate by three or four points. The endpoints remain 55–145; more questions add score resolution without demonstrating better calibration or guaranteeing Jev will miss more answers.
 
 | Correct | Estimated value |
-| --- | --- |
-| 0/24 | 55 |
-| 6/24 | 78 |
-| 12/24 | 100 |
-| 18/24 | 123 |
-| 24/24 | 145 |
+| ------- | --------------- |
+| 0/24    | 55              |
+| 6/24    | 78              |
+| 12/24   | 100             |
+| 18/24   | 123             |
+| 24/24   | 145             |
 
 The 100/15 scale follows a common standard-score convention described in [Pearson's assessment primer, pages 3–4](https://www.pearsonclinical.com.au/content/dam/school/global/clinical/ca/assets/featured-topics/assessment-primer-whitepaper-can.pdf). That source also explains that standardized reference values come from normative data. It does **not** validate this playground's assumed 12/4 reference values, its questions, or comparisons between Jev and people. No percentile, confidence interval, intelligence classification or clinical interpretation is inferred.
 

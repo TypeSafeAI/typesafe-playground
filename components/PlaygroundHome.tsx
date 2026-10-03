@@ -26,14 +26,14 @@ export function PlaygroundHome() {
     .filter((group) => group.examples.length);
   const count = groups.reduce((sum, group) => sum + group.examples.length, 0);
   return (
-    <div className="workspace playground-home">
+    <div
+      className={`workspace playground-home${category === "all" && !query.trim() ? " home-overview" : ""}`}
+    >
       <header className="home-intro">
         <div>
           <p className="home-eyebrow">TYPESAFE AI / COMMUNITY PLAYGROUND</p>
           <h1>
-            Small model.
-            <br />
-            <span>Many possibilities.</span>
+            Small model. <span>Many possibilities.</span>
           </h1>
           <p className="home-description">
             Explore Jev through {total} hands-on examples. Give it context,

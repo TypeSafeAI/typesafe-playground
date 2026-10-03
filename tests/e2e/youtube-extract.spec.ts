@@ -156,6 +156,7 @@ test("stop prevents queued scoring and preserves unknown cost", async ({
   await expect(page.getByTestId("extract-text")).toHaveText(
     "No eligible chunks selected.",
   );
+  await page.locator(".extract-run-metrics > summary").click();
   await expect(
     page.getByText("1 calls with unknown usage", { exact: false }),
   ).toBeVisible();

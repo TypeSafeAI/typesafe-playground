@@ -1,0 +1,1114 @@
+/* Priority layouts keep actions and outcomes in view; secondary content can scroll. */
+.dashboard-shell #main[data-layout="priority"] .workspace {
+  padding: 16px 20px 12px;
+  gap: 14px;
+}
+.dashboard-shell #main[data-layout="priority"] .page-heading {
+  gap: 16px;
+  align-items: center;
+}
+.dashboard-shell #main[data-layout="priority"] .page-heading h1 {
+  font-size: clamp(22px, 1.9vw, 28px);
+  line-height: 1.2;
+}
+.dashboard-shell #main[data-layout="priority"] .page-heading .eyebrow {
+  margin-bottom: 5px;
+}
+.dashboard-shell #main[data-layout="priority"] .page-heading p {
+  margin-top: 6px;
+  font-size: 13px;
+  line-height: 1.5;
+}
+.dashboard-shell #main[data-layout="priority"] .panel-heading {
+  min-height: 44px;
+  padding: 10px 16px;
+}
+.dashboard-shell #main[data-layout="priority"] .panel-heading .muted {
+  color: var(--muted);
+}
+.dashboard-shell #main[data-layout="priority"] .panel-content {
+  padding: 16px;
+}
+.dashboard-shell #main[data-layout="priority"] .panel-bottom {
+  padding: 10px 16px;
+}
+.dashboard-shell .app-footer {
+  padding-block: 7px;
+}
+
+/* Inputs scroll independently of their action footer; results keep their own region. */
+.task-scroll {
+  min-height: 0;
+  overflow: auto;
+  overscroll-behavior: contain;
+  scrollbar-width: thin;
+  padding: 16px;
+}
+.task-footer {
+  flex: none;
+  padding: 12px 16px;
+  border-top: 1px solid var(--line);
+  background: var(--panel);
+}
+.task-footer .lab-actions {
+  margin: 0;
+}
+.task-footer .field-hint,
+.task-footer .notice {
+  margin: 8px 0 0;
+  font-size: 12px;
+  line-height: 1.45;
+}
+.task-scroll:focus-visible,
+.priority-output:focus-visible {
+  outline: 2px solid var(--accent);
+  outline-offset: -3px;
+}
+.dashboard-shell #main[data-layout="priority"] .priority-input {
+  padding: 0;
+  display: flex;
+}
+.dashboard-shell
+  #main[data-layout="priority"]
+  .priority-input
+  > .panel-heading {
+  margin: 0;
+  border-bottom: 1px solid var(--line);
+}
+.priority-input > .task-scroll {
+  flex: 1;
+}
+.dashboard-shell #main[data-layout="priority"] .priority-output {
+  display: block;
+  overflow: auto;
+  overscroll-behavior: contain;
+  scrollbar-width: thin;
+  padding: 16px;
+}
+.dashboard-shell
+  #main[data-layout="priority"]
+  .priority-output
+  > .panel-heading {
+  margin: -16px -16px 12px;
+  position: sticky;
+  top: -16px;
+  background: var(--panel);
+  z-index: 1;
+  border-bottom: 1px solid var(--line);
+}
+.workspace-more {
+  border: 1px solid var(--line);
+  border-radius: 9px;
+  background: var(--panel);
+  padding: 8px 12px;
+  flex: none;
+}
+.workspace-more > summary {
+  min-height: 24px;
+  display: list-item;
+  cursor: pointer;
+  font-size: 12px;
+  font-weight: 600;
+}
+.workspace-more[open] {
+  max-height: min(50dvh, 420px);
+  overflow: auto;
+}
+.workspace-more > .panel {
+  margin-top: 10px;
+}
+.dashboard-shell #main[data-layout="priority"] .priority-lab .integration-flow,
+.dashboard-shell #main[data-layout="priority"] .router-journey {
+  padding: 9px 12px;
+  gap: 10px;
+}
+.dashboard-shell #main[data-layout="priority"] .solver-scenarios {
+  gap: 8px;
+}
+.dashboard-shell #main[data-layout="priority"] .solver-scenario {
+  padding: 9px 10px;
+  gap: 5px;
+}
+.dashboard-shell
+  #main[data-layout="priority"]
+  .solver-scenario
+  > span:last-child {
+  display: none;
+}
+.dashboard-shell #main[data-layout="priority"] .solver-question {
+  padding: 8px 0;
+  margin: 0;
+  background: transparent;
+  border: 0;
+}
+.dashboard-shell #main[data-layout="priority"] .solver-question .eyebrow {
+  margin-top: 10px;
+}
+@media (min-width: 961px) and (min-height: 560px) {
+  .dashboard-shell #main[data-layout="priority"]:has(> .priority-lab) {
+    overflow: hidden;
+  }
+  .dashboard-shell #main[data-layout="priority"] > .priority-lab {
+    height: 100%;
+    min-height: 0;
+    overflow: hidden;
+  }
+  .dashboard-shell #main[data-layout="priority"] .priority-lab > .lab-columns {
+    flex: 1;
+    min-height: 0;
+    align-items: stretch;
+    overflow: hidden;
+  }
+  .dashboard-shell
+    #main[data-layout="priority"]
+    .priority-lab
+    > .lab-columns
+    > .panel {
+    min-height: 0;
+    height: 100%;
+  }
+}
+@media (max-width: 960px), (max-height: 559px) {
+  .dashboard-shell #main[data-layout="priority"] .priority-input .task-scroll {
+    max-height: 50dvh;
+  }
+  .dashboard-shell #main[data-layout="priority"] .priority-output {
+    max-height: 75dvh;
+  }
+  .dashboard-shell #main[data-layout="priority"] .priority-lab {
+    overflow: visible;
+  }
+  .dashboard-shell #main[data-layout="priority"] .priority-lab .lab-columns {
+    grid-template-columns: minmax(0, 1fr);
+  }
+}
+
+/* Discovery starts with the workspaces; detailed cards are one section/filter away. */
+.dashboard-shell #main[data-layout="priority"] .home-intro {
+  padding: 0 0 12px;
+  gap: 16px;
+}
+.dashboard-shell #main[data-layout="priority"] .home-intro h1 {
+  font-size: clamp(24px, 2.4vw, 32px);
+  line-height: 1.15;
+}
+.dashboard-shell #main[data-layout="priority"] .home-eyebrow {
+  margin-bottom: 6px;
+}
+.dashboard-shell #main[data-layout="priority"] .home-description {
+  margin-top: 8px;
+  line-height: 1.5;
+}
+.dashboard-shell #main[data-layout="priority"] .home-guide {
+  margin-top: 8px;
+}
+.dashboard-shell #main[data-layout="priority"] .home-signal {
+  gap: 6px;
+}
+.dashboard-shell #main[data-layout="priority"] .home-signal > span {
+  padding: 8px;
+}
+.dashboard-shell #main[data-layout="priority"] .home-signal p {
+  margin-top: 3px;
+}
+.dashboard-shell #main[data-layout="priority"] .home-discovery {
+  padding: 12px 0 8px;
+  gap: 8px;
+}
+.dashboard-shell #main[data-layout="priority"] .home-count {
+  margin-bottom: 10px;
+}
+.dashboard-shell #main[data-layout="priority"] .home-section-heading {
+  margin-bottom: 8px;
+}
+.dashboard-shell #main[data-layout="priority"] .home-section-heading h2 {
+  font-size: 15px;
+}
+.dashboard-shell #main[data-layout="priority"] .home-note {
+  padding-top: 10px;
+  margin-top: 10px;
+}
+.dashboard-shell #main[data-layout="priority"] .section-others {
+  margin-top: 12px;
+  padding-top: 12px;
+}
+.dashboard-shell
+  #main[data-layout="priority"]
+  .section-page
+  .home-example-card {
+  padding: 12px;
+}
+.dashboard-shell #main[data-layout="priority"] .section-page .home-card-top {
+  margin-bottom: 8px;
+}
+.dashboard-shell
+  #main[data-layout="priority"]
+  .section-page
+  .home-example-card
+  p {
+  margin: 6px 0 10px;
+  line-height: 1.45;
+}
+.dashboard-shell #main[data-layout="priority"] .section-page .home-card-flow {
+  display: none;
+}
+.dashboard-shell #main[data-layout="priority"] .section-page .home-card-grid {
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+  gap: 10px;
+}
+.dashboard-shell
+  #main[data-layout="priority"]
+  .section-page
+  .home-example-card {
+  grid-column: auto;
+}
+.dashboard-shell
+  #main[data-layout="priority"]
+  .section-page
+  .home-example-card
+  h3 {
+  font-size: 14px;
+}
+.dashboard-shell #main[data-layout="priority"] .home-overview .home-sections {
+  grid-template-columns: repeat(6, minmax(0, 1fr));
+  gap: 12px;
+}
+.dashboard-shell #main[data-layout="priority"] .home-overview .home-section {
+  grid-column: span 2;
+  padding: 12px;
+  background: var(--panel);
+  border: 1px solid var(--line);
+  border-radius: 12px;
+}
+.dashboard-shell
+  #main[data-layout="priority"]
+  .home-overview
+  .home-section:nth-child(-n + 2) {
+  grid-column: span 3;
+}
+.dashboard-shell
+  #main[data-layout="priority"]
+  .home-overview
+  .home-section-heading {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  flex-wrap: wrap;
+  gap: 6px;
+}
+.dashboard-shell
+  #main[data-layout="priority"]
+  .home-overview
+  .home-section-heading
+  > p {
+  display: none;
+}
+.dashboard-shell
+  #main[data-layout="priority"]
+  .home-overview
+  .home-section-link {
+  position: static;
+  margin: 0;
+  font-size: 11px;
+}
+.dashboard-shell #main[data-layout="priority"] .home-overview .home-card-grid {
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 3px;
+}
+.dashboard-shell
+  #main[data-layout="priority"]
+  .home-overview
+  .home-example-card {
+  grid-column: auto;
+  display: flex;
+  flex-direction: row;
+  align-items: center;
+  min-height: 36px;
+  gap: 7px;
+  padding: 6px;
+  border: 0;
+  border-radius: 6px;
+  background: transparent;
+}
+.dashboard-shell
+  #main[data-layout="priority"]
+  .home-overview
+  .home-example-card:hover {
+  background: var(--accent-soft);
+}
+.dashboard-shell
+  #main[data-layout="priority"]
+  .home-overview
+  .home-example-card
+  h3 {
+  font-size: 12px;
+  line-height: 1.4;
+  font-weight: 550;
+}
+.dashboard-shell #main[data-layout="priority"] .home-overview .home-card-top {
+  margin: 0;
+  flex: none;
+}
+.dashboard-shell
+  #main[data-layout="priority"]
+  .home-overview
+  .home-card-top
+  > svg:first-child {
+  width: 16px;
+  height: 16px;
+}
+.dashboard-shell
+  #main[data-layout="priority"]
+  .home-overview
+  :is(
+    .home-card-ord,
+    .home-card-arrow,
+    .home-example-card > p,
+    .home-card-flow
+  ) {
+  display: none;
+}
+@media (max-width: 960px) {
+  .dashboard-shell #main[data-layout="priority"] .home-overview .home-section,
+  .dashboard-shell
+    #main[data-layout="priority"]
+    .home-overview
+    .home-section:nth-child(-n + 2) {
+    grid-column: span 3;
+  }
+  .dashboard-shell #main[data-layout="priority"] .section-page .home-card-grid {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+  }
+}
+@media (max-width: 600px) {
+  .dashboard-shell #main[data-layout="priority"] .home-overview .home-sections,
+  .dashboard-shell #main[data-layout="priority"] .section-page .home-card-grid {
+    grid-template-columns: minmax(0, 1fr);
+  }
+  .dashboard-shell #main[data-layout="priority"] .home-overview .home-section,
+  .dashboard-shell
+    #main[data-layout="priority"]
+    .home-overview
+    .home-section:nth-child(-n + 2) {
+    grid-column: auto;
+  }
+  .dashboard-shell
+    #main[data-layout="priority"]
+    .home-overview
+    .home-example-card {
+    min-height: 44px;
+  }
+  .dashboard-shell #main[data-layout="priority"] .workspace {
+    padding: 12px;
+    gap: 12px;
+  }
+}
+
+/* Games: the board, execution mode and play controls lead; history is optional. */
+.game-explanation > summary,
+.game-settings > summary {
+  min-height: 24px;
+  cursor: pointer;
+  font-size: 12px;
+  color: var(--muted);
+}
+.game-explanation {
+  margin-top: 4px;
+}
+.game-explanation[open] {
+  max-height: 25dvh;
+  overflow: auto;
+}
+.dashboard-shell
+  #main[data-layout="priority"]
+  :is(.chess-callout, .arcade-callout) {
+  padding: 9px 12px;
+  gap: 8px;
+}
+.dashboard-shell #main[data-layout="priority"] .game-history {
+  padding: 8px 12px;
+}
+.dashboard-shell #main[data-layout="priority"] .game-history > .split {
+  margin-top: 12px;
+}
+.dashboard-shell #main[data-layout="priority"] .cr-examples {
+  margin: 0;
+  gap: 10px;
+}
+.dashboard-shell #main[data-layout="priority"] .cr-example {
+  padding: 10px 12px;
+  gap: 6px;
+  display: grid;
+  grid-template-columns: 24px 1fr;
+}
+.dashboard-shell #main[data-layout="priority"] .cr-example strong {
+  font-size: 14px;
+}
+.dashboard-shell #main[data-layout="priority"] .cr-example span {
+  grid-column: 1 / -1;
+  font-size: 12px;
+  line-height: 1.4;
+}
+.dashboard-shell #main[data-layout="priority"] .cr-example small {
+  display: none;
+}
+.dashboard-shell #main[data-layout="priority"] :is(.cr-brief, .cr-progress) {
+  padding: 16px;
+}
+.dashboard-shell #main[data-layout="priority"] .cr-workbench h2 {
+  font-size: 18px;
+  margin: 5px 0 10px;
+}
+.dashboard-shell #main[data-layout="priority"] .cr-note {
+  margin: 8px 0;
+  line-height: 1.5;
+  opacity: 1;
+  color: var(--muted);
+}
+.dashboard-shell #main[data-layout="priority"] .clean-room-lab details {
+  margin: 8px 0;
+}
+.dashboard-shell #main[data-layout="priority"] .cr-brief .button {
+  margin-top: 8px;
+}
+.dashboard-shell #main[data-layout="priority"] .cr-progress ol {
+  margin: 10px 0;
+}
+.dashboard-shell #main[data-layout="priority"] .cr-progress li {
+  padding: 7px 0;
+}
+.dashboard-shell #main[data-layout="priority"] .cr-status {
+  padding-top: 10px;
+}
+.dashboard-shell
+  #main[data-layout="priority"]
+  .microduck-stage:not(.is-fullscreen)
+  .microduck-scene-wrap {
+  height: clamp(160px, calc(100dvh - 490px), 280px);
+  min-height: 0;
+}
+.dashboard-shell
+  #main[data-layout="priority"]
+  .microduck-stage:not(.is-fullscreen)
+  .microduck-scene {
+  height: 100%;
+  min-height: 0;
+}
+.dashboard-shell
+  #main[data-layout="priority"]
+  .microduck-stage:not(.is-fullscreen)
+  .microduck-stage-header {
+  padding: 10px 12px;
+}
+.dashboard-shell
+  #main[data-layout="priority"]
+  .microduck-stage:not(.is-fullscreen)
+  .microduck-console {
+  padding: 10px;
+  gap: 8px;
+}
+.dashboard-shell #main[data-layout="priority"] .microduck-lab .game-settings {
+  margin-top: 12px;
+}
+.dashboard-shell #main[data-layout="priority"] .twisty-controls {
+  padding: 0;
+}
+.dashboard-shell #main[data-layout="priority"] .twisty-controls > .task-scroll {
+  flex: 1;
+}
+.dashboard-shell #main[data-layout="priority"] .twisty-actions {
+  margin: 10px 0;
+}
+.dashboard-shell #main[data-layout="priority"] .twisty-section-heading {
+  margin: 4px 0 10px;
+}
+.dashboard-shell #main[data-layout="priority"] .twisty-section-heading h2 {
+  font-size: 15px;
+}
+.dashboard-shell #main[data-layout="priority"] .twisty-controls label {
+  margin-top: 12px;
+}
+.dashboard-shell #main[data-layout="priority"] .twisty-status {
+  min-height: 0;
+  margin: 6px 0;
+}
+.dashboard-shell #main[data-layout="priority"] .twisty-jev p {
+  margin: 6px 0;
+  font-size: 12px;
+  line-height: 1.45;
+}
+.dashboard-shell #main[data-layout="priority"] .twisty-execution summary {
+  font-size: 12px;
+  min-height: 24px;
+  cursor: pointer;
+}
+.dashboard-shell #main[data-layout="priority"] .twisty-view {
+  padding: 16px;
+}
+.dashboard-shell #main[data-layout="priority"] .twisty-help {
+  margin: 0;
+  padding: 9px 12px;
+}
+.dashboard-shell #main[data-layout="priority"] .twisty-help[open] {
+  max-height: 40dvh;
+  overflow: auto;
+}
+.dashboard-shell #main[data-layout="priority"] .twisty-board {
+  margin: 8px 0;
+  min-height: 160px;
+}
+.dashboard-shell #main[data-layout="priority"] .twisty-board svg {
+  height: clamp(180px, calc(100dvh - 450px), 330px);
+}
+@media (min-width: 961px) and (min-height: 560px) {
+  .dashboard-shell
+    #main[data-layout="priority"]
+    > :is(.chess-lab, .arcade-lab, .doom-lab, .twisty-workspace) {
+    height: 100%;
+    min-height: 0;
+    overflow: hidden;
+  }
+  .dashboard-shell
+    #main[data-layout="priority"]
+    :is(.chess-lab, .arcade-lab)
+    > .split {
+    flex: 1;
+    min-height: 0;
+    align-items: stretch;
+    height: auto;
+    overflow: hidden;
+  }
+  .dashboard-shell
+    #main[data-layout="priority"]
+    .chess-board-panel
+    .panel-content {
+    flex: 1;
+    min-height: 0;
+    overflow: auto;
+    display: grid;
+    place-items: center;
+  }
+  .dashboard-shell #main[data-layout="priority"] .chess-board-wrap {
+    max-width: min(100%, calc(100dvh - 395px));
+  }
+  .dashboard-shell #main[data-layout="priority"] .chess-setup {
+    overflow: auto;
+  }
+  .dashboard-shell #main[data-layout="priority"] .arcade-side {
+    overflow: auto;
+    align-content: start;
+  }
+  .dashboard-shell
+    #main[data-layout="priority"]
+    .arcade-board-panel
+    .panel-content {
+    flex: 1;
+    min-height: 0;
+    overflow: auto;
+    padding: 10px;
+  }
+  .dashboard-shell #main[data-layout="priority"] .arcade-board {
+    --board-max-height: max(170px, calc(100dvh - 410px));
+  }
+  .dashboard-shell #main[data-layout="priority"] .arcade-controls {
+    padding: 8px 12px;
+  }
+  .dashboard-shell #main[data-layout="priority"] .doom-layout {
+    flex: 1;
+    min-height: 0;
+    align-items: stretch;
+    overflow: hidden;
+  }
+  .dashboard-shell
+    #main[data-layout="priority"]
+    .doom-arena-panel:not(.doom-fullscreen)
+    .doom-arena-content {
+    flex: 1;
+    min-height: 0;
+    display: flex;
+    flex-direction: column;
+    gap: 8px;
+    overflow: auto;
+    padding: 12px;
+  }
+  .dashboard-shell
+    #main[data-layout="priority"]
+    .doom-arena-panel:not(.doom-fullscreen)
+    .doom-viewport {
+    flex: 1;
+    min-height: 180px;
+    height: auto;
+    aspect-ratio: auto;
+    margin: 0;
+  }
+  .dashboard-shell
+    #main[data-layout="priority"]
+    .doom-arena-panel:not(.doom-fullscreen)
+    .doom-mode {
+    margin: 0;
+  }
+  .dashboard-shell
+    #main[data-layout="priority"]
+    .doom-arena-panel:not(.doom-fullscreen)
+    .doom-actions {
+    margin: 0;
+    flex: none;
+  }
+  .dashboard-shell #main[data-layout="priority"] .doom-decision-content {
+    overflow: auto;
+    min-height: 0;
+  }
+  .dashboard-shell #main[data-layout="priority"] .twisty-layout {
+    flex: 1;
+    min-height: 0;
+    align-items: stretch;
+    overflow: hidden;
+  }
+  .dashboard-shell #main[data-layout="priority"] .twisty-view {
+    overflow: auto;
+  }
+  .dashboard-shell #main[data-layout="priority"] .twisty-controls .task-footer {
+    max-height: 48%;
+    overflow: auto;
+  }
+}
+
+/* The IQ player keeps the current question/result beside a bounded answer list. */
+.dashboard-shell #main[data-layout="priority"] .iq-controls {
+  padding: 10px 14px;
+  gap: 6px;
+}
+.dashboard-shell #main[data-layout="priority"] .iq-boundary-summary {
+  font-size: 12px;
+  color: var(--muted);
+  margin: 0;
+}
+.dashboard-shell #main[data-layout="priority"] .iq-run-details {
+  font-size: 12px;
+}
+.iq-run-details summary {
+  min-height: 24px;
+  cursor: pointer;
+}
+.iq-run-details[open] {
+  max-height: 30dvh;
+  overflow: auto;
+}
+.dashboard-shell #main[data-layout="priority"] .iq-summary > div {
+  padding: 8px 12px;
+  gap: 3px;
+}
+.dashboard-shell #main[data-layout="priority"] .iq-summary strong {
+  font-size: 18px;
+}
+.dashboard-shell #main[data-layout="priority"] .iq-progress {
+  gap: 0;
+}
+.dashboard-shell #main[data-layout="priority"] .iq-body {
+  gap: 14px;
+  grid-template-columns: minmax(260px, 0.7fr) minmax(0, 1.3fr);
+}
+.dashboard-shell #main[data-layout="priority"] .iq-answer-sheet button {
+  padding: 9px 10px;
+}
+.dashboard-shell #main[data-layout="priority"] .iq-player {
+  position: static;
+  padding: 8px 12px;
+}
+.dashboard-shell #main[data-layout="priority"] .iq-options {
+  gap: 6px;
+}
+.dashboard-shell #main[data-layout="priority"] .iq-options li {
+  padding: 8px 10px;
+}
+.dashboard-shell #main[data-layout="priority"] .iq-assumption {
+  margin: 10px 0;
+}
+.dashboard-shell #main[data-layout="priority"] .iq-verdict {
+  margin-top: 10px;
+}
+@media (min-width: 961px) and (min-height: 560px) {
+  .dashboard-shell #main[data-layout="priority"] .iq-lab {
+    overflow: hidden;
+  }
+  .dashboard-shell #main[data-layout="priority"] .iq-body {
+    flex: 1;
+    min-height: 0;
+    align-items: stretch;
+  }
+  .dashboard-shell #main[data-layout="priority"] .iq-body > .panel {
+    min-height: 0;
+    overflow: auto;
+  }
+  .dashboard-shell
+    #main[data-layout="priority"]
+    .iq-body
+    > .panel
+    > .panel-heading {
+    position: sticky;
+    top: 0;
+    background: var(--panel);
+    z-index: 1;
+  }
+  .dashboard-shell #main[data-layout="priority"] .iq-final-report {
+    margin: 0;
+  }
+}
+@media (max-width: 960px), (max-height: 559px) {
+  .dashboard-shell #main[data-layout="priority"] .iq-body {
+    display: flex;
+    flex-direction: column;
+  }
+  .dashboard-shell
+    #main[data-layout="priority"]
+    .iq-body
+    > :is(.iq-question, .iq-final-report) {
+    order: -1;
+  }
+  .dashboard-shell #main[data-layout="priority"] .iq-answer-sheet ol {
+    max-height: 300px;
+    overflow: auto;
+  }
+  .dashboard-shell #main[data-layout="priority"] .twisty-controls .task-scroll {
+    max-height: 55dvh;
+  }
+}
+
+/* Media tools put the source and result beside each other. */
+.media-workbench {
+  display: grid;
+  grid-template-columns: minmax(280px, 0.75fr) minmax(0, 1.5fr);
+  gap: 14px;
+  min-height: 0;
+}
+.media-results {
+  min-width: 0;
+  min-height: 0;
+  overflow: auto;
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+  scrollbar-width: thin;
+}
+.media-results:focus-visible,
+.youtube-input:focus-visible {
+  outline: 2px solid var(--accent);
+  outline-offset: -3px;
+}
+.dashboard-shell #main[data-layout="priority"] .rerank-options {
+  gap: 12px;
+}
+.dashboard-shell #main[data-layout="priority"] .rank-comparison {
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+  gap: 8px;
+}
+.dashboard-shell #main[data-layout="priority"] .rank-column {
+  min-width: 0;
+}
+.dashboard-shell #main[data-layout="priority"] .rerank-list {
+  max-height: none;
+}
+.dashboard-shell #main[data-layout="priority"] .youtube-input {
+  overflow: auto;
+}
+.extract-run-metrics summary {
+  min-height: 24px;
+  cursor: pointer;
+  font-size: 12px;
+}
+.dashboard-shell
+  #main[data-layout="priority"]
+  .meme-lab
+  .image-meme-preview
+  img {
+  max-height: 140px;
+  object-fit: contain;
+}
+@media (min-width: 961px) and (min-height: 560px) {
+  .dashboard-shell
+    #main[data-layout="priority"]
+    > :is(.reranker-lab, .youtube-extract-lab) {
+    height: 100%;
+    min-height: 0;
+    overflow: hidden;
+  }
+  .media-workbench {
+    flex: 1;
+    overflow: hidden;
+  }
+  .media-workbench > .panel {
+    min-height: 0;
+  }
+  .dashboard-shell
+    #main[data-layout="priority"]
+    .home-overview
+    .home-intro
+    > div:first-child {
+    display: grid;
+    grid-template-columns: 1fr auto;
+    gap: 0 12px;
+    align-items: center;
+  }
+  .dashboard-shell
+    #main[data-layout="priority"]
+    .home-overview
+    .home-intro
+    :is(h1, .home-eyebrow) {
+    grid-column: 1 / -1;
+  }
+  .dashboard-shell #main[data-layout="priority"] .home-overview .home-guide {
+    margin-top: 8px;
+  }
+  .dashboard-shell
+    #main[data-layout="priority"]
+    .home-overview
+    .home-example-card {
+    min-height: 32px;
+    padding: 4px;
+  }
+  .dashboard-shell #main[data-layout="priority"] .section-page .home-card-grid {
+    grid-template-columns: repeat(4, minmax(0, 1fr));
+  }
+}
+@media (max-width: 960px), (max-height: 559px) {
+  .media-workbench {
+    grid-template-columns: minmax(0, 1fr);
+  }
+  .media-results {
+    overflow: visible;
+  }
+  .dashboard-shell #main[data-layout="priority"] .rank-comparison {
+    grid-template-columns: minmax(0, 1fr);
+  }
+  .dashboard-shell #main[data-layout="priority"] .rerank-list {
+    max-height: 360px;
+    overflow: auto;
+  }
+}
+
+.dashboard-shell
+  #main[data-layout="priority"]
+  details:is(
+    .workspace-more,
+    .game-explanation,
+    .game-settings,
+    .iq-run-details,
+    .twisty-execution,
+    .extract-run-metrics,
+    .solver-question
+  ) {
+  margin-block: 0;
+  padding: 8px 12px;
+}
+.dashboard-shell
+  #main[data-layout="priority"]
+  details:is(
+    .workspace-more,
+    .game-explanation,
+    .game-settings,
+    .iq-run-details,
+    .twisty-execution,
+    .extract-run-metrics,
+    .solver-question
+  )
+  > summary {
+  min-height: 28px;
+  padding: 2px 0;
+  margin: 0;
+}
+.dashboard-shell
+  #main[data-layout="priority"]
+  details:is(
+    .workspace-more,
+    .game-explanation,
+    .game-settings,
+    .iq-run-details,
+    .twisty-execution,
+    .extract-run-metrics,
+    .solver-question
+  )[open]
+  > summary {
+  margin-bottom: 10px;
+}
+@media (min-width: 961px) and (min-height: 560px) {
+  .dashboard-shell #main[data-layout="priority"] .home-overview .home-note {
+    margin-top: 6px;
+    padding-top: 6px;
+  }
+}
+@media (min-width: 961px) and (min-height: 560px) {
+  .dashboard-shell
+    #main[data-layout="priority"]
+    :is(.chess-board-panel, .arcade-board-panel)
+    > .panel-content {
+    container-type: size;
+    padding: 10px;
+  }
+  .dashboard-shell #main[data-layout="priority"] .chess-board-wrap {
+    max-width: min(100%, calc(100cqh - 18px));
+  }
+  .dashboard-shell #main[data-layout="priority"] .arcade-board {
+    --board-max-height: max(100px, calc(100cqh - 10px));
+  }
+  .dashboard-shell
+    #main[data-layout="priority"]
+    :is(.chess-setup, .arcade-side .panel)
+    > .panel-content {
+    min-height: 0;
+    overflow: auto;
+  }
+  .dashboard-shell #main[data-layout="priority"] .arcade-side {
+    grid-template-rows: auto minmax(0, 1fr);
+    gap: 10px;
+  }
+  .dashboard-shell #main[data-layout="priority"] .arcade-score {
+    padding: 8px 16px;
+  }
+  .dashboard-shell
+    #main[data-layout="priority"]
+    .microduck-stage:not(.is-fullscreen)
+    .microduck-scene-wrap {
+    height: clamp(120px, calc(100dvh - 560px), 280px);
+  }
+  .dashboard-shell
+    #main[data-layout="priority"]
+    .microduck-stage:not(.is-fullscreen)
+    .microduck-stage-header
+    h2 {
+    font-size: 18px;
+  }
+  .dashboard-shell #main[data-layout="priority"] .iq-options {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+  }
+}
+.dashboard-shell #main[data-layout="priority"] .iq-prompt {
+  margin: 0 0 12px;
+}
+.dashboard-shell #main[data-layout="priority"] .microduck-drive {
+  margin-bottom: 8px;
+}
+.dashboard-shell #main[data-layout="priority"] .section-page .section-others {
+  margin-top: 8px;
+  padding-top: 8px;
+}
+.dashboard-shell #main[data-layout="priority"] .section-page .home-note {
+  margin-top: 6px;
+  padding-top: 6px;
+}
+.dashboard-shell #main[data-layout="priority"] .iq-question .panel-content {
+  gap: 8px;
+}
+/* Expanded detail must never collapse the working region to zero. */
+@media (min-width: 961px) and (min-height: 560px) {
+  .dashboard-shell
+    #main[data-layout="priority"]
+    > :is(
+      .priority-lab,
+      .chess-lab,
+      .arcade-lab,
+      .doom-lab,
+      .twisty-workspace,
+      .iq-lab
+    ) {
+    overflow: auto;
+  }
+  .dashboard-shell #main[data-layout="priority"] .priority-lab > .lab-columns {
+    min-height: 300px;
+  }
+  .dashboard-shell
+    #main[data-layout="priority"]
+    :is(.chess-lab, .arcade-lab)
+    > .split,
+  .dashboard-shell
+    #main[data-layout="priority"]
+    :is(.doom-layout, .twisty-layout) {
+    min-height: 300px;
+  }
+  .dashboard-shell
+    #main[data-layout="priority"]
+    :is(.chess-callout, .arcade-callout)
+    > div {
+    display: flex;
+    gap: 8px 16px;
+    align-items: center;
+    flex-wrap: wrap;
+  }
+  .dashboard-shell #main[data-layout="priority"] details.game-explanation {
+    padding: 0;
+    background: transparent;
+    border: 0;
+  }
+  .dashboard-shell
+    #main[data-layout="priority"]
+    details.game-explanation[open] {
+    flex-basis: 100%;
+  }
+  .dashboard-shell #main[data-layout="priority"] .chess-board-wrap {
+    container-type: inline-size;
+  }
+  .dashboard-shell #main[data-layout="priority"] .chess-square {
+    font-size: clamp(12px, 8cqw, 34px);
+  }
+  .dashboard-shell #main[data-layout="priority"] .iq-controls {
+    grid-template-columns: 1fr auto;
+    align-items: center;
+  }
+  .dashboard-shell #main[data-layout="priority"] .iq-toolbar {
+    grid-column: 1 / -1;
+  }
+  .dashboard-shell #main[data-layout="priority"] .iq-run-details[open] {
+    grid-column: 1 / -1;
+  }
+  .dashboard-shell #main[data-layout="priority"] .iq-body {
+    min-height: 240px;
+  }
+}
+.dashboard-shell #main[data-layout="priority"] details.game-metrics {
+  padding: 8px;
+  margin: 8px 0 0;
+}
+.dashboard-shell #main[data-layout="priority"] details.game-metrics > summary {
+  padding: 0;
+  margin: 0;
+  min-height: 28px;
+}
+.dashboard-shell
+  #main[data-layout="priority"]
+  details.game-metrics[open]
+  > summary {
+  margin-bottom: 8px;
+}
+.dashboard-shell #main[data-layout="priority"] .arcade-score {
+  padding: 0;
+}
+.dashboard-shell #main[data-layout="priority"] .arcade-score > .panel-content {
+  padding: 8px 16px;
+}
+.dashboard-shell #main[data-layout="priority"] .arcade-score-main {
+  padding: 0;
+}
+.dashboard-shell #main[data-layout="priority"] .arcade-score-main strong {
+  font-size: 28px;
+}
+.dashboard-shell #main[data-layout="priority"] .microduck-drive select {
+  color: #dce9f6;
+  background: #18273a;
+}
+.iq-question:focus-visible {
+  outline: 2px solid var(--accent);
+  outline-offset: -3px;
+}
+/* Completed rebuild evidence precedes the reusable setup. */
+.dashboard-shell #main[data-layout="priority"] .clean-room-lab > .page-heading {
+  order: -3;
+}
+.dashboard-shell #main[data-layout="priority"] .clean-room-lab > .error {
+  order: -2;
+}
+.dashboard-shell #main[data-layout="priority"] .clean-room-lab > .cr-results {
+  order: -1;
+}
+.cr-results:focus-visible {
+  outline: 2px solid var(--accent);
+  outline-offset: -3px;
+}

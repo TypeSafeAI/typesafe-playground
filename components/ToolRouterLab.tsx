@@ -85,7 +85,7 @@ export function ToolRouterLab() {
     }
   }
   return (
-    <div className="workspace compact-lab router-workspace">
+    <div className="workspace priority-lab compact-lab router-workspace">
       <Heading
         eyebrow="LANGGRAPH-STYLE · MOCK EXECUTION"
         title="Jev tool router"
@@ -109,7 +109,7 @@ export function ToolRouterLab() {
         <small>All execution is simulated</small>
       </div>
       <div className="lab-columns">
-        <section className="panel lab-panel">
+        <section className="panel lab-panel priority-input">
           <div className="panel-heading">
             <h2>Your request</h2>
             <button
@@ -123,93 +123,107 @@ export function ToolRouterLab() {
               Reset path
             </button>
           </div>
-          <fieldset className="lab-fields" disabled={busy}>
-            <label>
-              Demo scenario
-              <select
-                aria-label="Demo scenario"
-                value={scenario}
-                onChange={(e) => {
-                  const n = Number(e.target.value);
-                  setScenario(n);
-                  setState(initialRouterState(ROUTER_SCENARIOS[n].request));
-                  setError("");
-                }}
-              >
-                {ROUTER_SCENARIOS.map((s, i) => (
-                  <option key={s.name} value={i}>
-                    {s.name}
-                  </option>
-                ))}
-              </select>
-            </label>
-            {state.request === ROUTER_SCENARIOS[scenario].request && (
+          <div
+            className="task-scroll"
+            role="region"
+            aria-label="Routing inputs"
+            tabIndex={0}
+          >
+            <fieldset className="lab-fields" disabled={busy}>
+              <label>
+                Demo scenario
+                <select
+                  aria-label="Demo scenario"
+                  value={scenario}
+                  onChange={(e) => {
+                    const n = Number(e.target.value);
+                    setScenario(n);
+                    setState(initialRouterState(ROUTER_SCENARIOS[n].request));
+                    setError("");
+                  }}
+                >
+                  {ROUTER_SCENARIOS.map((s, i) => (
+                    <option key={s.name} value={i}>
+                      {s.name}
+                    </option>
+                  ))}
+                </select>
+              </label>
+              {state.request === ROUTER_SCENARIOS[scenario].request && (
+                <p className="field-hint">
+                  Expected demo path: {ROUTER_SCENARIOS[scenario].expectation}
+                </p>
+              )}
+              <label>
+                User request
+                <textarea
+                  aria-label="User request"
+                  rows={4}
+                  maxLength={6000}
+                  value={state.request}
+                  onChange={(e) => {
+                    setState(initialRouterState(e.target.value));
+                    setError("");
+                  }}
+                />
+              </label>
+            </fieldset>
+
+            <details className="router-inspector">
+              <summary>
+                <SlidersHorizontal size={15} /> Routing inspector
+              </summary>
+              <GraphView state={state} />
+            </details>
+            <details className="router-policy">
+              <summary>How policy overrides Jev</summary>
+              <ol>
+                <li>
+                  Sensitive-data keywords block the entire request before any
+                  model call.
+                </li>
+                <li>
+                  Always-blocked nodes are removed from the candidate set.
+                </li>
+                <li>
+                  Both Jev scores must meet 85%; otherwise the path stops for
+                  clarification.
+                </li>
+                <li>Configuration changes pause for explicit mock approval.</li>
+              </ol>
               <p className="field-hint">
-                Expected demo path: {ROUTER_SCENARIOS[scenario].expectation}
+                The keyword rule is intentionally broad for this demo. It is not
+                a complete production intent detector. The fixed graph also
+                makes secret export impossible regardless of phrasing.
               </p>
-            )}
-            <label>
-              User request
-              <textarea
-                aria-label="User request"
-                rows={4}
-                maxLength={6000}
-                value={state.request}
-                onChange={(e) => {
-                  setState(initialRouterState(e.target.value));
-                  setError("");
-                }}
-              />
-            </label>
-          </fieldset>
-          <ErrorNote message={error} />
-          <div className="lab-actions">
-            <RunButton
-              busy={busy}
-              onClick={step}
-              onCancel={() => abort.current?.abort()}
-              disabled={state.status !== "ready" || !state.request.trim()}
-            >
-              Run Routing Step
-            </RunButton>
-            <button className="button" disabled={busy} onClick={demo}>
-              Run mock scenario
-            </button>
+            </details>
           </div>
-          <p className="field-hint">
-            Live step: Jev chooses. Mock scenario: seeded choices. All execution
-            is simulated.
-          </p>
-          <details className="router-inspector">
-            <summary>
-              <SlidersHorizontal size={15} /> Routing inspector
-            </summary>
-            <GraphView state={state} />
-          </details>
-          <details className="router-policy">
-            <summary>How policy overrides Jev</summary>
-            <ol>
-              <li>
-                Sensitive-data keywords block the entire request before any
-                model call.
-              </li>
-              <li>Always-blocked nodes are removed from the candidate set.</li>
-              <li>
-                Both Jev scores must meet 85%; otherwise the path stops for
-                clarification.
-              </li>
-              <li>Configuration changes pause for explicit mock approval.</li>
-            </ol>
+          <div className="task-footer">
+            <ErrorNote message={error} />
+            <div className="lab-actions">
+              <RunButton
+                busy={busy}
+                onClick={step}
+                onCancel={() => abort.current?.abort()}
+                disabled={state.status !== "ready" || !state.request.trim()}
+              >
+                Run Routing Step
+              </RunButton>
+              <button className="button" disabled={busy} onClick={demo}>
+                Run mock scenario
+              </button>
+            </div>
             <p className="field-hint">
-              The keyword rule is intentionally broad for this demo. It is not a
-              complete production intent detector. The fixed graph also makes
-              secret export impossible regardless of phrasing.
+              Live step: Jev chooses. Mock scenario: seeded choices. All
+              execution is simulated.
             </p>
-          </details>
+          </div>
         </section>
         <section
           id="router-results"
-          className="panel lab-panel lab-result-target"
+          className="panel lab-panel lab-result-target priority-output"
+          aria-label="Routing results"
+          tabIndex={0}
         >
           <div className="panel-heading">
             <h2>The next step</h2>

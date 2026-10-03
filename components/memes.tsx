@@ -45,7 +45,7 @@ export function Memes() {
   const answer = result?.answers;
   const lands = answer?.lands?.noul;
   return (
-    <div className="workspace">
+    <div className="workspace meme-lab">
       <Heading
         eyebrow="Meme lab"
         title="Does the joke land?"
