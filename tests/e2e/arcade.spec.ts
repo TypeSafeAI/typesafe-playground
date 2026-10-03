@@ -147,6 +147,9 @@ test("keyboard play steers from the focused board", async ({ page }, info) => {
   await page.getByRole("button", { name: "Play", exact: true }).click();
   await expect(page.locator(".arcade-stage")).toBeFocused();
   await page.keyboard.press("ArrowUp");
+  await page
+    .getByText("Decision details and move history", { exact: true })
+    .click();
   await expect(page.locator(".arcade-log .source-human").first()).toBeVisible();
   await expect
     .poll(async () => page.locator(".arcade-log-action").allTextContents())

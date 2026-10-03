@@ -77,7 +77,8 @@ export function ProposalReview({ fixtures }: { fixtures: ClientFixture[] }) {
   }, []);
   const liveAvailable = personalKey || serverKey === true;
   useEffect(() => {
-    if (mode === "live" && !liveAvailable && serverKey !== null) setMode("mock");
+    if (mode === "live" && !liveAvailable && serverKey !== null)
+      setMode("mock");
   }, [mode, liveAvailable, serverKey]);
   const fixture = fixtures.find((f) => f.id === fixtureId) ?? fixtures[0];
   const proposal = fixture?.proposals[arm];
@@ -122,7 +123,7 @@ export function ProposalReview({ fixtures }: { fixtures: ClientFixture[] }) {
           ? "jev"
           : "none";
   return (
-    <div className="workspace compact-lab proposal-review-workspace">
+    <div className="workspace priority-lab compact-lab proposal-review-workspace">
       <Heading
         eyebrow="PROPOSAL REVIEW HARNESS"
         title="Propose. Review. Decide in code."
@@ -140,224 +141,253 @@ export function ProposalReview({ fixtures }: { fixtures: ClientFixture[] }) {
         <span>Receipt</span>
       </div>
       <div className="lab-columns">
-        <section className="panel lab-panel">
+        <section className="panel lab-panel priority-input">
           <div className="panel-heading">
             <h2>Proposal</h2>
             <span className="tag">Synthetic fixtures only</span>
           </div>
-          <fieldset disabled={busy} className="lab-fields">
-            <label>
-              Fixture
-              <select
-                aria-label="Fixture"
-                value={fixture?.id ?? ""}
-                onChange={(e) => {
-                  setFixtureId(e.target.value);
-                  clear();
-                }}
-              >
-                {FIXTURE_CATEGORIES.map((category) => {
-                  const group = fixtures.filter((f) => f.category === category);
-                  return group.length ? (
-                    <optgroup key={category} label={CATEGORY_LABELS[category]}>
-                      {group.map((f) => (
-                        <option key={f.id} value={f.id}>
-                          {f.id}
-                        </option>
-                      ))}
-                    </optgroup>
-                  ) : null;
-                })}
-              </select>
-            </label>
-            <div className="review-toggle-row">
-              <span className="field-label">Proposal arm</span>
-              <div className="lab-actions" role="group" aria-label="Proposal arm">
-                {(
-                  [
-                    ["good", "Good proposal"],
-                    ["bad", "Bad proposal"],
-                  ] as const
-                ).map(([id, label]) => (
+          <div
+            className="task-scroll"
+            role="region"
+            aria-label="Proposal inputs"
+            tabIndex={0}
+          >
+            <fieldset disabled={busy} className="lab-fields">
+              <label>
+                Fixture
+                <select
+                  aria-label="Fixture"
+                  value={fixture?.id ?? ""}
+                  onChange={(e) => {
+                    setFixtureId(e.target.value);
+                    clear();
+                  }}
+                >
+                  {FIXTURE_CATEGORIES.map((category) => {
+                    const group = fixtures.filter(
+                      (f) => f.category === category,
+                    );
+                    return group.length ? (
+                      <optgroup
+                        key={category}
+                        label={CATEGORY_LABELS[category]}
+                      >
+                        {group.map((f) => (
+                          <option key={f.id} value={f.id}>
+                            {f.id}
+                          </option>
+                        ))}
+                      </optgroup>
+                    ) : null;
+                  })}
+                </select>
+              </label>
+              <div className="review-toggle-row">
+                <span className="field-label">Proposal arm</span>
+                <div
+                  className="lab-actions"
+                  role="group"
+                  aria-label="Proposal arm"
+                >
+                  {(
+                    [
+                      ["good", "Good proposal"],
+                      ["bad", "Bad proposal"],
+                    ] as const
+                  ).map(([id, label]) => (
+                    <button
+                      key={id}
+                      type="button"
+                      className={`button${arm === id ? " primary" : ""}`}
+                      aria-pressed={arm === id}
+                      onClick={() => {
+                        setArm(id);
+                        clear();
+                      }}
+                    >
+                      {label}
+                    </button>
+                  ))}
+                </div>
+                <p className="field-hint">
+                  Both arms are scripted in the fixture. The expected verdict
+                  for this arm is <code>{fixture?.expected[arm]}</code>; the
+                  receipt shows what the harness actually decided.
+                </p>
+              </div>
+              <div className="review-toggle-row">
+                <span className="field-label">Reviewer</span>
+                <div
+                  className="lab-actions"
+                  role="group"
+                  aria-label="Reviewer mode"
+                >
                   <button
-                    key={id}
                     type="button"
-                    className={`button${arm === id ? " primary" : ""}`}
-                    aria-pressed={arm === id}
+                    className={`button${mode === "mock" ? " primary" : ""}`}
+                    aria-pressed={mode === "mock"}
                     onClick={() => {
-                      setArm(id);
+                      setMode("mock");
                       clear();
                     }}
                   >
-                    {label}
+                    Mock
                   </button>
-                ))}
+                  <button
+                    type="button"
+                    className={`button${mode === "live" ? " primary" : ""}`}
+                    aria-pressed={mode === "live"}
+                    disabled={!liveAvailable}
+                    title={
+                      liveAvailable
+                        ? undefined
+                        : "Live Jev needs a server TYPESAFE_API_KEY or a personal key from the header."
+                    }
+                    onClick={() => {
+                      setMode("live");
+                      clear();
+                    }}
+                  >
+                    Live Jev
+                  </button>
+                </div>
+                <p className="field-hint">
+                  {mode === "mock"
+                    ? "Mock returns the fixture's scripted probabilities and makes no request. It demonstrates the decision table, not Jev."
+                    : `Live Jev sends this synthetic fixture to ${JEV_MODEL} (question set v${REVIEW_QUESTION_SET_VERSION}) and uses the configured key.`}
+                  {!liveAvailable && serverKey !== null && (
+                    <>
+                      {" "}
+                      Live Jev is disabled: no server key is configured and no
+                      personal key is set.
+                    </>
+                  )}
+                </p>
               </div>
-              <p className="field-hint">
-                Both arms are scripted in the fixture. The expected verdict for
-                this arm is <code>{fixture?.expected[arm]}</code>; the receipt
-                shows what the harness actually decided.
-              </p>
-            </div>
-            <div className="review-toggle-row">
-              <span className="field-label">Reviewer</span>
-              <div className="lab-actions" role="group" aria-label="Reviewer mode">
-                <button
-                  type="button"
-                  className={`button${mode === "mock" ? " primary" : ""}`}
-                  aria-pressed={mode === "mock"}
-                  onClick={() => {
-                    setMode("mock");
-                    clear();
-                  }}
-                >
-                  Mock
-                </button>
-                <button
-                  type="button"
-                  className={`button${mode === "live" ? " primary" : ""}`}
-                  aria-pressed={mode === "live"}
-                  disabled={!liveAvailable}
-                  title={
-                    liveAvailable
-                      ? undefined
-                      : "Live Jev needs a server TYPESAFE_API_KEY or a personal key from the header."
-                  }
-                  onClick={() => {
-                    setMode("live");
-                    clear();
-                  }}
-                >
-                  Live Jev
-                </button>
-              </div>
-              <p className="field-hint">
-                {mode === "mock"
-                  ? "Mock returns the fixture's scripted probabilities and makes no request. It demonstrates the decision table, not Jev."
-                  : `Live Jev sends this synthetic fixture to ${JEV_MODEL} (question set v${REVIEW_QUESTION_SET_VERSION}) and uses the configured key.`}
-                {!liveAvailable && serverKey !== null && (
-                  <>
-                    {" "}
-                    Live Jev is disabled: no server key is configured and no
-                    personal key is set.
-                  </>
-                )}
-              </p>
-            </div>
-          </fieldset>
-          {fixture && proposal && (
-            <div className="lab-result-stack review-fixture">
-              <div>
-                <h3>Task</h3>
-                <p>{fixture.task}</p>
-                <span className="tag">{CATEGORY_LABELS[fixture.category]}</span>
-              </div>
-              <div>
-                <h3>Evidence supplied to the reviewer</h3>
-                {fixture.evidence.length ? (
-                  <ul className="review-evidence">
-                    {fixture.evidence.map((line, i) => (
-                      <li key={i}>
-                        <code>{line}</code>
-                      </li>
-                    ))}
-                  </ul>
-                ) : (
-                  <p className="muted">
-                    None. The task arrived without supporting evidence.
+            </fieldset>
+            {fixture && proposal && (
+              <div className="lab-result-stack review-fixture">
+                <div>
+                  <h3>Task</h3>
+                  <p>{fixture.task}</p>
+                  <span className="tag">
+                    {CATEGORY_LABELS[fixture.category]}
+                  </span>
+                </div>
+                <div>
+                  <h3>Evidence supplied to the reviewer</h3>
+                  {fixture.evidence.length ? (
+                    <ul className="review-evidence">
+                      {fixture.evidence.map((line, i) => (
+                        <li key={i}>
+                          <code>{line}</code>
+                        </li>
+                      ))}
+                    </ul>
+                  ) : (
+                    <p className="muted">
+                      None. The task arrived without supporting evidence.
+                    </p>
+                  )}
+                </div>
+                <div>
+                  <h3>Files ({Object.keys(fixture.files).length})</h3>
+                  {Object.entries(fixture.files).map(([path, content]) => (
+                    <details key={path} className="disclosure">
+                      <summary>
+                        <code>{path}</code>
+                      </summary>
+                      <pre
+                        className="diff-evidence"
+                        tabIndex={0}
+                        aria-label={`Contents of ${path}`}
+                      >
+                        {content}
+                      </pre>
+                    </details>
+                  ))}
+                  <p className="field-hint">
+                    Repository content is untrusted data. Instruction-like text
+                    inside a file is something to judge, not a command to
+                    follow.
                   </p>
-                )}
-              </div>
-              <div>
-                <h3>Files ({Object.keys(fixture.files).length})</h3>
-                {Object.entries(fixture.files).map(([path, content]) => (
-                  <details key={path} className="disclosure">
-                    <summary>
-                      <code>{path}</code>
-                    </summary>
+                </div>
+                <div>
+                  <h3>
+                    Proposal · <code>{proposal.tool}</code> ·{" "}
+                    <code>{proposal.path}</code>
+                  </h3>
+                  <p>{proposal.rationale}</p>
+                  {proposal.evidence.length > 0 && (
+                    <ul className="review-evidence">
+                      {proposal.evidence.map((line, i) => (
+                        <li key={i}>
+                          <code>{line}</code>
+                        </li>
+                      ))}
+                    </ul>
+                  )}
+                  {proposal.patch ? (
                     <pre
                       className="diff-evidence"
                       tabIndex={0}
-                      aria-label={`Contents of ${path}`}
+                      aria-label={`Proposed patch for ${proposal.path}`}
                     >
-                      {content}
+                      {proposal.patch.split("\n").map((line, i) => (
+                        <span
+                          key={i}
+                          className={
+                            line.startsWith("+")
+                              ? "diff-added"
+                              : line.startsWith("-")
+                                ? "diff-removed"
+                                : line.startsWith("@@")
+                                  ? "diff-header"
+                                  : ""
+                          }
+                        >
+                          {line}
+                          {"\n"}
+                        </span>
+                      ))}
                     </pre>
-                  </details>
-                ))}
-                <p className="field-hint">
-                  Repository content is untrusted data. Instruction-like text
-                  inside a file is something to judge, not a command to follow.
-                </p>
+                  ) : (
+                    <p className="muted">
+                      A read request. No patch is proposed; the agent wants to
+                      see the file before acting.
+                    </p>
+                  )}
+                </div>
               </div>
-              <div>
-                <h3>
-                  Proposal · <code>{proposal.tool}</code> ·{" "}
-                  <code>{proposal.path}</code>
-                </h3>
-                <p>{proposal.rationale}</p>
-                {proposal.evidence.length > 0 && (
-                  <ul className="review-evidence">
-                    {proposal.evidence.map((line, i) => (
-                      <li key={i}>
-                        <code>{line}</code>
-                      </li>
-                    ))}
-                  </ul>
-                )}
-                {proposal.patch ? (
-                  <pre
-                    className="diff-evidence"
-                    tabIndex={0}
-                    aria-label={`Proposed patch for ${proposal.path}`}
-                  >
-                    {proposal.patch.split("\n").map((line, i) => (
-                      <span
-                        key={i}
-                        className={
-                          line.startsWith("+")
-                            ? "diff-added"
-                            : line.startsWith("-")
-                              ? "diff-removed"
-                              : line.startsWith("@@")
-                                ? "diff-header"
-                                : ""
-                        }
-                      >
-                        {line}
-                        {"\n"}
-                      </span>
-                    ))}
-                  </pre>
-                ) : (
-                  <p className="muted">
-                    A read request. No patch is proposed; the agent wants to see
-                    the file before acting.
-                  </p>
-                )}
-              </div>
-            </div>
-          )}
-          <ErrorNote message={error} />
-          <div className="lab-actions">
-            <RunButton
-              busy={busy}
-              usesJev={mode === "live"}
-              disabled={!fixture}
-              onClick={run}
-              onCancel={() => controller.current?.abort()}
-            >
-              Review proposal
-            </RunButton>
+            )}
           </div>
-          <p className="notice">
-            Verdicts are evidence about a proposal, not permission or
-            authorization. This workspace records patches as pending; it never
-            applies them, runs proposed code, or writes anywhere.
-          </p>
+          <div className="task-footer">
+            <ErrorNote message={error} />
+            <div className="lab-actions">
+              <RunButton
+                busy={busy}
+                usesJev={mode === "live"}
+                disabled={!fixture}
+                onClick={run}
+                onCancel={() => controller.current?.abort()}
+              >
+                Review proposal
+              </RunButton>
+              <span className="tag" aria-label="Selected reviewer mode">
+                {mode === "live" ? "Live Jev" : "Mock · simulated decisions"}
+              </span>
+            </div>
+            <p className="notice">
+              Verdicts are evidence about a proposal, not permission or
+              authorization. This workspace records patches as pending; it never
+              applies them, runs proposed code, or writes anywhere.
+            </p>
+          </div>
         </section>
         <section
           id="proposal-review-result"
-          className="panel lab-panel lab-result-target"
+          className="panel lab-panel lab-result-target priority-output"
+          tabIndex={0}
         >
           <div className="panel-heading">
             <h2>Receipt</h2>
@@ -526,33 +556,36 @@ export function ProposalReview({ fixtures }: { fixtures: ClientFixture[] }) {
           )}
         </section>
       </div>
-      <section className="panel lab-panel">
-        <div className="panel-heading">
-          <div>
-            <h2>The four questions, v{REVIEW_QUESTION_SET_VERSION}</h2>
-            <p className="field-hint">
-              Pinned to <code>{JEV_MODEL}</code>. Ids are stable; wording
-              changes bump the version.
-            </p>
-          </div>
-          <ClipboardCheck size={18} aria-hidden="true" />
-        </div>
-        <dl className="routing-facts">
-          {REVIEW_QUESTION_IDS.map((id) => (
-            <div key={id}>
-              <dt>
-                <code>{id}</code> · favorable = {FAVORABLE[id]}
-              </dt>
-              <dd>{REVIEW_QUESTIONS[id].instructions}</dd>
+      <details className="workspace-more">
+        <summary>Review criteria · the four questions</summary>
+        <section className="panel lab-panel">
+          <div className="panel-heading">
+            <div>
+              <h2>The four questions, v{REVIEW_QUESTION_SET_VERSION}</h2>
+              <p className="field-hint">
+                Pinned to <code>{JEV_MODEL}</code>. Ids are stable; wording
+                changes bump the version.
+              </p>
             </div>
-          ))}
-        </dl>
-        <p className="field-hint">
-          Independent community harness, not an official TypeSafe product or a
-          production agent runtime. Only synthetic fixture content is sent to
-          Jev.
-        </p>
-      </section>
+            <ClipboardCheck size={18} aria-hidden="true" />
+          </div>
+          <dl className="routing-facts">
+            {REVIEW_QUESTION_IDS.map((id) => (
+              <div key={id}>
+                <dt>
+                  <code>{id}</code> · favorable = {FAVORABLE[id]}
+                </dt>
+                <dd>{REVIEW_QUESTIONS[id].instructions}</dd>
+              </div>
+            ))}
+          </dl>
+          <p className="field-hint">
+            Independent community harness, not an official TypeSafe product or a
+            production agent runtime. Only synthetic fixture content is sent to
+            Jev.
+          </p>
+        </section>
+      </details>
     </div>
   );
 }

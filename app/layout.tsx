@@ -5,6 +5,8 @@ import "./brand.css";
 import "./dashboard.css";
 import "./workspace.css";
 import "./polish.css";
+import "./navigation.css";
+import "./viewport.css";
 export const metadata: Metadata = {
   metadataBase: new URL("https://jev.works"),
   title: "TypeSafe · Playground",
@@ -14,12 +16,23 @@ export const metadata: Metadata = {
     type: "website",
     siteName: "TypeSafe Playground",
     title: "TypeSafe Playground — small experiments, clear decisions",
-    description: "Unofficial community Jev experiments: classification, routing, extraction, and inspectable decisions.",
-    images: [{ url: "/opengraph-image", alt: "TypeSafe AI community playground — small experiments, clear decisions" }],
+    description:
+      "Unofficial community Jev experiments: classification, routing, extraction, and inspectable decisions.",
+    images: [
+      {
+        url: "/opengraph-image",
+        alt: "TypeSafe AI community playground — small experiments, clear decisions",
+      },
+    ],
   },
   twitter: {
     card: "summary_large_image",
-    images: [{ url: "/opengraph-image", alt: "TypeSafe AI community playground — small experiments, clear decisions" }],
+    images: [
+      {
+        url: "/opengraph-image",
+        alt: "TypeSafe AI community playground — small experiments, clear decisions",
+      },
+    ],
   },
 };
 export default function RootLayout({

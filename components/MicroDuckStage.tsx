@@ -188,6 +188,7 @@ export function MicroDuckStage({
         </div>
       </div>
       <footer className="microduck-console">
+        <div className="microduck-drive">{controls}</div>
         <div className="microduck-crew" aria-label="Select robot">
           {world.ducks.map((d, i) => (
             <button
@@ -210,7 +211,6 @@ export function MicroDuckStage({
             {duck.goals} delivered · {duck.collisions} dents
           </span>
         </div>
-        <div className="microduck-drive">{controls}</div>
       </footer>
     </div>
   );

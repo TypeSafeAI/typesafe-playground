@@ -37,6 +37,14 @@ for (const [name, device] of [
             "Verification passed",
             { timeout: 90000 },
           );
+          const results = page.getByRole("region", {
+            name: "Rebuild results",
+            exact: true,
+          });
+          await expect(results).toBeFocused();
+          await expect(
+            results.getByRole("heading", { level: 2 }),
+          ).toBeInViewport();
           const archive = await page.request.get(
             (await page
               .getByRole("link", {

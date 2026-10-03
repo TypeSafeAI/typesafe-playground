@@ -237,17 +237,20 @@ export function ChessLab() {
         <Info size={16} />
         <div>
           <strong>This is the wrong tool for this job, on purpose.</strong>
-          <p>
-            Jev&rsquo;s own guidance puts chess-like planning outside what a
-            fast decision model should be asked to do: positions that need
-            lookahead, a search tree and an evaluation function belong to a
-            dedicated engine, or to a large reasoning model that can think in
-            extended steps. Jev answers in one classification and keeps nothing
-            between calls — no plan, no memory of the last move, no idea what
-            the reply will be. This page wires it up to a real board anyway, so
-            the shape of that limit is something you can watch rather than
-            something you have to take on trust.
-          </p>
+          <details className="game-explanation">
+            <summary>Why this is a one-move experiment</summary>
+            <p>
+              Jev&rsquo;s own guidance puts chess-like planning outside what a
+              fast decision model should be asked to do: positions that need
+              lookahead, a search tree and an evaluation function belong to a
+              dedicated engine, or to a large reasoning model that can think in
+              extended steps. Jev answers in one classification and keeps
+              nothing between calls — no plan, no memory of the last move, no
+              idea what the reply will be. This page wires it up to a real board
+              anyway, so the shape of that limit is something you can watch
+              rather than something you have to take on trust.
+            </p>
+          </details>
         </div>
       </div>
       <div className="split chess-split">
@@ -392,53 +395,57 @@ export function ChessLab() {
           refereeDepth={options.refereeDepth}
         />
       )}
-      <div className="split chess-split">
-        <section className="panel">
-          <div className="panel-heading">
-            <h2>The decision</h2>
-            {shown && <span className="muted">move {shown.ply}</span>}
-          </div>
-          <div className="panel-content">
-            {shown ? (
-              <>
-                <MoveProbabilities move={shown} />
-                {shown.summary && shown.candidates && (
-                  <MoveCandidates
-                    summary={shown.summary}
-                    candidates={shown.candidates}
-                    chosen={shown.san}
-                    best={shown.bestSan}
-                  />
-                )}
-              </>
-            ) : (
-              <Empty title="No moves yet">
-                Play a move to see the position summary Jev received, the legal
-                moves it chose between, and what the referee made of its pick.
-              </Empty>
-            )}
-          </div>
-        </section>
-        <section className="panel">
-          <div className="panel-heading">
-            <h2>Game log</h2>
-          </div>
-          <div className="panel-content">
-            {moves.length ? (
-              <GameLog
-                moves={moves}
-                selected={selected}
-                onSelect={setSelected}
-              />
-            ) : (
-              <Empty title="No moves yet">
-                Every half-move lands here. Jev&rsquo;s are marked with what
-                they cost against the referee&rsquo;s best line.
-              </Empty>
-            )}
-          </div>
-        </section>
-      </div>
+      <details className="workspace-more game-history">
+        <summary>Decision details and move history</summary>
+        <div className="split chess-split">
+          <section className="panel">
+            <div className="panel-heading">
+              <h2>The decision</h2>
+              {shown && <span className="muted">move {shown.ply}</span>}
+            </div>
+            <div className="panel-content">
+              {shown ? (
+                <>
+                  <MoveProbabilities move={shown} />
+                  {shown.summary && shown.candidates && (
+                    <MoveCandidates
+                      summary={shown.summary}
+                      candidates={shown.candidates}
+                      chosen={shown.san}
+                      best={shown.bestSan}
+                    />
+                  )}
+                </>
+              ) : (
+                <Empty title="No moves yet">
+                  Play a move to see the position summary Jev received, the
+                  legal moves it chose between, and what the referee made of its
+                  pick.
+                </Empty>
+              )}
+            </div>
+          </section>
+          <section className="panel">
+            <div className="panel-heading">
+              <h2>Game log</h2>
+            </div>
+            <div className="panel-content">
+              {moves.length ? (
+                <GameLog
+                  moves={moves}
+                  selected={selected}
+                  onSelect={setSelected}
+                />
+              ) : (
+                <Empty title="No moves yet">
+                  Every half-move lands here. Jev&rsquo;s are marked with what
+                  they cost against the referee&rsquo;s best line.
+                </Empty>
+              )}
+            </div>
+          </section>
+        </div>
+      </details>
     </div>
   );
 }

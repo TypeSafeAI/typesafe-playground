@@ -201,251 +201,265 @@ export function YouTubeExtractLab() {
         title="Keep the words. Find the point."
         description="Existing YouTube captions → Jev relevance decisions → a chronological extract. No generated prose, transcription, or translation."
       />
-      <section className="panel">
-        <div className="panel-heading">
-          <h2>YouTube extract</h2>
-          <span className="muted">Live Jev · two questions per call</span>
-        </div>
-        <div className="panel-content">
-          <form
-            onSubmit={(e) => {
-              e.preventDefault();
-              void run();
-            }}
-          >
-            <label htmlFor="youtube-url">YouTube URL</label>
-            <input
-              id="youtube-url"
-              type="url"
-              required
-              maxLength={1000}
-              placeholder="https://www.youtube.com/watch?v=…"
-              value={url}
-              disabled={busy}
-              onChange={(e) => {
-                setUrl(e.target.value);
-                reset();
+      <div className="media-workbench">
+        <section className="panel youtube-input" tabIndex={0}>
+          <div className="panel-heading">
+            <h2>YouTube extract</h2>
+            <span className="muted">Live Jev · two questions per call</span>
+          </div>
+          <div className="panel-content">
+            <form
+              onSubmit={(e) => {
+                e.preventDefault();
+                void run();
               }}
+            >
+              <label htmlFor="youtube-url">YouTube URL</label>
+              <input
+                id="youtube-url"
+                type="url"
+                required
+                maxLength={1000}
+                placeholder="https://www.youtube.com/watch?v=…"
+                value={url}
+                disabled={busy}
+                onChange={(e) => {
+                  setUrl(e.target.value);
+                  reset();
+                }}
+              />
+              <p className="muted">
+                Public captions only, never transcription or translation.
+                Caption access can be blocked by YouTube. Running sends caption
+                text to TypeSafe.
+              </p>
+              <details className="disclosure extract-limits">
+                <summary>Limits before a run</summary>
+                <dl>
+                  {limitNotes.map((limit) => (
+                    <div key={limit.label}>
+                      <dt>
+                        {limit.label} <strong>{limit.value}</strong>
+                      </dt>
+                      <dd>{limit.note}</dd>
+                    </div>
+                  ))}
+                </dl>
+                <p className="muted">
+                  A track over any of these fails and names which one. Nothing
+                  is truncated to fit.
+                </p>
+              </details>
+              <RunButton
+                busy={busy}
+                disabled={!ready || !url.trim()}
+                onCancel={() => controller.current?.abort()}
+              >
+                Create extract · Live Jev
+              </RunButton>
+            </form>
+            <label htmlFor="extract-length">
+              Extract length · top {length}% of all chunks
+            </label>
+            <input
+              id="extract-length"
+              type="range"
+              min="5"
+              max="100"
+              step="5"
+              value={length}
+              onChange={(e) => setLength(Number(e.target.value))}
             />
             <p className="muted">
-              Public captions only, never transcription or translation. Caption
-              access can be blocked by YouTube. Running sends caption text to
-              TypeSafe.
+              Recomputes locally without more calls. Relevance ≥ 50%;
+              word-overlap duplicates above 60% are dropped. Key claims are
+              shown for inspection, not used as a selection gate.
             </p>
-            <details className="disclosure extract-limits">
-              <summary>Limits before a run</summary>
-              <dl>
-                {limitNotes.map((limit) => (
-                  <div key={limit.label}>
-                    <dt>
-                      {limit.label} <strong>{limit.value}</strong>
-                    </dt>
-                    <dd>{limit.note}</dd>
-                  </div>
-                ))}
-              </dl>
-              <p className="muted">
-                A track over any of these fails and names which one. Nothing is
-                truncated to fit.
-              </p>
-            </details>
-            <RunButton
-              busy={busy}
-              disabled={!ready || !url.trim()}
-              onCancel={() => controller.current?.abort()}
-            >
-              Create extract · Live Jev
-            </RunButton>
-          </form>
-          <label htmlFor="extract-length">
-            Extract length · top {length}% of all chunks
-          </label>
-          <input
-            id="extract-length"
-            type="range"
-            min="5"
-            max="100"
-            step="5"
-            value={length}
-            onChange={(e) => setLength(Number(e.target.value))}
-          />
-          <p className="muted">
-            Recomputes locally without more calls. Relevance ≥ 50%; word-overlap
-            duplicates above 60% are dropped. Key claims are shown for
-            inspection, not used as a selection gate.
-          </p>
-          <ErrorNote message={error} />
-          {failure && (
-            <div
-              className="extract-failure"
-              role="group"
-              aria-label="Failure detail"
-            >
-              <dl>
-                <div>
-                  <dt>Cause</dt>
-                  <dd>
-                    <code>{failure.cause}</code>
-                  </dd>
-                </div>
-                {failure.limit && (
+            <ErrorNote message={error} />
+            {failure && (
+              <div
+                className="extract-failure"
+                role="group"
+                aria-label="Failure detail"
+              >
+                <dl>
                   <div>
-                    <dt>Limit</dt>
+                    <dt>Cause</dt>
                     <dd>
-                      {failure.limit.actual.toLocaleString()} of{" "}
-                      {failure.limit.allowed.toLocaleString()}{" "}
-                      {failure.limit.name}
+                      <code>{failure.cause}</code>
                     </dd>
                   </div>
-                )}
-                <div>
-                  <dt>Why</dt>
-                  <dd>{failure.detail}</dd>
+                  {failure.limit && (
+                    <div>
+                      <dt>Limit</dt>
+                      <dd>
+                        {failure.limit.actual.toLocaleString()} of{" "}
+                        {failure.limit.allowed.toLocaleString()}{" "}
+                        {failure.limit.name}
+                      </dd>
+                    </div>
+                  )}
+                  <div>
+                    <dt>Why</dt>
+                    <dd>{failure.detail}</dd>
+                  </div>
+                  <div>
+                    <dt>Next</dt>
+                    <dd>{failure.fix}</dd>
+                  </div>
+                </dl>
+              </div>
+            )}
+          </div>
+        </section>
+        <div
+          className="media-results"
+          role="region"
+          aria-label="Extract results"
+          tabIndex={0}
+        >
+          <section className="panel" aria-label="Run metrics">
+            <div className="panel-content">
+              <p role="status">{status}</p>
+              <details className="extract-run-metrics">
+                <summary>
+                  Run metrics · {processed} / {chunks.length} chunks processed
+                </summary>
+                <dl className="extract-metrics">
+                  <div>
+                    <dt>Chunks processed</dt>
+                    <dd>
+                      {processed} / {chunks.length}
+                    </dd>
+                  </div>
+                  <div>
+                    <dt>Chunks kept</dt>
+                    <dd>{result.kept.length}</dd>
+                  </div>
+                  <div>
+                    <dt>Average kept relevance</dt>
+                    <dd>{percent(result.average)}</dd>
+                  </div>
+                  <div>
+                    <dt>Jev calls attempted</dt>
+                    <dd data-testid="extract-calls">{calls}</dd>
+                  </div>
+                  <div>
+                    <dt>Input cost estimate</dt>
+                    <dd>
+                      ${estimateCost(tokens).toFixed(6)}
+                      {unknown > 0 || pending ? " + unknown" : ""}
+                    </dd>
+                  </div>
+                  <div>
+                    <dt>Elapsed</dt>
+                    <dd>{(elapsed / 1000).toFixed(1)}s</dd>
+                  </div>
+                </dl>
+                <p className="muted">
+                  Reported input tokens only; excludes output and hosting costs.
+                  Not an invoice. {unknown} calls with unknown usage
+                  {pending ? "; one call pending" : ""}.
+                </p>
+              </details>
+            </div>
+          </section>
+          <section className="panel">
+            <div className="panel-heading">
+              <h2>{phase === "scored" ? "Extract" : "Extract preview"}</h2>
+            </div>
+            <div className="panel-content">
+              {source && (
+                <p>
+                  {source.title} · {source.language} ·{" "}
+                  {source.automatic
+                    ? "Existing automatic captions"
+                    : "Existing manual captions"}
+                </p>
+              )}
+              <p className="extract-text" data-testid="extract-text">
+                {result.text ||
+                  (chunks.length
+                    ? "No eligible chunks selected."
+                    : "Your source-linked extract will appear here.")}
+              </p>
+              <p className="muted">
+                An extract can omit critical context. Jev scores and confidence
+                are not verification. Compare kept and dropped passages with the
+                video. Cleanup removes fillers conservatively; joining adds
+                whitespace only, preserving existing source transitions.
+              </p>
+              {!!result.kept.length && (
+                <ul className="extract-sources">
+                  {result.kept.map((c) => (
+                    <li key={c.id}>
+                      <a
+                        href={`https://www.youtube.com/watch?v=${source!.videoId}&t=${Math.floor(c.start)}s`}
+                        target="_blank"
+                        rel="noreferrer"
+                      >
+                        {timestamp(c.start)} · View source
+                      </a>
+                      <p>{c.text}</p>
+                      <details>
+                        <summary>Original captions</summary>
+                        <p>{c.original}</p>
+                      </details>
+                    </li>
+                  ))}
+                </ul>
+              )}
+              <label className="extract-toggle">
+                <input
+                  type="checkbox"
+                  checked={raw}
+                  onChange={(e) => setRaw(e.target.checked)}
+                />{" "}
+                Show raw scored chunks
+              </label>
+              {raw && (
+                <div
+                  className="extract-raw"
+                  tabIndex={0}
+                  aria-label="All scored chunks"
+                >
+                  {chunks.map((c) => (
+                    <article key={c.id}>
+                      <h3>
+                        <a
+                          href={`https://www.youtube.com/watch?v=${source!.videoId}&t=${Math.floor(c.start)}s`}
+                          target="_blank"
+                          rel="noreferrer"
+                        >
+                          {timestamp(c.start)}
+                        </a>{" "}
+                        · {result.reasons[c.id]}
+                      </h3>
+                      <p>{c.text || "(Empty after cleanup)"}</p>
+                      <p className="muted">
+                        Relevance: {percent(c.score)} · Key claim:{" "}
+                        {c.keyClaim === null
+                          ? "unknown"
+                          : c.keyClaim
+                            ? "yes"
+                            : "no"}{" "}
+                        · Confidence: {percent(c.confidence)}
+                      </p>
+                      <details>
+                        <summary>
+                          Original · caption lines{" "}
+                          {c.lineIds.map((i) => i + 1).join(", ")}
+                        </summary>
+                        <p>{c.original}</p>
+                      </details>
+                    </article>
+                  ))}
                 </div>
-                <div>
-                  <dt>Next</dt>
-                  <dd>{failure.fix}</dd>
-                </div>
-              </dl>
+              )}
             </div>
-          )}
+          </section>
         </div>
-      </section>
-      <section className="panel" aria-label="Run metrics">
-        <div className="panel-content">
-          <p role="status">{status}</p>
-          <dl className="extract-metrics">
-            <div>
-              <dt>Chunks processed</dt>
-              <dd>
-                {processed} / {chunks.length}
-              </dd>
-            </div>
-            <div>
-              <dt>Chunks kept</dt>
-              <dd>{result.kept.length}</dd>
-            </div>
-            <div>
-              <dt>Average kept relevance</dt>
-              <dd>{percent(result.average)}</dd>
-            </div>
-            <div>
-              <dt>Jev calls attempted</dt>
-              <dd data-testid="extract-calls">{calls}</dd>
-            </div>
-            <div>
-              <dt>Input cost estimate</dt>
-              <dd>
-                ${estimateCost(tokens).toFixed(6)}
-                {unknown > 0 || pending ? " + unknown" : ""}
-              </dd>
-            </div>
-            <div>
-              <dt>Elapsed</dt>
-              <dd>{(elapsed / 1000).toFixed(1)}s</dd>
-            </div>
-          </dl>
-          <p className="muted">
-            Reported input tokens only; excludes output and hosting costs. Not
-            an invoice. {unknown} calls with unknown usage
-            {pending ? "; one call pending" : ""}.
-          </p>
-        </div>
-      </section>
-      <section className="panel">
-        <div className="panel-heading">
-          <h2>{phase === "scored" ? "Extract" : "Extract preview"}</h2>
-        </div>
-        <div className="panel-content">
-          {source && (
-            <p>
-              {source.title} · {source.language} ·{" "}
-              {source.automatic
-                ? "Existing automatic captions"
-                : "Existing manual captions"}
-            </p>
-          )}
-          <p className="extract-text" data-testid="extract-text">
-            {result.text ||
-              (chunks.length
-                ? "No eligible chunks selected."
-                : "Your source-linked extract will appear here.")}
-          </p>
-          <p className="muted">
-            An extract can omit critical context. Jev scores and confidence are
-            not verification. Compare kept and dropped passages with the video.
-            Cleanup removes fillers conservatively; joining adds whitespace
-            only, preserving existing source transitions.
-          </p>
-          {!!result.kept.length && (
-            <ul className="extract-sources">
-              {result.kept.map((c) => (
-                <li key={c.id}>
-                  <a
-                    href={`https://www.youtube.com/watch?v=${source!.videoId}&t=${Math.floor(c.start)}s`}
-                    target="_blank"
-                    rel="noreferrer"
-                  >
-                    {timestamp(c.start)} · View source
-                  </a>
-                  <p>{c.text}</p>
-                  <details>
-                    <summary>Original captions</summary>
-                    <p>{c.original}</p>
-                  </details>
-                </li>
-              ))}
-            </ul>
-          )}
-          <label className="extract-toggle">
-            <input
-              type="checkbox"
-              checked={raw}
-              onChange={(e) => setRaw(e.target.checked)}
-            />{" "}
-            Show raw scored chunks
-          </label>
-          {raw && (
-            <div
-              className="extract-raw"
-              tabIndex={0}
-              aria-label="All scored chunks"
-            >
-              {chunks.map((c) => (
-                <article key={c.id}>
-                  <h3>
-                    <a
-                      href={`https://www.youtube.com/watch?v=${source!.videoId}&t=${Math.floor(c.start)}s`}
-                      target="_blank"
-                      rel="noreferrer"
-                    >
-                      {timestamp(c.start)}
-                    </a>{" "}
-                    · {result.reasons[c.id]}
-                  </h3>
-                  <p>{c.text || "(Empty after cleanup)"}</p>
-                  <p className="muted">
-                    Relevance: {percent(c.score)} · Key claim:{" "}
-                    {c.keyClaim === null
-                      ? "unknown"
-                      : c.keyClaim
-                        ? "yes"
-                        : "no"}{" "}
-                    · Confidence: {percent(c.confidence)}
-                  </p>
-                  <details>
-                    <summary>
-                      Original · caption lines{" "}
-                      {c.lineIds.map((i) => i + 1).join(", ")}
-                    </summary>
-                    <p>{c.original}</p>
-                  </details>
-                </article>
-              ))}
-            </div>
-          )}
-        </div>
-      </section>
+      </div>
     </div>
   );
 }

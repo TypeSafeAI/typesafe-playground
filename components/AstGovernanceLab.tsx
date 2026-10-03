@@ -107,53 +107,56 @@ export function AstGovernanceLab() {
     }
   }
   return (
-    <div className="workspace governance-workspace compact-lab">
+    <div className="workspace priority-lab governance-workspace compact-lab">
       <Heading
         eyebrow="STATIC ANALYSIS + CLOSED-SET ROUTING"
         title="AST-aware governance"
         description="Understand what a code change affects, why it needs review, and what to check before merging."
       />
-      <ol className="governance-steps" aria-label="How governance works">
-        <li>
-          <span>1</span>
-          <div>
-            <strong>Map the change</strong>
-            <p>
-              Read the diff and supplied symbol index to connect functions to
-              callers.
-            </p>
-          </div>
-        </li>
-        <li>
-          <span>2</span>
-          <div>
-            <strong>Apply fixed rules</strong>
-            <p>
-              Check sensitive paths, public interfaces and related test updates
-              first.
-            </p>
-          </div>
-        </li>
-        <li>
-          <span>3</span>
-          <div>
-            <strong>Classify uncertainty</strong>
-            <p>Jev selects a fixed label. Low confidence goes to a human.</p>
-          </div>
-        </li>
-        <li>
-          <span>4</span>
-          <div>
-            <strong>Review the evidence</strong>
-            <p>
-              Use the recommendation and linked hunks. No merge or test is
-              executed.
-            </p>
-          </div>
-        </li>
-      </ol>
+      <details className="workspace-more">
+        <summary>How governance works</summary>
+        <ol className="governance-steps" aria-label="How governance works">
+          <li>
+            <span>1</span>
+            <div>
+              <strong>Map the change</strong>
+              <p>
+                Read the diff and supplied symbol index to connect functions to
+                callers.
+              </p>
+            </div>
+          </li>
+          <li>
+            <span>2</span>
+            <div>
+              <strong>Apply fixed rules</strong>
+              <p>
+                Check sensitive paths, public interfaces and related test
+                updates first.
+              </p>
+            </div>
+          </li>
+          <li>
+            <span>3</span>
+            <div>
+              <strong>Classify uncertainty</strong>
+              <p>Jev selects a fixed label. Low confidence goes to a human.</p>
+            </div>
+          </li>
+          <li>
+            <span>4</span>
+            <div>
+              <strong>Review the evidence</strong>
+              <p>
+                Use the recommendation and linked hunks. No merge or test is
+                executed.
+              </p>
+            </div>
+          </li>
+        </ol>
+      </details>
       <div className="lab-columns">
-        <section className="panel lab-panel">
+        <section className="panel lab-panel priority-input">
           <div className="panel-heading">
             <h2>Proposed change</h2>
             <button
@@ -164,100 +167,114 @@ export function AstGovernanceLab() {
               Run mock demo
             </button>
           </div>
-          <p className="field-hint">
-            Start with the seeded auth change or paste your own diff. “Analyze
-            changes” runs local static checks; “Classify with Jev” sends only
-            the relevant structured context.
-          </p>
-          <details className="governance-explainer">
-            <summary>What does “AST-aware” mean here?</summary>
-            <p>
-              An abstract syntax tree represents code as named structures such
-              as functions, parameters and imports. This prototype uses a
-              lightweight parser plus your manifest, not a full compiler or a
-              live repository checkout.
+          <div
+            className="task-scroll"
+            role="region"
+            aria-label="Change inputs"
+            tabIndex={0}
+          >
+            <p className="field-hint">
+              Start with the seeded auth change or paste your own diff. “Analyze
+              changes” runs local static checks; “Classify with Jev” sends only
+              the relevant structured context.
             </p>
-            <p>
-              The manifest lists known symbols (named code units), callers (code
-              that uses them), and test mappings. Missing information stays
-              unknown; the app does not discover your whole repository.
-            </p>
-            <p>
-              <strong>Demo story:</strong> createUser gains organizationId. The
-              registration caller is updated, the invitation job is unchanged,
-              and no tests are updated. Expect human review.
-            </p>
-          </details>
-          <DiffInput
-            value={input}
-            disabled={busy}
-            onChange={(v) => {
-              setInput(v);
-              setAnalysis(null);
-              setDecisions([]);
-              setCache(null);
-              setError("");
-            }}
-          />
-          <ErrorNote message={error} />
-          <div className="lab-actions">
-            <RunButton
-              usesJev={false}
-              busy={busy}
-              onClick={() => inspect()}
-              disabled={!input.diff.trim()}
-            >
-              Analyze changes
-            </RunButton>
-            {analysis && (
-              <button
-                className="button"
-                disabled={
-                  quotaBlocked ||
-                  busy ||
-                  analysis.checks.blocked ||
-                  !buildGovernanceUnits(analysis).length
-                }
-                onClick={classify}
-              >
-                Classify with Jev
-              </button>
-            )}
-            {busy && (
-              <button className="button" onClick={() => abort.current?.abort()}>
-                Stop classification
-              </button>
-            )}
-          </div>
-          <p className="field-hint">
-            {analysis?.checks.blocked
-              ? "Sensitive-file rule triggered: Jev is disabled for this proposal."
-              : analysis
-                ? `${buildGovernanceUnits(analysis).length} focused classifications available. The mock demo makes no API calls; Classify with Jev replaces demo labels with live predictions.`
-                : "Try Run mock demo for a complete walkthrough without API calls."}
-          </p>
-          <label className="threshold-control">
-            Minimum confidence{" "}
-            <input
-              type="number"
-              min="0.5"
-              max="1"
-              step="0.01"
-              value={threshold}
-              onChange={(e) => {
-                const n = Number(e.target.value);
-                if (n >= 0.5 && n <= 1) setThreshold(n);
+            <details className="governance-explainer">
+              <summary>What does “AST-aware” mean here?</summary>
+              <p>
+                An abstract syntax tree represents code as named structures such
+                as functions, parameters and imports. This prototype uses a
+                lightweight parser plus your manifest, not a full compiler or a
+                live repository checkout.
+              </p>
+              <p>
+                The manifest lists known symbols (named code units), callers
+                (code that uses them), and test mappings. Missing information
+                stays unknown; the app does not discover your whole repository.
+              </p>
+              <p>
+                <strong>Demo story:</strong> createUser gains organizationId.
+                The registration caller is updated, the invitation job is
+                unchanged, and no tests are updated. Expect human review.
+              </p>
+            </details>
+            <DiffInput
+              value={input}
+              disabled={busy}
+              onChange={(v) => {
+                setInput(v);
+                setAnalysis(null);
+                setDecisions([]);
+                setCache(null);
+                setError("");
               }}
             />
-          </label>
-          <p className="field-hint">
-            Both the selected-label probability and confidence must meet this
-            threshold. A higher score never overrides a policy finding.
-          </p>
+
+            <label className="threshold-control">
+              Minimum confidence{" "}
+              <input
+                type="number"
+                min="0.5"
+                max="1"
+                step="0.01"
+                value={threshold}
+                onChange={(e) => {
+                  const n = Number(e.target.value);
+                  if (n >= 0.5 && n <= 1) setThreshold(n);
+                }}
+              />
+            </label>
+            <p className="field-hint">
+              Both the selected-label probability and confidence must meet this
+              threshold. A higher score never overrides a policy finding.
+            </p>
+          </div>
+          <div className="task-footer">
+            <ErrorNote message={error} />
+            <div className="lab-actions">
+              <RunButton
+                usesJev={false}
+                busy={busy}
+                onClick={() => inspect()}
+                disabled={!input.diff.trim()}
+              >
+                Analyze changes
+              </RunButton>
+              {analysis && (
+                <button
+                  className="button"
+                  disabled={
+                    quotaBlocked ||
+                    busy ||
+                    analysis.checks.blocked ||
+                    !buildGovernanceUnits(analysis).length
+                  }
+                  onClick={classify}
+                >
+                  Classify with Jev
+                </button>
+              )}
+              {busy && (
+                <button
+                  className="button"
+                  onClick={() => abort.current?.abort()}
+                >
+                  Stop classification
+                </button>
+              )}
+            </div>
+            <p className="field-hint">
+              {analysis?.checks.blocked
+                ? "Sensitive-file rule triggered: Jev is disabled for this proposal."
+                : analysis
+                  ? `${buildGovernanceUnits(analysis).length} focused classifications available. The mock demo makes no API calls; Classify with Jev replaces demo labels with live predictions.`
+                  : "Try Run mock demo for a complete walkthrough without API calls."}
+            </p>
+          </div>
         </section>
         <section
           id="governance-results"
-          className="panel lab-panel lab-result-target"
+          className="panel lab-panel lab-result-target priority-output"
+          tabIndex={0}
         >
           <div className="panel-heading">
             <h2>Governance decision</h2>

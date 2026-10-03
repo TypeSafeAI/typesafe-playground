@@ -1,5 +1,5 @@
 "use client";
-import { useEffect, useState } from "react";
+import { useEffect, useRef, useState } from "react";
 import {
   ArrowUpRight,
   Check,
@@ -39,6 +39,12 @@ export function CleanRoomLab() {
     [job, setJob] = useState<DemoJob | null>(null),
     [error, setError] = useState(""),
     [starting, setStarting] = useState(false);
+  const report = useRef<HTMLElement>(null);
+  useEffect(() => {
+    if (!job?.report) return;
+    report.current?.focus({ preventScroll: true });
+    report.current?.scrollIntoView({ block: "start" });
+  }, [job?.report]);
   const example = demoExamples.find((d) => d.id === selected)!;
   const busy = starting || job?.status === "running";
   useEffect(() => {
@@ -186,7 +192,12 @@ export function CleanRoomLab() {
       </section>
       <ErrorNote message={error || job?.error || ""} />
       {job?.report && (
-        <section className="cr-results">
+        <section
+          className="cr-results"
+          ref={report}
+          tabIndex={-1}
+          aria-label="Rebuild results"
+        >
           <div className="cr-result-heading">
             <div>
               <div className="eyebrow">

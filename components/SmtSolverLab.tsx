@@ -119,7 +119,7 @@ export function SmtSolverLab() {
   const eligible = bench.filter((b) => b.run.routing.agreement !== null),
     agreements = eligible.filter((b) => b.run.routing.agreement).length;
   return (
-    <div className="workspace compact-lab smt-workspace">
+    <div className="workspace priority-lab compact-lab smt-workspace">
       <Heading
         eyebrow="EXACT VERIFICATION + PROBABILISTIC TRIAGE"
         title="SMT solver lab"
@@ -149,148 +149,160 @@ export function SmtSolverLab() {
         })}
       </div>
       <div className="lab-columns">
-        <section className="panel lab-panel">
+        <section className="panel lab-panel priority-input">
           <div className="panel-heading">
             <h2>Build your logic puzzle</h2>
             <span className="tag">Z3 + Jev</span>
           </div>
-          <fieldset className="lab-fields" disabled={busy}>
-            <div className="solver-question">
-              <span className="eyebrow">THE QUESTION</span>
-              <h3>
-                {activeScenario >= 0
-                  ? scenarioDescriptions[activeScenario]
-                  : "Can all of these rules be true at once?"}
-              </h3>
-              <p>
-                A constraint is a rule that must hold. Add one per line, then
-                compare a fast prediction with an exact check.
-              </p>
-            </div>
-            <label>
-              Constraint type
-              <select
-                aria-label="Constraint type"
-                value={type}
-                onChange={(e) => {
-                  setType(e.target.value as ConstraintType);
-                  invalidate();
-                }}
-              >
-                {CONSTRAINT_TYPES.map((t) => (
-                  <option key={t} value={t}>
-                    {typeNames[t]}
-                  </option>
-                ))}
-              </select>
-            </label>
-            <label>
-              <span className="rules-editor-label">
-                <span>Your rules</span>
-                <span>
-                  {parsed
-                    ? parsed.constraints.length +
-                      " rules · " +
-                      parsed.variables.length +
-                      " variables"
-                    : "One rule per line"}
+          <div
+            className="task-scroll"
+            role="region"
+            aria-label="Logic inputs"
+            tabIndex={0}
+          >
+            <fieldset className="lab-fields" disabled={busy}>
+              <details className="solver-question">
+                <summary>About this logic scenario</summary>
+                <span className="eyebrow">THE QUESTION</span>
+                <h3>
+                  {activeScenario >= 0
+                    ? scenarioDescriptions[activeScenario]
+                    : "Can all of these rules be true at once?"}
+                </h3>
+                <p>
+                  A constraint is a rule that must hold. Add one per line, then
+                  compare a fast prediction with an exact check.
+                </p>
+              </details>
+              <label>
+                Constraint type
+                <select
+                  aria-label="Constraint type"
+                  value={type}
+                  onChange={(e) => {
+                    setType(e.target.value as ConstraintType);
+                    invalidate();
+                  }}
+                >
+                  {CONSTRAINT_TYPES.map((t) => (
+                    <option key={t} value={t}>
+                      {typeNames[t]}
+                    </option>
+                  ))}
+                </select>
+              </label>
+              <label>
+                <span className="rules-editor-label">
+                  <span>Your rules</span>
+                  <span>
+                    {parsed
+                      ? parsed.constraints.length +
+                        " rules · " +
+                        parsed.variables.length +
+                        " variables"
+                      : "One rule per line"}
+                  </span>
                 </span>
-              </span>
-              <textarea
-                aria-label="Constraints"
-                rows={9}
-                maxLength={12000}
-                spellCheck={false}
-                onKeyDown={(e) => {
-                  if (
-                    (e.metaKey || e.ctrlKey) &&
-                    e.key === "Enter" &&
-                    !busy &&
-                    text.trim()
-                  ) {
-                    e.preventDefault();
-                    void run();
-                  }
-                }}
-                className="code-input"
-                value={text}
-                onChange={(e) => {
-                  setText(e.target.value);
-                  invalidate();
-                }}
-              />
-            </label>
+                <textarea
+                  aria-label="Constraints"
+                  rows={9}
+                  maxLength={12000}
+                  spellCheck={false}
+                  onKeyDown={(e) => {
+                    if (
+                      (e.metaKey || e.ctrlKey) &&
+                      e.key === "Enter" &&
+                      !busy &&
+                      text.trim()
+                    ) {
+                      e.preventDefault();
+                      void run();
+                    }
+                  }}
+                  className="code-input"
+                  value={text}
+                  onChange={(e) => {
+                    setText(e.target.value);
+                    invalidate();
+                  }}
+                />
+              </label>
+              <p className="field-hint">
+                Use true / false or whole numbers. Up to 60 rules and 40
+                variables. ⌘ / Ctrl + Enter runs the check.
+              </p>
+              <details className="solver-options">
+                <summary>
+                  Check options{" "}
+                  <span className="tag">Exact verification always on</span>
+                </summary>
+                <div className="solver-option-fields">
+                  <label className="lab-checkbox">
+                    <input
+                      type="checkbox"
+                      checked={decompose}
+                      onChange={(e) => {
+                        setDecompose(e.target.checked);
+                        invalidate();
+                      }}
+                    />{" "}
+                    Classify independent groups in parallel
+                  </label>
+                  <label className="lab-checkbox">
+                    <input
+                      type="checkbox"
+                      checked={proof}
+                      onChange={(e) => {
+                        setProof(e.target.checked);
+                        invalidate();
+                      }}
+                    />{" "}
+                    Full exact check required
+                  </label>
+                </div>
+              </details>
+              <details>
+                <summary>Need help writing a rule?</summary>
+                <p>
+                  Use =, ==, !=, &lt;, &lt;=, &gt;, &gt;=, +, -, multiplication
+                  by an integer, parentheses, !, &amp;&amp;, || and =&gt;.
+                </p>
+                <code>(a_end &lt;= b_start) || (b_end &lt;= a_start)</code>
+                <p>
+                  This explicitly requires two meetings not to overlap.
+                  Availability flags alone do not create scheduling rules.
+                  Unsupported syntax is rejected; constraints are never executed
+                  as code.
+                </p>
+              </details>
+            </fieldset>
+
             <p className="field-hint">
-              Use true / false or whole numbers. Up to 60 rules and 40
-              variables. ⌘ / Ctrl + Enter runs the check.
+              Jev predicts; Z3 verifies every rule. Uncertain predictions stay
+              uncertain until the exact check completes.
             </p>
-            <details className="solver-options">
-              <summary>
-                Check options{" "}
-                <span className="tag">Exact verification always on</span>
-              </summary>
-              <div className="solver-option-fields">
-                <label className="lab-checkbox">
-                  <input
-                    type="checkbox"
-                    checked={decompose}
-                    onChange={(e) => {
-                      setDecompose(e.target.checked);
-                      invalidate();
-                    }}
-                  />{" "}
-                  Classify independent groups in parallel
-                </label>
-                <label className="lab-checkbox">
-                  <input
-                    type="checkbox"
-                    checked={proof}
-                    onChange={(e) => {
-                      setProof(e.target.checked);
-                      invalidate();
-                    }}
-                  />{" "}
-                  Full exact check required
-                </label>
-              </div>
-            </details>
-            <details>
-              <summary>Need help writing a rule?</summary>
-              <p>
-                Use =, ==, !=, &lt;, &lt;=, &gt;, &gt;=, +, -, multiplication by
-                an integer, parentheses, !, &amp;&amp;, || and =&gt;.
-              </p>
-              <code>(a_end &lt;= b_start) || (b_end &lt;= a_start)</code>
-              <p>
-                This explicitly requires two meetings not to overlap.
-                Availability flags alone do not create scheduling rules.
-                Unsupported syntax is rejected; constraints are never executed
-                as code.
-              </p>
-            </details>
-          </fieldset>
-          <ErrorNote message={error} />
-          <div className="lab-actions">
-            <RunButton
-              busy={busy}
-              onClick={() => run()}
-              onCancel={() => abort.current?.abort()}
-              disabled={!text.trim()}
-            >
-              Run Check
-            </RunButton>
           </div>
-          <p role="status" className="field-hint">
-            {progress}
-          </p>
-          <p className="field-hint">
-            Jev predicts; Z3 verifies every rule. Uncertain predictions stay
-            uncertain until the exact check completes.
-          </p>
+          <div className="task-footer">
+            <ErrorNote message={error} />
+            <div className="lab-actions">
+              <RunButton
+                busy={busy}
+                onClick={() => run()}
+                onCancel={() => abort.current?.abort()}
+                disabled={!text.trim()}
+              >
+                Run Check
+              </RunButton>
+            </div>
+            <p role="status" className="field-hint">
+              {progress}
+            </p>
+          </div>
         </section>
         <section
           id="solver-results"
-          className="panel lab-panel lab-result-target"
+          className="panel lab-panel lab-result-target priority-output"
+          tabIndex={0}
         >
           <div className="panel-heading">
             <h2>Comparison</h2>
@@ -433,70 +445,73 @@ export function SmtSolverLab() {
           )}
         </section>
       </div>
-      <section
-        id="solver-benchmark"
-        className="panel lab-panel benchmark-panel lab-result-target"
-      >
-        <div className="panel-heading">
-          <div>
-            <h2>Seeded benchmark</h2>
-            <p className="field-hint">
-              Five measured cases · API calls use your configured key
-            </p>
+      <details className="workspace-more">
+        <summary>Seeded benchmark · five comparison cases</summary>
+        <section
+          id="solver-benchmark"
+          className="panel lab-panel benchmark-panel lab-result-target"
+        >
+          <div className="panel-heading">
+            <div>
+              <h2>Seeded benchmark</h2>
+              <p className="field-hint">
+                Five measured cases · API calls use your configured key
+              </p>
+            </div>
+            <button
+              className="button"
+              disabled={busy || quotaBlocked}
+              onClick={() => run(true)}
+            >
+              Run benchmark
+            </button>
           </div>
-          <button
-            className="button"
-            disabled={busy || quotaBlocked}
-            onClick={() => run(true)}
-          >
-            Run benchmark
-          </button>
-        </div>
-        <p className="field-hint">
-          {bench.length
-            ? `${agreements}/${eligible.length} comparable cases agree (${eligible.length ? Math.round((agreements / eligible.length) * 100) + "%" : "—"}); ${bench.length - eligible.length} abstentions or unknowns. ${bench.length}/5 cases completed.`
-            : "No benchmark measurements yet."}{" "}
-          Latency includes network and initialization; these examples are not a
-          general accuracy claim.
-        </p>
-        <div className="table-scroll">
-          <table className="solver-table">
-            <thead>
-              <tr>
-                <th>Example</th>
-                <th>Z3</th>
-                <th>Jev</th>
-                <th>Confidence</th>
-                <th>Z3 server</th>
-                <th>Jev round trip</th>
-                <th>Agree</th>
-              </tr>
-            </thead>
-            <tbody>
-              {SOLVER_EXAMPLES.map((ex) => {
-                const row = bench.find((b) => b.name === ex.name)?.run;
-                return (
-                  <tr key={ex.name}>
-                    <td>{ex.name}</td>
-                    <td>{row?.exact.result || "—"}</td>
-                    <td>{row?.jev.prediction || "—"}</td>
-                    <td>{percent(row?.jev.confidence)}</td>
-                    <td>{row ? ms(row.exact.latencyMs) : "—"}</td>
-                    <td>{row ? ms(row.jev.latencyMs) : "—"}</td>
-                    <td>
-                      {row?.routing.agreement == null
-                        ? "—"
-                        : row.routing.agreement
-                          ? "Yes"
-                          : "No"}
-                    </td>
-                  </tr>
-                );
-              })}
-            </tbody>
-          </table>
-        </div>
-      </section>
+          <p className="field-hint">
+            {bench.length
+              ? `${agreements}/${eligible.length} comparable cases agree (${eligible.length ? Math.round((agreements / eligible.length) * 100) + "%" : "—"}); ${bench.length - eligible.length} abstentions or unknowns. ${bench.length}/5 cases completed.`
+              : "No benchmark measurements yet."}{" "}
+            Latency includes network and initialization; these examples are not
+            a general accuracy claim.
+          </p>
+          <div className="table-scroll">
+            <table className="solver-table">
+              <thead>
+                <tr>
+                  <th>Example</th>
+                  <th>Z3</th>
+                  <th>Jev</th>
+                  <th>Confidence</th>
+                  <th>Z3 server</th>
+                  <th>Jev round trip</th>
+                  <th>Agree</th>
+                </tr>
+              </thead>
+              <tbody>
+                {SOLVER_EXAMPLES.map((ex) => {
+                  const row = bench.find((b) => b.name === ex.name)?.run;
+                  return (
+                    <tr key={ex.name}>
+                      <td>{ex.name}</td>
+                      <td>{row?.exact.result || "—"}</td>
+                      <td>{row?.jev.prediction || "—"}</td>
+                      <td>{percent(row?.jev.confidence)}</td>
+                      <td>{row ? ms(row.exact.latencyMs) : "—"}</td>
+                      <td>{row ? ms(row.jev.latencyMs) : "—"}</td>
+                      <td>
+                        {row?.routing.agreement == null
+                          ? "—"
+                          : row.routing.agreement
+                            ? "Yes"
+                            : "No"}
+                      </td>
+                    </tr>
+                  );
+                })}
+              </tbody>
+            </table>
+          </div>
+        </section>
+      </details>
     </div>
   );
 }

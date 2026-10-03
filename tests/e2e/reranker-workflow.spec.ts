@@ -82,6 +82,9 @@ test("reranker compares supplied candidates, inspects evidence and invalidates s
   await expect(
     page.getByRole("region", { name: "Baseline · lexical mock" }).locator("li"),
   ).toHaveCount(20);
+  await page
+    .getByText("Run metrics and comparison guide", { exact: true })
+    .click();
   await expect(
     page.getByRole("region", { name: "Comparison metrics" }),
   ).toContainText("2");

@@ -831,6 +831,9 @@ test("SMT decomposes independent groups and records measured benchmark rows", as
   await expect(
     page.getByRole("heading", { name: "needs_decomposition", exact: true }),
   ).toBeVisible();
+  await page
+    .getByText("Seeded benchmark · five comparison cases", { exact: true })
+    .click();
   await page.getByRole("button", { name: "Run benchmark" }).click();
   await expect(page.getByText(/5\/5 cases completed/)).toBeVisible({
     timeout: 25000,
@@ -1196,6 +1199,7 @@ test("microduck drives from the closed action set and stops when it cannot", asy
   ]);
 
   // The withheld-sensor test re-asks the same tick with fields dropped.
+  await page.getByText("Arena setup and robot roster", { exact: true }).click();
   await page.getByText("Withheld-sensor test and model").click();
   await page.getByLabel("Re-ask each tick with fields withheld").check();
   await page.getByRole("button", { name: "Step", exact: true }).click();
@@ -1334,6 +1338,7 @@ test("chess re-marks blunders locally when the threshold moves", async ({
   await page.goto("/simulations/chess");
   await page.getByLabel("Mode", { exact: true }).selectOption("jev_random");
   await page.getByRole("button", { name: "One move", exact: true }).click();
+  await page.locator(".game-history > summary").click();
   await expect(page.locator(".chess-verdict")).toBeVisible();
   const seen = calls;
   // Dragging the threshold re-judges the moves already played, with no new

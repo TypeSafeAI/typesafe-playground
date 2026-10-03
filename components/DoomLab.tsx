@@ -435,32 +435,36 @@ export function DoomLab() {
                 </div>
               </>
             )}
-            <div className="doom-options">
-              <label>
-                <input
-                  type="checkbox"
-                  checked={chaos}
-                  onChange={(e) => reset(mode, e.target.checked)}
-                />
-                Chaos mode · hide enemy distance
-              </label>
-              <label>
-                Frames per Jev batch
-                <select
-                  value={batchSize}
-                  onChange={(e) => reset(mode, chaos, Number(e.target.value))}
-                >
-                  <option value={1}>1 · live only</option>
-                  <option value={4}>4 · history + live</option>
-                  <option value={8}>8 · history + live</option>
-                </select>
-              </label>
-            </div>
-            <p className="doom-controls-hint">
-              Changing controls or chaos starts a fresh run. The optional
-              tactical map shows the whole arena; Jev gets only the inspectable
-              visibility features. No Doom assets or emulator are required.
-            </p>
+            <details className="game-settings">
+              <summary>Arena settings and execution limits</summary>
+              <div className="doom-options">
+                <label>
+                  <input
+                    type="checkbox"
+                    checked={chaos}
+                    onChange={(e) => reset(mode, e.target.checked)}
+                  />
+                  Chaos mode · hide enemy distance
+                </label>
+                <label>
+                  Frames per Jev batch
+                  <select
+                    value={batchSize}
+                    onChange={(e) => reset(mode, chaos, Number(e.target.value))}
+                  >
+                    <option value={1}>1 · live only</option>
+                    <option value={4}>4 · history + live</option>
+                    <option value={8}>8 · history + live</option>
+                  </select>
+                </label>
+              </div>
+              <p className="doom-controls-hint">
+                Changing controls or chaos starts a fresh run. The optional
+                tactical map shows the whole arena; Jev gets only the
+                inspectable visibility features. No Doom assets or emulator are
+                required.
+              </p>
+            </details>
             <ErrorNote message={error} />
           </div>
         </section>
@@ -538,10 +542,10 @@ export function DoomLab() {
             <p className="doom-controls-hint">
               Jev waits for each response, then applies one action. Turns toward
               a visible enemy stop at its bearing; Jev still chooses when to
-              turn and shoot. Throughput = valid classifications ÷ elapsed request
-              time, including the safety queue and network. The 200ms target is a demo challenge, not
-              a claim about human perception. One newest decision can control
-              the arena per batch.
+              turn and shoot. Throughput = valid classifications ÷ elapsed
+              request time, including the safety queue and network. The 200ms
+              target is a demo challenge, not a claim about human perception.
+              One newest decision can control the arena per batch.
             </p>
             <p className="doom-run-status" role="status">
               {pending
@@ -603,13 +607,16 @@ export function DoomLab() {
           </div>
         </section>
       </div>
-      <Scoreboard
-        game={game}
-        trials={trials}
-        mode={mode}
-        chaos={chaos}
-        classificationsPerSecond={throughput}
-      />
+      <details className="workspace-more game-history">
+        <summary>Controller comparison and run history</summary>
+        <Scoreboard
+          game={game}
+          trials={trials}
+          mode={mode}
+          chaos={chaos}
+          classificationsPerSecond={throughput}
+        />
+      </details>
     </div>
   );
 }
