@@ -28,16 +28,37 @@ export function UsageDashboard() {
     window.addEventListener(API_KEY_EVENT, sync);
     window.addEventListener("storage", sync);
     void fetchAccountUsage().then(updateAccountUsage);
-    const timer = setInterval(() => {
-      expireUsageBlock();
-      setNow(Date.now());
-    }, 1000);
     return () => {
-      clearInterval(timer);
       window.removeEventListener(API_KEY_EVENT, sync);
       window.removeEventListener("storage", sync);
     };
   }, []);
+  const needsClock =
+    open ||
+    [
+      usage.block?.resetAt,
+      usage.account.tokens?.resetAt,
+      usage.account.requests?.resetAt,
+    ].some((reset) => reset && Date.parse(reset) > now);
+  useEffect(() => {
+    let timer: ReturnType<typeof setInterval> | undefined;
+    const update = () => {
+      expireUsageBlock();
+      setNow(Date.now());
+    };
+    const sync = () => {
+      clearInterval(timer);
+      if (document.hidden) return;
+      update();
+      if (needsClock) timer = setInterval(update, 1000);
+    };
+    sync();
+    document.addEventListener("visibilitychange", sync);
+    return () => {
+      clearInterval(timer);
+      document.removeEventListener("visibilitychange", sync);
+    };
+  }, [needsClock]);
   const left = usage.block?.resetAt
     ? Math.max(0, Math.ceil((Date.parse(usage.block.resetAt) - now) / 1000))
     : null;

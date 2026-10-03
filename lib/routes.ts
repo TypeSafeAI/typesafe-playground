@@ -26,7 +26,7 @@ export const SECTION_WORKSPACES = {
     "jev-browser-agent",
   ],
   governance: ["pr-review", "proposal-review", "ast-governance", "smt-solver"],
-  simulations: ["doom", "microduck", "chess", "iq-test"],
+  simulations: ["doom", "microduck", "chess", "iq-test", "twisty-puzzles"],
   arcade: ["snake", "breakout", "meteor-dodge"],
 } as const;
 

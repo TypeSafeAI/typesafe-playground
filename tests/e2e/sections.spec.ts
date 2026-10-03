@@ -1,11 +1,12 @@
 import { test, expect } from "@playwright/test";
+import { SECTION_WORKSPACES, type SectionId } from "../../lib/routes";
 
 const SECTIONS = [
-  { href: "/language", heading: "Messy context.", cards: 7 },
-  { href: "/agents", heading: "One next step.", cards: 6 },
-  { href: "/governance", heading: "Typed judgments.", cards: 4 },
-  { href: "/simulations", heading: "Small decisions.", cards: 4 },
-  { href: "/arcade", heading: "Insert coin.", cards: 3 },
+  { href: "/language", heading: "Messy context." },
+  { href: "/agents", heading: "One next step." },
+  { href: "/governance", heading: "Typed judgments." },
+  { href: "/simulations", heading: "Small decisions." },
+  { href: "/arcade", heading: "Insert coin." },
 ];
 
 test.beforeEach(async ({ page }) => {
@@ -29,11 +30,13 @@ for (const section of SECTIONS)
       }),
     ).toBeVisible();
     const cards = page.locator(".section-workspaces .home-example-card");
-    await expect(cards).toHaveCount(section.cards);
-    for (const href of await cards.evaluateAll((els) =>
-      els.map((el) => el.getAttribute("href")),
-    ))
-      expect(href).toMatch(new RegExp(`^${section.href}/[a-z-]+$`));
+    const workspaces = SECTION_WORKSPACES[section.href.slice(1) as SectionId];
+    await expect(cards).toHaveCount(workspaces.length);
+    expect(
+      await cards.evaluateAll((els) =>
+        els.map((el) => el.getAttribute("href")),
+      ),
+    ).toEqual(workspaces.map((slug) => `${section.href}/${slug}`));
     await expect(
       page
         .getByRole("navigation", { name: "Other sections" })

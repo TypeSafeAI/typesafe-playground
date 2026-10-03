@@ -5,6 +5,25 @@ export type WorkspaceGuide = {
   flow: [string, string, string];
 };
 export const workspaceGuides: Record<string, WorkspaceGuide> = {
+  "/simulations/twisty-puzzles": {
+    steps: [
+      [
+        "Choose a puzzle",
+        "Select a cube or the twelve-sided Megaminx. Enter moves from a solved position or generate a practice scramble.",
+      ],
+      [
+        "Load and solve",
+        "Load the scramble, inspect the diagram, then start local search. Cancel at any time; no API key is used.",
+      ],
+      [
+        "Follow the moves",
+        "Step through the checked solution or select an individual step. All faces appear in the unfolded view.",
+      ],
+    ],
+    boundary:
+      "All four puzzles use state search from an entered scramble. The 4×4 uses reduction and a 3×3 handoff. No camera/color input or shortest-solution guarantee.",
+    flow: ["Scrambled state", "Local computation", "Verified moves"],
+  },
   "/simulations/iq-test": {
     steps: [
       [
@@ -314,7 +333,7 @@ export const workspaceGuides: Record<string, WorkspaceGuide> = {
       ],
       [
         "Review it",
-        "Mock returns scripted probabilities and makes no request. Live Jev asks the pinned model four yes/no questions in one request.",
+        "Mock returns scripted probabilities and makes no model request. Live Jev asks the pinned model four yes/no questions in one request.",
       ],
       [
         "Read the receipt",

@@ -148,6 +148,32 @@ test("navigation collapse persists and mobile drawer closes on navigation and Es
   expect(box!.x + box!.width).toBeLessThanOrEqual(page.viewportSize()!.width);
 });
 
+test("mobile navigation isolates the workspace and releases focus after widening", async ({
+  page,
+}) => {
+  await page.setViewportSize({ width: 390, height: 844 });
+  await page.goto("/language/extraction");
+  await page
+    .getByRole("button", { name: "Open navigation", exact: true })
+    .click();
+  await expect(
+    page.getByRole("dialog", { name: "Playground sidebar" }),
+  ).toBeVisible();
+  await expect(page.locator(".app-body")).toHaveAttribute("inert", "");
+  await page.setViewportSize({ width: 1280, height: 720 });
+  await expect(page.locator(".dashboard-shell")).not.toHaveClass(
+    /nav-mobile-open/,
+  );
+  await expect(page.locator(".app-body")).not.toHaveAttribute("inert", "");
+  await expect(page.locator("#main")).toBeFocused();
+  await page
+    .getByRole("button", { name: "Workspace guide", exact: true })
+    .click();
+  await expect(
+    page.getByRole("dialog", { name: "Document extraction guide" }),
+  ).toBeVisible();
+});
+
 test("mock invocations never transmit saved keys or count toward usage", async ({
   page,
 }) => {

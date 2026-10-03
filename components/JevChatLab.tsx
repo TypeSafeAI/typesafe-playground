@@ -145,6 +145,14 @@ export function JevChatLab() {
     });
   }, [activeId, chat?.messages.length, busy]);
   useEffect(() => {
+    const mobileHistory = window.matchMedia("(max-width: 700px)");
+    const resize = () => {
+      if (!mobileHistory.matches) setHistory(false);
+    };
+    mobileHistory.addEventListener("change", resize);
+    return () => mobileHistory.removeEventListener("change", resize);
+  }, []);
+  useEffect(() => {
     if (!panel && !history) return;
     closeFocus.current = document.activeElement as HTMLElement;
     const container = panel ? panelRef.current : historyRef.current;
@@ -156,7 +164,8 @@ export function JevChatLab() {
       }
       if (
         event.key !== "Tab" ||
-        !window.matchMedia("(max-width: 1000px)").matches
+        !window.matchMedia(panel ? "(max-width: 1000px)" : "(max-width: 700px)")
+          .matches
       )
         return;
       const controls = Array.from(
@@ -182,7 +191,9 @@ export function JevChatLab() {
     window.addEventListener("keydown", keyboard);
     return () => {
       window.removeEventListener("keydown", keyboard);
-      closeFocus.current?.focus();
+      if (closeFocus.current?.getClientRects().length)
+        closeFocus.current.focus();
+      else composer.current?.focus();
     };
   }, [panel, history]);
   function patch(update: Partial<ChatSession>) {
