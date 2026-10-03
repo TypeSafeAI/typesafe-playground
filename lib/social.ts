@@ -4,9 +4,9 @@ export const SOCIAL_PAGES = {
     path: "/simulations/twisty-puzzles",
     title: "Twisty puzzle solver",
     description:
-      "Explore cubes and Megaminx with local computation and verified, step-by-step solutions.",
-    category: "LOCAL PUZZLE SOLVING",
-    steps: ["Load a scramble", "Find a solution", "Follow checked moves"],
+      "Watch Jev choose cube and Megaminx moves with local state verification, or compare with a local solver.",
+    category: "JEV PUZZLE LAB",
+    steps: ["Load a scramble", "Ask Jev for moves", "Follow checked moves"],
     result: "Scramble → checked solution",
   },
   "iq-test": {

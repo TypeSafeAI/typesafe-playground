@@ -4,6 +4,7 @@ import workerAsset from "../lib/twisty/worker-url.json";
 import { useEffect, useRef, useState } from "react";
 import { ChevronLeft, ChevronRight, Shuffle, RotateCcw } from "lucide-react";
 import { Heading } from "./ui";
+import { TwistyJevPlayer } from "./TwistyJevPlayer";
 import { revealResults } from "../lib/scroll";
 import {
   PUZZLES,
@@ -23,6 +24,9 @@ const STORAGE_KEY = "typesafe:twisty-puzzles:v1";
 const LIMIT_MS = 60_000;
 
 export function TwistyPuzzleLab() {
+  const [mode, setMode] = useState<"jev" | "local">("jev");
+  const [liveSession, setLiveSession] = useState(0);
+  const [liveMoves, setLiveMoves] = useState<string[]>([]);
   const [puzzle, setPuzzle] = useState<PuzzleId>("3x3x3");
   const [drafts, setDrafts] = useState<Record<PuzzleId, string>>(
     () =>
@@ -57,6 +61,8 @@ export function TwistyPuzzleLab() {
     setError("");
     setResult(null);
     setStep(0);
+    setLiveMoves([]);
+    setLiveSession((value) => value + 1);
   }
 
   useEffect(() => {
@@ -177,18 +183,23 @@ export function TwistyPuzzleLab() {
   }
   const draft = drafts[puzzle];
   const dirty = draft.trim().replace(/\s+/g, " ") !== applied;
-  const algorithm = [applied, ...(result?.moves.slice(0, step) ?? [])].join(
-    " ",
-  );
+  const algorithm = [
+    applied,
+    ...(result ? result.moves.slice(0, step) : liveMoves),
+  ].join(" ");
 
   return (
     <div className="workspace twisty-workspace">
       <Heading
-        eyebrow="LOCAL PUZZLE LAB"
+        eyebrow="JEV PUZZLE LAB"
         title="Twisty puzzle solver"
         description="Scramble it. Understand each turn. Watch the solution come together."
       >
-        <span className="tag">Local computation · no API key</span>
+        <span className="tag">
+          {mode === "jev"
+            ? "Live Jev · local state verification"
+            : "Local solver · no model calls"}
+        </span>
       </Heading>
       <div className="twisty-layout">
         <section
@@ -229,8 +240,8 @@ export function TwistyPuzzleLab() {
             {puzzle === "megaminx"
               ? "A twelve-sided dodecahedral puzzle. Every face turns in fifths."
               : puzzle === "4x4x4"
-                ? "Includes wide turns. Solves centers and pairs edges before a 3×3 handoff."
-                : "Search finds a solution from the piece state, without reversing your history."}
+                ? "Includes wide turns that move two layers together."
+                : "Jev can choose legal turns; the local solver is available as a comparison."}
           </p>
           <label htmlFor="twisty-scramble">Scramble from a solved puzzle</label>
           <textarea
@@ -287,34 +298,87 @@ export function TwistyPuzzleLab() {
           </div>
           <div className="twisty-section-heading">
             <span className="twisty-number">2</span>
-            <h2>Find a solution</h2>
+            <h2>Choose how to solve</h2>
+          </div>
+          <div
+            className="twisty-puzzle-picker"
+            role="group"
+            aria-label="Solver mode"
+          >
+            <button
+              className="button"
+              aria-pressed={mode === "jev"}
+              onClick={() => {
+                clearRun();
+                setMode("jev");
+                setNotice(
+                  "Live Jev selected. Load a scramble, then ask for a move.",
+                );
+              }}
+            >
+              Live Jev
+            </button>
+            <button
+              className="button"
+              aria-pressed={mode === "local"}
+              onClick={() => {
+                clearRun();
+                setMode("local");
+                setNotice(
+                  "Local comparison selected. No model requests will be sent.",
+                );
+              }}
+            >
+              Local solver
+            </button>
           </div>
           <p className="muted">
             {dirty
               ? "Load your draft first. The diagram still shows the last loaded position."
               : "The solution is checked by applying every move to the loaded position."}
           </p>
-          <div className="twisty-actions">
-            <button
-              className="button primary"
-              disabled={busy || dirty}
-              onClick={solve}
-            >
-              {busy ? "Searching…" : "Solve puzzle"}
-            </button>
-            {busy && (
-              <button
-                className="button"
-                onClick={() => {
-                  terminate();
-                  setBusy(false);
-                  setNotice("Search cancelled. No solution was accepted.");
-                }}
-              >
-                Cancel search
-              </button>
-            )}
-          </div>
+          {mode === "jev" ? (
+            <TwistyJevPlayer
+              key={liveSession}
+              puzzle={puzzle}
+              scramble={applied}
+              disabled={dirty}
+              onMoves={setLiveMoves}
+              onSolved={(value) => {
+                setResult(value);
+                setStep(value.moves.length);
+                revealResults("twisty-solution-panel");
+              }}
+            />
+          ) : (
+            <>
+              <p className="muted">
+                Local state search only. This comparison mode makes no Jev
+                request.
+              </p>
+              <div className="twisty-actions">
+                <button
+                  className="button primary"
+                  disabled={busy || dirty}
+                  onClick={solve}
+                >
+                  {busy ? "Searching…" : "Solve puzzle"}
+                </button>
+                {busy && (
+                  <button
+                    className="button"
+                    onClick={() => {
+                      terminate();
+                      setBusy(false);
+                      setNotice("Search cancelled. No solution was accepted.");
+                    }}
+                  >
+                    Cancel search
+                  </button>
+                )}
+              </div>
+            </>
+          )}
           <p role="status" className="twisty-status">
             {notice}
           </p>
@@ -354,7 +418,12 @@ export function TwistyPuzzleLab() {
           {result ? (
             <>
               <p className="twisty-proof">
-                Verified · State search · {result.moves.length} moves
+                {result.method === "jev-moves"
+                  ? result.moves.length
+                    ? "Verified · Jev-selected moves"
+                    : "Already solved · No Jev request"
+                  : "Verified · State search"}{" "}
+                · {result.moves.length} moves
               </p>
               <div className="twisty-step-controls">
                 <button
@@ -412,8 +481,9 @@ export function TwistyPuzzleLab() {
             </>
           ) : (
             <p className="muted">
-              Load a scramble and solve it to see checked moves. Nothing runs
-              automatically.
+              {liveMoves.length
+                ? `${liveMoves.length} Jev moves applied. The puzzle is not yet solved.`
+                : "Load a scramble, then run Jev or choose the local solver. Nothing runs automatically."}
             </p>
           )}
         </section>
@@ -441,18 +511,27 @@ export function TwistyPuzzleLab() {
           orientation.
         </p>
         <p>
-          All four puzzles use state search. The 4×4 solves centers and pairs
-          edges before a 3×3 handoff. In its solution, x and y rotate the whole
-          cube in the direction of R and U respectively. No color-entry or
-          camera input is available. Solutions are verified but are not
-          guaranteed shortest. Center artwork orientation is ignored.
+          In Local solver mode, all four puzzles use state search. The 4×4
+          solves centers and pairs edges before a 3×3 handoff. In its solution,
+          x and y rotate the whole cube in the direction of R and U
+          respectively. No color-entry or camera input is available. Solutions
+          are verified but are not guaranteed shortest. Center artwork
+          orientation is ignored.
+        </p>
+        <p>
+          Live Jev sends one closed-set choice request per move using your
+          configured key. It receives piece state and one-turn outcomes, never a
+          locally searched solution. Attempts stop after 40 moves; each queued
+          request has a 45-second deadline. A legal move or high confidence does
+          not prove progress. Provider errors and invalid choices stop the
+          attempt; there is no local fallback.
         </p>
         <p>
           Practice scrambles use seeded random moves, not official competition
-          random-state generation. Search runs in a browser worker, stops after
-          60 seconds, and is cancelled when you switch puzzles, edit the draft,
-          leave or hide this page. Drafts stay in this browser; search results
-          are not restored.
+          random-state generation. Local search runs in a browser worker, stops
+          after 60 seconds, and is cancelled when you switch puzzles, edit the
+          draft, leave or hide this page. Drafts stay in this browser; search
+          results are not restored.
         </p>
         <p>
           <a
@@ -462,8 +541,9 @@ export function TwistyPuzzleLab() {
           >
             Powered by cubing.js
           </a>
-          . This is deterministic puzzle computation, not a Jev capability
-          benchmark.
+          . Puzzle rules and verification are local; Live Jev chooses the turns.
+          Neither a single solved scramble nor the local comparison is a Jev
+          capability benchmark.
         </p>
       </details>
     </div>
