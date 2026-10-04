@@ -63,10 +63,10 @@ export function TrolleyScene({
       className="trolley-scene"
       viewBox="0 0 720 240"
       role="img"
-      aria-labelledby={`${id}-title ${id}-desc`}
+      aria-label={`${scenario.title}: trolley scene`}
+      aria-describedby={`${id}-desc`}
       data-action={decision?.action ?? "ready"}
     >
-      <title id={`${id}-title`}>{scenario.title}: trolley scene</title>
       <desc id={`${id}-desc`}>{description}</desc>
       <defs>
         <pattern

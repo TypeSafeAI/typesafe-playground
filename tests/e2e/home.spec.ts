@@ -41,7 +41,7 @@ test("home discovers examples by type and query and opens the existing builder",
   await expect(
     page.getByRole("link", { name: "Open Jev attempts chess" }),
   ).toBeVisible();
-  await page.getByLabel("Search examples").fill("robot");
+  await page.getByLabel("Search examples").fill("microduck");
   await expect(page.locator(".home-example-card")).toHaveCount(1);
   await expect(
     page.getByRole("link", { name: "Open MicroDuck arena" }),
