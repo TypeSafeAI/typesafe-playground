@@ -1,6 +1,6 @@
 /* Section navigation: a small overview, with workspace detail on demand. */
 .dashboard-shell .sidebar .workspace-nav {
-  gap: 5px;
+  gap: 4px;
   --section-heading-display: flex;
   --section-children-display: block;
   --section-trigger-display: none;
@@ -18,7 +18,7 @@
   border-radius: 9px;
 }
 .dashboard-shell .workspace-nav .nav-group[data-current] .nav-section-heading {
-  background: var(--accent-soft);
+  background: color-mix(in srgb, var(--panel) 58%, transparent);
 }
 .dashboard-shell .workspace-nav .nav-overview {
   padding: 9px 7px;
@@ -57,37 +57,74 @@
 .nav-disclosure[aria-expanded="true"] svg {
   transform: rotate(180deg);
 }
+/* A fine guide joins each subtopic to its destinations without extra chrome. */
 .nav-section-children {
   display: var(--section-children-display);
-  padding: 3px 0 9px 8px;
+  padding: 3px 0 5px 7px;
 }
 .nav-section-children[hidden] {
   display: none;
 }
 .nav-subsection + .nav-subsection {
-  margin-top: 5px;
+  margin-top: 6px;
 }
 .nav-subsection-label {
   margin: 0;
-  padding: 6px 8px 3px;
+  padding: 5px 8px 5px;
+  font-family: var(--font-mono);
   font-size: 10px;
-  line-height: 1.5;
-  font-weight: 600;
+  line-height: 1.6;
+  letter-spacing: 0.075em;
+  text-transform: uppercase;
+  font-weight: 500;
   color: var(--muted);
 }
+.nav-subtopic-list {
+  list-style: none;
+  margin: 0 0 0 8px;
+  padding: 0 0 0 9px;
+  border-left: 1px solid color-mix(in srgb, var(--muted) 24%, transparent);
+}
+.nav-subtopic-list > li + li {
+  margin-top: 2px;
+}
 .dashboard-shell .sidebar .workspace-nav .nav-subsection a {
+  position: relative;
   min-height: 32px;
   padding: 6px 8px;
   gap: 8px;
+  border-radius: 8px;
   font-size: 12px;
   line-height: 1.4;
+  font-weight: 450;
   align-items: center;
   justify-content: flex-start;
   color: var(--muted);
+  transition:
+    color 120ms ease-out,
+    background-color 120ms ease-out;
+}
+.dashboard-shell .sidebar .workspace-nav .nav-subsection a:hover {
+  color: var(--ink);
+  background: color-mix(in srgb, var(--panel) 75%, transparent);
 }
 .dashboard-shell .sidebar .workspace-nav .nav-subsection a.active {
-  color: var(--accent);
-  background: var(--accent-soft);
+  color: var(--ink);
+  font-weight: 600;
+  background: var(--panel);
+  box-shadow:
+    0 1px 3px #00000008,
+    inset 0 0 0 1px var(--line);
+}
+.dashboard-shell .sidebar .workspace-nav .nav-subsection a.active::before {
+  content: "";
+  position: absolute;
+  left: -11px;
+  top: 10px;
+  bottom: 10px;
+  width: 3px;
+  border-radius: 2px;
+  background: var(--accent);
 }
 .dashboard-shell .sidebar .workspace-nav .nav-subsection a span {
   display: inline;
@@ -97,7 +134,8 @@
   flex-shrink: 0;
 }
 .dashboard-shell .sidebar .workspace-nav .nav-nested-link {
-  padding-left: 32px;
+  padding-left: 31px;
+  font-size: 11px;
 }
 .nav-section-trigger {
   display: var(--section-trigger-display);
@@ -124,7 +162,7 @@
 .nav-section-trigger[aria-current] {
   color: var(--accent);
   background: var(--accent-soft);
-  box-shadow: inset 3px 0 var(--accent);
+  box-shadow: inset 0 0 0 1px color-mix(in srgb, var(--accent) 24%, transparent);
 }
 .nav-flyout {
   position: fixed;
@@ -132,17 +170,17 @@
   width: min(300px, calc(100vw - 96px));
   max-height: calc(100dvh - 88px);
   margin: 0;
-  padding: 12px;
+  padding: 10px;
   overflow: auto;
   overscroll-behavior: contain;
   scrollbar-width: thin;
   background: var(--panel);
   color: var(--ink);
   border: 1px solid var(--line);
-  border-radius: 13px;
+  border-radius: 18px;
   box-shadow:
-    0 8px 32px #0002,
-    0 2px 6px #0001;
+    0 24px 64px #00000024,
+    0 4px 12px #0000000d;
 }
 .nav-flyout:popover-open {
   display: block;
@@ -155,8 +193,8 @@
   align-items: center;
   gap: 8px;
   border-bottom: 1px solid var(--line);
-  padding-bottom: 6px;
-  margin-bottom: 4px;
+  padding-bottom: 8px;
+  margin-bottom: 10px;
 }
 .dashboard-shell .sidebar .workspace-nav .nav-flyout-heading a {
   flex: 1;
@@ -252,7 +290,8 @@
   }
 }
 @media (prefers-reduced-motion: reduce) {
-  .nav-disclosure svg {
+  .nav-disclosure svg,
+  .dashboard-shell .sidebar .workspace-nav .nav-subsection a {
     transition: none;
   }
 }

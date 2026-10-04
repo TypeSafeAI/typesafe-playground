@@ -1,5 +1,14 @@
 import type { Metadata } from "next";
 export const SOCIAL_PAGES = {
+  "trolley-problems": {
+    path: "/simulations/trolley-problems",
+    title: "Jev takes the lever",
+    description:
+      "Twelve interactive trolley dilemmas. Make your own choice or watch real Jev decisions, probabilities and consequences.",
+    category: "THE DECISION LAB",
+    steps: ["Read the dilemma", "Choose or ask Jev", "Follow the route"],
+    result: "Moral dilemma → visible choice",
+  },
   "twisty-puzzles": {
     path: "/simulations/twisty-puzzles",
     title: "Twisty puzzle solver",
