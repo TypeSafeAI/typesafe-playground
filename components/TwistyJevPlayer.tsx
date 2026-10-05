@@ -201,7 +201,7 @@ export function TwistyJevPlayer({
           }
           onClick={() => void play(false)}
         >
-          Run Jev · up to 40 moves
+          Run Jev · up to {MAX_JEV_MOVES} moves
         </button>
         <button
           className="button"

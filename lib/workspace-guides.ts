@@ -1,4 +1,6 @@
 /** Task guidance is presentation only; execution contracts stay with each lab. */
+import { MAX_JEV_MOVES } from "./twisty/jev";
+
 export type WorkspaceGuide = {
   steps: [string, string][];
   boundary: string;
@@ -13,7 +15,7 @@ export const workspaceGuides: Record<string, WorkspaceGuide> = {
       ],
       [
         "Load and solve",
-        "Load the scramble, then request one Jev move or a run of up to 40 moves. Live Jev uses your configured key; Local solver is an explicit no-model comparison.",
+        `Load the scramble, then request one Jev move or a run of up to ${MAX_JEV_MOVES} moves. Live Jev uses your configured key; Local solver is an explicit no-model comparison.`,
       ],
       [
         "Follow the moves",
