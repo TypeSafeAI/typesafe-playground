@@ -29,7 +29,7 @@ const actions: Record<string, string> = {
   "/simulations/microduck": "Run 15 ticks",
   "/simulations/chess": "Play out",
   "/simulations/iq-test": "Run test",
-  "/simulations/twisty-puzzles": "Run Jev · up to 40 moves",
+  "/simulations/twisty-puzzles": "Run Jev · up to 200 moves",
   "/arcade/snake": "Play",
   "/arcade/breakout": "Play",
   "/arcade/meteor-dodge": "Play",

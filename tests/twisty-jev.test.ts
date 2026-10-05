@@ -4,6 +4,7 @@ import { validatePayload } from "../lib/api";
 import {
   buildTwistyPayload,
   legalPuzzleMoves,
+  MAX_JEV_MOVES,
   resolveTwistyChoice,
 } from "../lib/twisty/jev";
 import { PUZZLES, parseMoves, type PuzzleId } from "../lib/twisty/contracts";
@@ -32,7 +33,7 @@ for (const puzzle of Object.keys(PUZZLES) as PuzzleId[]) {
       );
     for (const key of ["solution", "scramble", "recommended_move"])
       assert.equal(key in state, false);
-    assert.equal(state.remaining_moves, 40);
+    assert.equal(state.remaining_moves, 200);
   });
 }
 
@@ -96,8 +97,12 @@ test("history sent to Jev is bounded to its last eight moves", async () => {
   const pattern = (
     await (await import("cubing/puzzles")).puzzles.megaminx.kpuzzle()
   ).defaultPattern();
-  const state = buildTwistyPayload("megaminx", pattern, Array(39).fill("R"))
-    .state as any;
+  const state = buildTwistyPayload(
+    "megaminx",
+    pattern,
+    Array(MAX_JEV_MOVES - 1).fill("R"),
+  ).state as any;
   assert.equal(state.recent_jev_moves.length, 8);
   assert.equal(state.remaining_moves, 1);
+  assert.equal(state.move_number, MAX_JEV_MOVES);
 });

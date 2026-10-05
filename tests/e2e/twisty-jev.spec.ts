@@ -149,7 +149,7 @@ test("pause retains applied moves and resume continues from the same piece state
   });
   await load(page, "R U");
   await page
-    .getByRole("button", { name: "Run Jev · up to 40 moves", exact: true })
+    .getByRole("button", { name: "Run Jev · up to 200 moves", exact: true })
     .click();
   await expect.poll(() => requests).toBe(2);
   await page.getByRole("button", { name: "Pause Jev", exact: true }).click();
@@ -268,31 +268,40 @@ test("request deadline stops an unanswered attempt", async ({ page }) => {
   await expect(page.locator(".twisty-proof")).toHaveCount(0);
 });
 
-test("40-move cap stops an unsolved Jev attempt without claiming success", async ({
+test("Jev continues past 40 moves and stops at 200 without claiming success", async ({
   page,
 }) => {
   test.setTimeout(90_000);
   let requests = 0;
   await page.route("**/api/run", (route) => {
     requests++;
+    const state = route.request().postDataJSON().state;
+    expect(state.move_number).toBe(requests);
+    expect(state.remaining_moves).toBe(201 - requests);
     return route.fulfill({ json: answer(route, requests % 2 ? "R" : "R'") });
   });
   await load(page, "F");
   await page.clock.install();
   await page
-    .getByRole("button", { name: "Run Jev · up to 40 moves", exact: true })
+    .getByRole("button", { name: "Run Jev · up to 200 moves", exact: true })
     .click();
-  for (let i = 1; i <= 40; i++) {
+  for (let i = 1; i <= 200; i++) {
     await expect.poll(() => requests).toBeGreaterThanOrEqual(i);
     await page.clock.runFor(1250);
   }
   await expect(page.locator(".twisty-jev-status")).toContainText(
-    "Incomplete: reached the 40-move limit",
+    "Incomplete: reached the 200-move limit",
   );
   await expect(
     page.getByRole("button", { name: "One Jev move", exact: true }),
   ).toBeDisabled();
+  await expect(
+    page.getByRole("button", {
+      name: "Run Jev · up to 200 moves",
+      exact: true,
+    }),
+  ).toBeDisabled();
   await expect(page.locator(".twisty-proof")).toHaveCount(0);
   await page.clock.runFor(5000);
-  expect(requests).toBe(40);
+  expect(requests).toBe(200);
 });

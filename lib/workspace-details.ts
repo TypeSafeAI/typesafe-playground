@@ -1,3 +1,5 @@
+import { MAX_JEV_MOVES } from "./twisty/jev";
+
 /** Explanations of existing behavior, never instructions for model execution. */
 export type WorkspaceDetails = {
   summary?: string;
@@ -14,7 +16,7 @@ export const workspaceDetails: Record<string, WorkspaceDetails> = {
     process:
       "Live Jev makes one real choice request per move using current piece state and one-turn outcomes. Code applies legal turns and verifies the state. An explicit Local solver comparison uses browser state search without Jev.",
     output:
-      "Jev move/confidence/model receipts, a face diagram and verified playback only if solved. Errors, invalid answers and the 40-move limit never become a successful solution.",
+      `Jev move/confidence/model receipts, a face diagram and verified playback only if solved. Errors, invalid answers and the ${MAX_JEV_MOVES}-move limit never become a successful solution.`,
     experiment:
       "Start with R on the 3×3, load it and ask for one Jev move. Inspect the chosen turn and receipt, then try a harder scramble or compare with Local solver.",
   },

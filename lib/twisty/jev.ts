@@ -3,7 +3,7 @@ import type { RunPayload } from "../api";
 import { MEGAMINX_FACES, PUZZLES, type PuzzleId } from "./contracts";
 import { solved } from "./state";
 
-export const MAX_JEV_MOVES = 40;
+export const MAX_JEV_MOVES = 200;
 
 export function legalPuzzleMoves(puzzle: PuzzleId): string[] {
   const faces =

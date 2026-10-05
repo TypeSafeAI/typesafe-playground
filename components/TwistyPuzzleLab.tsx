@@ -5,6 +5,7 @@ import { useEffect, useRef, useState } from "react";
 import { ChevronLeft, ChevronRight, Shuffle, RotateCcw } from "lucide-react";
 import { Heading } from "./ui";
 import { TwistyJevPlayer } from "./TwistyJevPlayer";
+import { MAX_JEV_MOVES } from "../lib/twisty/jev";
 import { revealResults } from "../lib/scroll";
 import {
   PUZZLES,
@@ -540,10 +541,10 @@ export function TwistyPuzzleLab() {
         <p>
           Live Jev sends one closed-set choice request per move using your
           configured key. It receives piece state and one-turn outcomes, never a
-          locally searched solution. Attempts stop after 40 moves; each queued
-          request has a 45-second deadline. A legal move or high confidence does
-          not prove progress. Provider errors and invalid choices stop the
-          attempt; there is no local fallback.
+          locally searched solution. Attempts stop after {MAX_JEV_MOVES} moves;
+          each queued request has a 45-second deadline. A legal move or high
+          confidence does not prove progress. Provider errors and invalid
+          choices stop the attempt; there is no local fallback.
         </p>
         <p>
           Practice scrambles use seeded random moves, not official competition

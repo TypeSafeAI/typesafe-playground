@@ -8,7 +8,7 @@ server key or personal-key override. Local code owns puzzle rules and verificati
 2. Enter a scramble starting from solved, or choose **New scramble**.
 3. **Load scramble** updates the unfolded diagram. Try `R` for a one-turn example.
 4. **One Jev move** sends one closed-set choice request. **Run Jev** continues
-   until solved, paused, failed, or the 40-move attempt limit is reached.
+   until solved, paused, failed, or the 200-move attempt limit is reached.
 5. Inspect the Jev decision receipts and resulting state. A complete solved state
    enables verified playback; an incomplete attempt is never called a solution.
 
