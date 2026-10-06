@@ -15,8 +15,8 @@ importers:
         specifier: ^2.0.3
         version: 2.0.3(@create-markdown/core@2.0.3)(react@19.3.0)
       '@langchain/core':
-        specifier: 1.2.13
-        version: 1.2.13
+        specifier: 1.2.14
+        version: 1.2.14
       cheerio:
         specifier: 1.2.0
         version: 1.2.0
@@ -428,8 +428,8 @@ packages:
     cpu: [x64]
     os: [win32]
 
-  '@langchain/core@1.2.13':
-    resolution: {integrity: sha512-ADGTxZ84n3civruUX1LlTOdua/PDGoni2U6TmKTX7hvRU2Jlepu8vLJI4Wnwj45KUKhUCrW94Il12Q2bxE3e8A==}
+  '@langchain/core@1.2.14':
+    resolution: {integrity: sha512-NP+FZMDO8kzVf79kiVHByveErVbTc1kUm0OvJuASxy5dt2xo/m7mi4O0npskU71A9h0vke3YUDYEciiAsXdCoA==}
     engines: {node: '>=20'}
 
   '@next/env@16.3.7':
@@ -774,8 +774,8 @@ packages:
   js-tiktoken@1.0.21:
     resolution: {integrity: sha512-biOj/6M5qdgx5TKjDnFT1ymSpM5tbd3ylwDtrQvFQSu0Z7bBYko2dF+W/aUkXUPuk6IVpRxk/3Q2sHOzGlS36g==}
 
-  langsmith@0.10.5:
-    resolution: {integrity: sha512-VUh6LQYGb+wjmMz5Ulazqx1rUHLbWi2XZvVkSHfxDjz6V7u9TJOB6jW5CC84xcpffu7Jr1MZpBbEz3gg972HbA==}
+  langsmith@0.10.8:
+    resolution: {integrity: sha512-svLrSnytr4cwZvx5XAel93fXRB1/OmC/u7tfXhnmyMpxIazPLDKKaMQYxGIjCvCRGhprmp9P4RiKM8ecZU46Mg==}
     peerDependencies:
       '@opentelemetry/api': '*'
       '@opentelemetry/exporter-trace-otlp-proto': '*'
@@ -1226,12 +1226,12 @@ snapshots:
   '@img/sharp-win32-x64@0.35.5':
     optional: true
 
-  '@langchain/core@1.2.13':
+  '@langchain/core@1.2.14':
     dependencies:
       '@cfworker/json-schema': 4.1.1
       '@standard-schema/spec': 1.1.0
       js-tiktoken: 1.0.21
-      langsmith: 0.10.5
+      langsmith: 0.10.8
       mustache: 4.2.0
       p-queue: 6.6.2
       zod: 4.6.5
@@ -1536,7 +1536,7 @@ snapshots:
     dependencies:
       base64-js: 1.5.1
 
-  langsmith@0.10.5:
+  langsmith@0.10.8:
     dependencies:
       p-queue: 6.6.2
 
