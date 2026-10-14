@@ -45,7 +45,7 @@
     "@langchain/core": "1.2.13",
     "cheerio": "1.2.0",
     "chess.js": "1.4.0",
-    "cubing": "0.63.8",
+    "cubing": "0.65.1",
     "ipaddr.js": "2.5.0",
     "lucide-react": "1.49.0",
     "next": "16.3.7",
