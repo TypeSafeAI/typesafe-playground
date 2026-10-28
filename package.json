@@ -42,7 +42,7 @@
   "dependencies": {
     "@create-markdown/core": "^2.0.3",
     "@create-markdown/react": "^2.0.3",
-    "@langchain/core": "1.2.17",
+    "@langchain/core": "1.3.0",
     "cheerio": "1.2.0",
     "chess.js": "1.4.0",
     "cubing": "0.65.1",
